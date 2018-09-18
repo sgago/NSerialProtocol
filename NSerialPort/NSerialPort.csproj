@@ -54,7 +54,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EventArgs\LineReceivedEventArgs.cs" />
+    <Compile Include="EventArgs\SerialLineReceivedEventArgs.cs" />
+    <Compile Include="EventArgs\NSerialDataReceivedEventArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="NSerialPort.cs" />
   </ItemGroup>

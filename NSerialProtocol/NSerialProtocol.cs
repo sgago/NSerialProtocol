@@ -16,7 +16,11 @@ namespace NSerialProtocol
     using SerialPortFix;
     using System.IO.Ports;
 
-    public class NSerialProtocol : NSerialPort
+    public interface ISerialProtocol
+    {
+    }
+
+    public class NSerialProtocol : NSerialPort, ISerialProtocol
     {
         /*
          * NSerialProtocol will handle OUTSIDE OF PROTOBUF
