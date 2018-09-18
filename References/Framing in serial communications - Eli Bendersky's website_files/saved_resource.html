@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<!-- saved from url=(0414)https://disqus.com/embed/comments/?base=default&version=4da460f0526b0a9d10229841b9e13ea9&f=elibenderskyswebsite&t_i=framing-in-serial-communications&t_u=http%3A%2F%2Feli.thegreenplace.net%2F2009%2F08%2F12%2Fframing-in-serial-communications&t_d=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&t_t=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&s_o=default&l=en -->
+<html lang="en" dir="ltr" class="js no-touch localstorage sessionstorage contenteditable use-opacity-transitions"><!--<![endif]--><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Disqus Comments</title>
+
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <style>
+        .alert--warning {
+            border-radius: 3px;
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            background-color: #FFE070;
+            color: #A47703;
+        }
+
+        .alert--warning a,
+        .alert--warning a:hover,
+        .alert--warning strong {
+            color: #A47703;
+            font-weight: bold;
+        }
+
+        .alert--error p,
+        .alert--warning p {
+            margin-top: 5px;
+            margin-bottom: 5px;
+        }
+        
+        </style>
+    
+    <style>
+        html {
+            overflow: hidden;
+        }
+
+        #error {
+            display: none;
+        }
+
+        .clearfix:after {
+            content: "";
+            display: block;
+            height: 0;
+            clear: both;
+            visibility: hidden;
+        }
+
+        
+    </style>
+
+<style type="text/css">:root .col-promoted
+{display:none !important;}</style><link rel="stylesheet" href="./lounge.319e42d492665794856b668a09a033cc.css"><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="remote/config" src="./config.js"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="common.bundle" src="./common.bundle.5b0126d54b9aec92fb5d3cd08b38b753.js"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="lounge.bundle" src="./lounge.bundle.f9dd3762c3827bfdb9b4b922679ef47b.js"></script><style id="css_1467221993875"></style><!--<base target="_parent">--><base href="." target="_parent"><link rel="stylesheet" href="./discovery.ec9371c4ef39ecee074c2acf24d5e0e2.css"><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="ga" src="https://ssl.google-analytics.com/ga.js"></script><script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="discovery/main" src="./discovery.bundle.40e79a6e25f6d95ea88301548969b038.js"></script><style type="text/css">:root .adsbox
+{display:none !important;}</style></head>
+<body>
+    
+
+    
+    <div id="error" class="alert--error">
+        <p>We were unable to load Disqus. If you are a moderator please see our <a href="https://docs.disqus.com/help/83/"> troubleshooting guide</a>. </p>
+    </div>
+
+    
+    <script type="text/json" id="disqus-forumData">{"session":{"canModerate":false,"audienceSyncVerified":false,"mustVerify":false,"canReply":true,"mustVerifyEmail":false},"features":{},"forum":{"category":"Tech","description":"","founder":"3961973","twitterName":"","url":"http://eli.thegreenplace.net","raw_description":"","guidelines":null,"favicon":{"permalink":"https://disqus.com/api/forums/favicons/elibenderskyswebsite.jpg","cache":"//a.disquscdn.com/uploads/forums/320/7898/favicon.png"},"raw_guidelines":null,"language":"en","daysThreadAlive":700,"avatar":{"small":{"permalink":"https://disqus.com/api/forums/avatars/elibenderskyswebsite.jpg?size=32","cache":"//a.disquscdn.com/1466616618/images/noavatar32.png"},"large":{"permalink":"https://disqus.com/api/forums/avatars/elibenderskyswebsite.jpg?size=92","cache":"//a.disquscdn.com/1466616618/images/noavatar92.png"}},"channel":null,"daysAlive":700,"pk":"3207898","signedUrl":"http://disq.us/?url=http%3A%2F%2Feli.thegreenplace.net&key=VqxvCG8y_q8kLTQI6P8yBQ","settings":{"supportLevel":0,"adsDRNativeEnabled":false,"disable3rdPartyTrackers":false,"adsVideoEnabled":false,"adsProductVideoEnabled":false,"adsPositionTopEnabled":false,"ssoRequired":false,"linkAffiliationEnabled":false,"adsProductLinksThumbnailsEnabled":false,"adsProductStoriesEnabled":false,"organicDiscoveryEnabled":false,"allowMedia":false,"discoveryMax":false,"discoveryLocked":false,"moderatorText":"","adsEnabled":false,"allowAnonPost":false,"hasCustomAvatar":false,"adultContent":false,"promotedDiscoveryEnabled":false,"allowAnonVotes":false,"mustVerify":true,"colorScheme":"light","adsSettingsLocked":false,"mustVerifyEmail":true,"audienceSyncEnabled":false,"typeface":"auto","adsPositionBottomEnabled":false,"mediaembedEnabled":false,"adsProductLinksEnabled":false,"discoveryThumbnailsEnabled":false,"isVIP":false},"id":"elibenderskyswebsite","createdAt":"2014-09-10T09:11:43.631597","name":"Eli Bendersky's website"}}</script>
+
+    
+    <script type="text/json" id="disqus-threadData">{"cursor":{"hasPrev":false,"prev":null,"total":3,"hasNext":false,"next":"1:0:0"},"code":0,"response":{"lastModified":1454994590,"posts":[{"forum":"elibenderskyswebsite","parent":null,"isApproved":true,"author":{"username":"disqus_8rHQTIaZwY","about":"","name":"Giovanni","disable3rdPartyTrackers":false,"isPowerContributor":false,"isAnonymous":false,"rep":1.256757,"profileUrl":"https://disqus.com/by/disqus_8rHQTIaZwY/","url":"","reputation":1.256757,"location":"","isPrivate":false,"signedUrl":"","isPrimary":true,"joinedAt":"2014-01-21T10:01:06","id":"91538336","avatar":{"small":{"permalink":"https://disqus.com/api/users/avatars/disqus_8rHQTIaZwY.jpg","cache":"//a.disquscdn.com/uploads/users/9153/8336/avatar32.jpg?1390910966"},"isCustom":true,"permalink":"https://disqus.com/api/users/avatars/disqus_8rHQTIaZwY.jpg","cache":"//a.disquscdn.com/uploads/users/9153/8336/avatar92.jpg?1390910966","large":{"permalink":"https://disqus.com/api/users/avatars/disqus_8rHQTIaZwY.jpg","cache":"//a.disquscdn.com/uploads/users/9153/8336/avatar92.jpg?1390910966"}}},"media":[],"isDeleted":false,"isFlagged":false,"dislikes":0,"raw_message":"I've almost finished implementing a PPP protocol between a QT client and an Arduino controller. This guide was very useful, thank you.","createdAt":"2014-11-28T12:41:05","id":"1716402884","thread":"3006351603","depth":0,"numReports":0,"isDeletedByAuthor":false,"likes":0,"isEdited":false,"message":"\u003cp>I've almost finished implementing a PPP protocol between a QT client and an Arduino controller. This guide was very useful, thank you.\u003c/p>","isSpam":false,"isHighlighted":false,"points":0},{"forum":"elibenderskyswebsite","parent":null,"isApproved":true,"author":{"username":"disqus_aklQUHzef9","about":"","name":"erik","disable3rdPartyTrackers":false,"isPowerContributor":false,"isAnonymous":false,"rep":1.588582,"profileUrl":"https://disqus.com/by/disqus_aklQUHzef9/","url":"","reputation":1.588582,"location":"","isPrivate":true,"signedUrl":"","isPrimary":true,"joinedAt":"2013-06-08T22:25:39","id":"55554349","avatar":{"small":{"permalink":"https://disqus.com/api/users/avatars/disqus_aklQUHzef9.jpg","cache":"//a.disquscdn.com/1466616618/images/noavatar32.png"},"isCustom":false,"permalink":"https://disqus.com/api/users/avatars/disqus_aklQUHzef9.jpg","cache":"//a.disquscdn.com/1466616618/images/noavatar92.png","large":{"permalink":"https://disqus.com/api/users/avatars/disqus_aklQUHzef9.jpg","cache":"//a.disquscdn.com/1466616618/images/noavatar92.png"}}},"media":[],"isDeleted":false,"isFlagged":false,"dislikes":0,"raw_message":"Thanks a lot. I had missed this simple yet extremely powerful method!","createdAt":"2015-08-08T17:42:02","id":"2181612492","thread":"3006351603","depth":0,"numReports":0,"isDeletedByAuthor":false,"likes":0,"isEdited":false,"message":"\u003cp>Thanks a lot. I had missed this simple yet extremely powerful method!\u003c/p>","isSpam":false,"isHighlighted":false,"points":0},{"forum":"elibenderskyswebsite","parent":null,"isApproved":true,"author":{"username":"a3f","about":"","name":"a3f","disable3rdPartyTrackers":false,"isPowerContributor":false,"isAnonymous":false,"rep":1.2329599999999998,"profileUrl":"https://disqus.com/by/a3f/","url":"http://a3f.at","reputation":1.2329599999999998,"location":"Egypt","isPrivate":false,"signedUrl":"http://disq.us/?url=http%3A%2F%2Fa3f.at&key=r4wQQMUKCdczfXfHuLwmWA","isPrimary":true,"joinedAt":"2015-02-04T15:36:28","id":"142878856","avatar":{"small":{"permalink":"https://disqus.com/api/users/avatars/a3f.jpg","cache":"//a.disquscdn.com/uploads/users/14287/8856/avatar32.jpg?1424997553"},"isCustom":true,"permalink":"https://disqus.com/api/users/avatars/a3f.jpg","cache":"//a.disquscdn.com/uploads/users/14287/8856/avatar92.jpg?1424997553","large":{"permalink":"https://disqus.com/api/users/avatars/a3f.jpg","cache":"//a.disquscdn.com/uploads/users/14287/8856/avatar92.jpg?1424997553"}}},"media":[],"isDeleted":false,"isFlagged":false,"dislikes":0,"raw_message":"XOR-ing allows a participant to identify frames by only listening for STX/ETX. Otherwise, it would need to account for DLEs too, because the user data might contain an escaped STX/ETX.","createdAt":"2016-02-09T05:09:50","id":"2503783276","thread":"3006351603","depth":0,"numReports":0,"isDeletedByAuthor":false,"likes":0,"isEdited":false,"message":"\u003cp>XOR-ing allows a participant to identify frames by only listening for STX/ETX. Otherwise, it would need to account for DLEs too, because the user data might contain an escaped STX/ETX.\u003c/p>","isSpam":false,"isHighlighted":false,"points":0}],"thread":{"feed":"https://elibenderskyswebsite.disqus.com/framing_in_serial_communications_eli_benderskys_website/latest.rss","identifiers":["framing-in-serial-communications"],"dislikes":0,"likes":0,"message":"","id":"3006351603","isDeleted":false,"category":"3259861","author":"3961973","userScore":0,"userSubscription":false,"isSpam":false,"signedLink":"http://disq.us/?url=http%3A%2F%2Feli.thegreenplace.net%2F2009%2F08%2F12%2Fframing-in-serial-communications&key=e39hnjZIAGLqpmO1eDG7SA","createdAt":"2014-09-10T20:21:38","hasStreaming":false,"raw_message":"","isClosed":false,"link":"http://eli.thegreenplace.net/2009/08/12/framing-in-serial-communications","slug":"framing_in_serial_communications_eli_benderskys_website","forum":"elibenderskyswebsite","clean_title":"Framing in serial communications","posts":3,"moderators":[3961973],"title":"Framing in serial communications - Eli Bendersky's website","highlightedPost":null}},"order":"asc"}</script>
+
+    
+
+    <div id="fixed-content"></div>
+
+
+    
+        
+<script type="text/json" id="disqus-urls">{
+    "root":"//disqus.com",
+    "next":"//a.disquscdn.com/next/current/embed"
+}</script>
+
+        <script src="./lounge.load.4da460f0526b0a9d10229841b9e13ea9.js" id="bootstrap-script" data-app="lounge" async=""></script>
+    
+
+
+<div id="layout" data-tracking-area="layout">
+
+<div id="onboard" data-tracking-area="onboard"></div>
+
+<div id="highlighted-post" data-tracking-area="highlighted" class="highlighted-post" style="display: none;"></div>
+
+<div id="global-alert"></div>
+
+<header id="main-nav" data-tracking-area="main-nav">
+<nav class="nav nav-primary">
+<ul>
+<li class="tab-conversation active" data-role="post-count"><a class="publisher-nav-color">
+<span class="comment-count">
+3 comments
+</span>
+
+<span class="comment-count-placeholder">
+Comments
+</span>
+</a>
+</li>
+<li class="tab-community">
+<a href="https://disqus.com/home/forums/elibenderskyswebsite/" class="publisher-nav-color" data-action="community-sidebar" data-forum="elibenderskyswebsite" id="community-tab">
+<span class="community-name">
+<strong>Eli Bendersky's website</strong>
+
+</span>
+
+<strong class="community-name-placeholder">Community</strong>
+</a>
+</li>
+<li class="dropdown user-menu" data-role="logout"><a href="https://disqus.com/embed/comments/?base=default&amp;version=4da460f0526b0a9d10229841b9e13ea9&amp;f=elibenderskyswebsite&amp;t_i=framing-in-serial-communications&amp;t_u=http%3A%2F%2Feli.thegreenplace.net%2F2009%2F08%2F12%2Fframing-in-serial-communications&amp;t_d=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;t_t=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;s_o=default&amp;l=en#" class="dropdown-toggle" data-toggle="dropdown">
+<span class="dropdown-toggle-wrapper">
+
+<span>
+Login
+</span>
+
+</span> <span class="caret"></span>
+</a>
+<ul class="dropdown-menu">
+
+
+<li>
+<a href="https://disqus.com/embed/comments/?base=default&amp;version=4da460f0526b0a9d10229841b9e13ea9&amp;f=elibenderskyswebsite&amp;t_i=framing-in-serial-communications&amp;t_u=http%3A%2F%2Feli.thegreenplace.net%2F2009%2F08%2F12%2Fframing-in-serial-communications&amp;t_d=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;t_t=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;s_o=default&amp;l=en#" data-action="auth:disqus">Disqus</a>
+</li>
+<li>
+<a href="https://disqus.com/embed/comments/?base=default&amp;version=4da460f0526b0a9d10229841b9e13ea9&amp;f=elibenderskyswebsite&amp;t_i=framing-in-serial-communications&amp;t_u=http%3A%2F%2Feli.thegreenplace.net%2F2009%2F08%2F12%2Fframing-in-serial-communications&amp;t_d=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;t_t=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;s_o=default&amp;l=en#" data-action="auth:facebook">Facebook</a>
+</li>
+<li>
+<a href="https://disqus.com/embed/comments/?base=default&amp;version=4da460f0526b0a9d10229841b9e13ea9&amp;f=elibenderskyswebsite&amp;t_i=framing-in-serial-communications&amp;t_u=http%3A%2F%2Feli.thegreenplace.net%2F2009%2F08%2F12%2Fframing-in-serial-communications&amp;t_d=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;t_t=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;s_o=default&amp;l=en#" data-action="auth:twitter">Twitter</a>
+</li>
+<li>
+<a href="https://disqus.com/embed/comments/?base=default&amp;version=4da460f0526b0a9d10229841b9e13ea9&amp;f=elibenderskyswebsite&amp;t_i=framing-in-serial-communications&amp;t_u=http%3A%2F%2Feli.thegreenplace.net%2F2009%2F08%2F12%2Fframing-in-serial-communications&amp;t_d=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;t_t=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;s_o=default&amp;l=en#" data-action="auth:google">Google</a>
+</li>
+
+
+
+</ul>
+</li>
+<li class="notification-menu unread" data-role="notification-menu"><a href="https://disqus.com/home/inbox/" class="notification-container" data-action="home" data-home-path="home/inbox/">
+<span class="notification-icon icon-comment" aria-hidden=""></span>
+<span class="notification-count" data-role="notification-count">1</span>
+</a>
+</li>
+</ul>
+</nav>
+</header>
+
+<section id="conversation" data-role="main" data-tracking-area="main">
+<div class="nav nav-secondary" data-tracking-area="secondary-nav">
+<ul>
+<li id="recommend-button" class="recommend dropdown">
+<div class="thread-likes"><a href="https://disqus.com/embed/comments/?base=default&amp;version=4da460f0526b0a9d10229841b9e13ea9&amp;f=elibenderskyswebsite&amp;t_i=framing-in-serial-communications&amp;t_u=http%3A%2F%2Feli.thegreenplace.net%2F2009%2F08%2F12%2Fframing-in-serial-communications&amp;t_d=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;t_t=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;s_o=default&amp;l=en#" data-action="recommend" title="Recommend this discussion" class="dropdown-toggle ">
+<span class="icon-heart"></span>
+<span class="label label-default">Recommend</span>
+<span class="label label-recommended">Recommended</span>
+</a>
+<ul class="dropdown-menu coachmark">
+<li>
+<h2>Discussion Recommended!</h2>
+<p>Recommending means this is a discussion worth sharing. It gets shared to your followers' Disqus feeds, and gives the creator kudos!</p>
+<a href="https://disqus.com/home/?utm_source=disqus_embed&amp;utm_content=recommend_btn" class="btn btn-primary" target="_blank">
+ Find More Discussions 
+</a>
+</li>
+</ul>
+</div></li>
+<li id="thread-share-menu" class="dropdown share-menu hidden-sm"><a href="https://disqus.com/embed/comments/?base=default&amp;version=4da460f0526b0a9d10229841b9e13ea9&amp;f=elibenderskyswebsite&amp;t_i=framing-in-serial-communications&amp;t_u=http%3A%2F%2Feli.thegreenplace.net%2F2009%2F08%2F12%2Fframing-in-serial-communications&amp;t_d=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;t_t=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;s_o=default&amp;l=en#" class="dropdown-toggle" data-toggle="dropdown" title="Share">
+<span class="icon-export"></span>
+<span class="label">Share</span>
+</a>
+<ul class="share-menu dropdown-menu">
+<li class="share">Share this discussion on
+<ul>
+<li class="twitter">
+<a data-action="share:twitter" href="https://disqus.com/embed/comments/?base=default&amp;version=4da460f0526b0a9d10229841b9e13ea9&amp;f=elibenderskyswebsite&amp;t_i=framing-in-serial-communications&amp;t_u=http%3A%2F%2Feli.thegreenplace.net%2F2009%2F08%2F12%2Fframing-in-serial-communications&amp;t_d=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;t_t=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;s_o=default&amp;l=en#">Twitter</a>
+</li>
+<li class="facebook">
+<a data-action="share:facebook" href="https://disqus.com/embed/comments/?base=default&amp;version=4da460f0526b0a9d10229841b9e13ea9&amp;f=elibenderskyswebsite&amp;t_i=framing-in-serial-communications&amp;t_u=http%3A%2F%2Feli.thegreenplace.net%2F2009%2F08%2F12%2Fframing-in-serial-communications&amp;t_d=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;t_t=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;s_o=default&amp;l=en#">Facebook</a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li data-role="post-sort" class="dropdown sorting pull-right">
+<a href="https://disqus.com/embed/comments/?base=default&amp;version=4da460f0526b0a9d10229841b9e13ea9&amp;f=elibenderskyswebsite&amp;t_i=framing-in-serial-communications&amp;t_u=http%3A%2F%2Feli.thegreenplace.net%2F2009%2F08%2F12%2Fframing-in-serial-communications&amp;t_d=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;t_t=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;s_o=default&amp;l=en#" class="dropdown-toggle" data-toggle="dropdown">
+
+
+Sort by Oldest
+<span class="caret"></span>
+</a>
+<ul class="dropdown-menu pull-right">
+<li>
+<a href="https://disqus.com/embed/comments/?base=default&amp;version=4da460f0526b0a9d10229841b9e13ea9&amp;f=elibenderskyswebsite&amp;t_i=framing-in-serial-communications&amp;t_u=http%3A%2F%2Feli.thegreenplace.net%2F2009%2F08%2F12%2Fframing-in-serial-communications&amp;t_d=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;t_t=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;s_o=default&amp;l=en#" data-action="sort" data-sort="popular">Best<i aria-hidden="true" class="icon-checkmark"></i></a>
+</li>
+
+<li>
+<a href="https://disqus.com/embed/comments/?base=default&amp;version=4da460f0526b0a9d10229841b9e13ea9&amp;f=elibenderskyswebsite&amp;t_i=framing-in-serial-communications&amp;t_u=http%3A%2F%2Feli.thegreenplace.net%2F2009%2F08%2F12%2Fframing-in-serial-communications&amp;t_d=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;t_t=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;s_o=default&amp;l=en#" data-action="sort" data-sort="desc">Newest<i aria-hidden="true" class="icon-checkmark"></i></a>
+</li>
+
+<li class="selected">
+<a href="https://disqus.com/embed/comments/?base=default&amp;version=4da460f0526b0a9d10229841b9e13ea9&amp;f=elibenderskyswebsite&amp;t_i=framing-in-serial-communications&amp;t_u=http%3A%2F%2Feli.thegreenplace.net%2F2009%2F08%2F12%2Fframing-in-serial-communications&amp;t_d=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;t_t=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;s_o=default&amp;l=en#" data-action="sort" data-sort="asc">Oldest<i aria-hidden="true" class="icon-checkmark"></i></a>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+<div id="posts">
+<div id="form"><form class="reply">
+<div class="postbox">
+<div role="alert"></div>
+<div class="avatar">
+<span class="user">
+<img data-role="user-avatar" src="./noavatar92.7b2fde640943965cc88df0cdee365907.png" alt="Avatar">
+</span>
+</div>
+
+<div class="textarea-wrapper" data-role="textarea" dir="auto"><div><span class="placeholder">Join the discussion…</span><div class="textarea" tabindex="0" role="textbox" aria-multiline="true" contenteditable="PLAINTEXT-ONLY" data-role="editable" aria-label="Join the discussion…" style="overflow: auto; max-height: 350px;"><p><br></p></div><div style="display: none;"><ul class="suggestions">
+<li class="header">
+<h5>in this conversation</h5>
+</li>
+</ul>
+</div></div>
+<div data-role="drag-drop-placeholder" class="media-drag-hover" style="display: none">
+<div class="drag-text">
+⬇ Drag and drop your images here to upload them.
+</div>
+</div>
+<div class="edit-alert" role="postbox-alert"></div>
+<div class="post-actions">
+<ul class="wysiwyg">
+</ul>
+</div>
+</div>
+
+<div data-role="login-form"><div><section class="auth-section logged-out">
+<div class="connect">
+<h6>Log in with</h6>
+<ul data-role="login-menu" class="services login-buttons">
+
+
+<li class="auth-disqus">
+<button type="button" data-action="auth:disqus" title="Disqus"><i class="icon-disqus"></i></button>
+</li>
+<li class="auth-facebook">
+<button type="button" data-action="auth:facebook" title="Facebook"><i class="icon-facebook-circle"></i></button>
+</li>
+<li class="auth-twitter">
+<button type="button" data-action="auth:twitter" title="Twitter"><i class="icon-twitter-circle"></i></button>
+</li>
+<li class="auth-google">
+<button type="button" data-action="auth:google" title="Google"><i class="icon-google-plus-circle"></i></button>
+</li>
+</ul>
+</div>
+<div class="guest">
+<h6 class="guest-form-title">
+<span class="register-text"> or sign up with Disqus </span>
+<span class="guest-text"> or pick a name </span>
+</h6>
+
+<div class="what-is-disqus help-icon">
+<div id="rules" class="tooltip show">
+<h3>Disqus is a discussion network</h3>
+<ul>
+<li><span>Disqus never moderates or censors. The rules on this community are its own.</span></li>
+<li><span>Your email is safe with us. It's only used for moderation and optional notifications.</span></li>
+<li><span>Don't be a jerk or do anything illegal. Everything is easier that way.</span></li>
+</ul>
+<p class="clearfix"><a href="https://docs.disqus.com/kb/terms-and-policies/" class="btn btn-small" target="_blank">Read full terms and conditions</a></p>
+</div>
+</div>
+
+<p class="input-wrapper">
+<input dir="auto" type="text" placeholder="Name" name="display_name" id="view37_display_name" maxlength="30">
+</p>
+
+<div class="guest-details " data-role="guest-details">
+<p class="input-wrapper">
+<input dir="auto" type="email" placeholder="Email" name="email" id="view37_email">
+</p>
+
+<p class="input-wrapper">
+<input dir="auto" type="password" class="register-text" placeholder="Password" name="password" id="view37_password">
+</p>
+
+<div class="acceptance-wrapper register-text">
+By signing up, you agree to the Disqus <a target="_blank" href="https://help.disqus.com/customer/portal/articles/1753105-basic-rules-for-disqus-powered-profiles-and-discussions">Basic Rules</a>, <a target="_blank" href="https://help.disqus.com/customer/portal/articles/466260-terms-of-service">Terms of Service</a>, and <a target="_blank" href="https://help.disqus.com/customer/portal/articles/466259-privacy-policy">Privacy Policy</a>.
+</div>
+<div class="acceptance-wrapper guest-text">
+By posting, you agree to the Disqus <a target="_blank" href="https://help.disqus.com/customer/portal/articles/1753105-basic-rules-for-disqus-powered-profiles-and-discussions">Basic Rules</a>, <a target="_blank" href="https://help.disqus.com/customer/portal/articles/466260-terms-of-service">Terms of Service</a>, and <a target="_blank" href="https://help.disqus.com/customer/portal/articles/466259-privacy-policy">Privacy Policy</a>.
+</div>
+
+<input type="checkbox" name="author-guest" style="display:none">
+
+<div class="proceed" data-role="submit-btn-container">
+<button type="submit" class="btn submit" aria-label="Next"><span class="icon-proceed"></span><div class="spinner"></div></button>
+</div>
+</div>
+</div>
+</section>
+
+</div></div>
+</div>
+</form></div>
+
+<button class="alert realtime" style="display: none" data-role="realtime-notification">
+</button>
+
+<div id="no-posts" style="display:none"></div>
+
+<ul id="post-list" class="post-list"><li class="post" id="post-1716402884"><div role="alert"></div>
+<div data-role="post-content" class="post-content">
+<ul class="post-menu dropdown" data-role="menu">
+<li class="collapse">
+<a href="https://disqus.com/embed/comments/?base=default&amp;version=4da460f0526b0a9d10229841b9e13ea9&amp;f=elibenderskyswebsite&amp;t_i=framing-in-serial-communications&amp;t_u=http%3A%2F%2Feli.thegreenplace.net%2F2009%2F08%2F12%2Fframing-in-serial-communications&amp;t_d=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;t_t=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;s_o=default&amp;l=en#" data-action="collapse" title="Collapse"><span>−</span></a>
+</li>
+<li class="expand">
+<a href="https://disqus.com/embed/comments/?base=default&amp;version=4da460f0526b0a9d10229841b9e13ea9&amp;f=elibenderskyswebsite&amp;t_i=framing-in-serial-communications&amp;t_u=http%3A%2F%2Feli.thegreenplace.net%2F2009%2F08%2F12%2Fframing-in-serial-communications&amp;t_d=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;t_t=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;s_o=default&amp;l=en#" data-action="collapse" title="Expand"><span>+</span></a>
+</li>
+
+<li class="" role="menu">
+<a class="dropdown-toggle" href="https://disqus.com/embed/comments/?base=default&amp;version=4da460f0526b0a9d10229841b9e13ea9&amp;f=elibenderskyswebsite&amp;t_i=framing-in-serial-communications&amp;t_u=http%3A%2F%2Feli.thegreenplace.net%2F2009%2F08%2F12%2Fframing-in-serial-communications&amp;t_d=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;t_t=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;s_o=default&amp;l=en#" data-action="flag" data-role="flag" title="Flag as inappropriate">
+<i aria-hidden="true" class="icon icon-flag"></i>
+</a>
+</li>
+</ul>
+<div class="indicator"></div>
+
+<div class="avatar hovercard">
+<a href="https://disqus.com/by/disqus_8rHQTIaZwY/" class="user" data-action="profile" data-username="disqus_8rHQTIaZwY">
+<img data-role="user-avatar" data-user="91538336" src="./noavatar92.png" alt="Avatar">
+</a>
+</div>
+<div class="post-body">
+<header>
+<span class="post-byline">
+<span class="author publisher-anchor-color"><a href="https://disqus.com/by/disqus_8rHQTIaZwY/" data-action="profile" data-username="disqus_8rHQTIaZwY" data-role="username">Giovanni</a></span>
+
+</span>
+
+<span class="post-meta">
+<span class="bullet time-ago-bullet" aria-hidden="true">•</span>
+
+<a href="http://eli.thegreenplace.net/2009/08/12/framing-in-serial-communications#comment-1716402884" data-role="relative-time" class="time-ago" title="Friday, November 28, 2014 6:41 AM">
+2 years ago
+</a>
+</span>
+
+</header>
+
+<div class="post-body-inner">
+<div class="post-message-container" data-role="message-container">
+<div class="publisher-anchor-color" data-role="message-content">
+<div class="post-message " data-role="message" dir="auto">
+<p>I've almost finished implementing a PPP protocol between a QT client and an Arduino controller. This guide was very useful, thank you.</p>
+</div>
+
+<span class="post-media"><ul data-role="post-media-list"></ul></span>
+</div>
+</div>
+<a class="see-more hidden" title="see more" data-action="see-more">see more</a>
+</div>
+
+<footer>
+<menu>
+
+<li class="voting" data-role="voting">
+<a href="https://disqus.com/embed/comments/?base=default&amp;version=4da460f0526b0a9d10229841b9e13ea9&amp;f=elibenderskyswebsite&amp;t_i=framing-in-serial-communications&amp;t_u=http%3A%2F%2Feli.thegreenplace.net%2F2009%2F08%2F12%2Fframing-in-serial-communications&amp;t_d=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;t_t=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;s_o=default&amp;l=en#" class="vote-up  count-0" data-action="upvote" title="Vote up">
+
+<span class="updatable count" data-role="likes">0</span>
+<span class="control"><i aria-hidden="true" class="icon icon-arrow-2"></i></span>
+</a>
+<span role="button" class="vote-down  count-0" data-action="downvote" title="Vote down">
+
+<span class="control"><i aria-hidden="true" class="icon icon-arrow"></i></span>
+</span>
+</li>
+<li class="bullet" aria-hidden="true">•</li>
+
+
+<li class="reply" data-role="reply-link">
+<a href="https://disqus.com/embed/comments/?base=default&amp;version=4da460f0526b0a9d10229841b9e13ea9&amp;f=elibenderskyswebsite&amp;t_i=framing-in-serial-communications&amp;t_u=http%3A%2F%2Feli.thegreenplace.net%2F2009%2F08%2F12%2Fframing-in-serial-communications&amp;t_d=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;t_t=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;s_o=default&amp;l=en#" data-action="reply">
+<i class="icon icon-mobile icon-reply"></i><span class="text">Reply</span></a></li>
+<li class="bullet" aria-hidden="true">•</li>
+
+
+<li class="share">
+<a class="toggle"><i class="icon icon-mobile icon-share"></i><span class="text">Share ›</span></a>
+<ul>
+<li class="twitter"><a href="https://disqus.com/embed/comments/?base=default&amp;version=4da460f0526b0a9d10229841b9e13ea9&amp;f=elibenderskyswebsite&amp;t_i=framing-in-serial-communications&amp;t_u=http%3A%2F%2Feli.thegreenplace.net%2F2009%2F08%2F12%2Fframing-in-serial-communications&amp;t_d=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;t_t=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;s_o=default&amp;l=en#" data-action="share:twitter">Twitter</a></li>
+<li class="facebook"><a href="https://disqus.com/embed/comments/?base=default&amp;version=4da460f0526b0a9d10229841b9e13ea9&amp;f=elibenderskyswebsite&amp;t_i=framing-in-serial-communications&amp;t_u=http%3A%2F%2Feli.thegreenplace.net%2F2009%2F08%2F12%2Fframing-in-serial-communications&amp;t_d=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;t_t=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;s_o=default&amp;l=en#" data-action="share:facebook">Facebook</a></li>
+<li class="link"><a href="http://disq.us/p/sdwgxw">Link</a></li>
+</ul>
+</li>
+
+<li class="realtime" data-role="realtime-notification:1716402884">
+<span style="display:none;" class="realtime-replies"></span>
+<a style="display:none;" href="https://disqus.com/embed/comments/?base=default&amp;version=4da460f0526b0a9d10229841b9e13ea9&amp;f=elibenderskyswebsite&amp;t_i=framing-in-serial-communications&amp;t_u=http%3A%2F%2Feli.thegreenplace.net%2F2009%2F08%2F12%2Fframing-in-serial-communications&amp;t_d=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;t_t=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;s_o=default&amp;l=en#" class="btn btn-small"></a>
+</li>
+
+</menu>
+</footer>
+</div>
+
+<div data-role="blacklist-form"></div>
+<div class="reply-form-container" data-role="reply-form"></div>
+</div>
+
+<ul data-role="children" class="children"></ul>
+
+</li><li class="post" id="post-2181612492"><div role="alert"></div>
+<div data-role="post-content" class="post-content">
+<ul class="post-menu dropdown" data-role="menu">
+<li class="collapse">
+<a href="https://disqus.com/embed/comments/?base=default&amp;version=4da460f0526b0a9d10229841b9e13ea9&amp;f=elibenderskyswebsite&amp;t_i=framing-in-serial-communications&amp;t_u=http%3A%2F%2Feli.thegreenplace.net%2F2009%2F08%2F12%2Fframing-in-serial-communications&amp;t_d=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;t_t=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;s_o=default&amp;l=en#" data-action="collapse" title="Collapse"><span>−</span></a>
+</li>
+<li class="expand">
+<a href="https://disqus.com/embed/comments/?base=default&amp;version=4da460f0526b0a9d10229841b9e13ea9&amp;f=elibenderskyswebsite&amp;t_i=framing-in-serial-communications&amp;t_u=http%3A%2F%2Feli.thegreenplace.net%2F2009%2F08%2F12%2Fframing-in-serial-communications&amp;t_d=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;t_t=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;s_o=default&amp;l=en#" data-action="collapse" title="Expand"><span>+</span></a>
+</li>
+
+<li class="" role="menu">
+<a class="dropdown-toggle" href="https://disqus.com/embed/comments/?base=default&amp;version=4da460f0526b0a9d10229841b9e13ea9&amp;f=elibenderskyswebsite&amp;t_i=framing-in-serial-communications&amp;t_u=http%3A%2F%2Feli.thegreenplace.net%2F2009%2F08%2F12%2Fframing-in-serial-communications&amp;t_d=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;t_t=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;s_o=default&amp;l=en#" data-action="flag" data-role="flag" title="Flag as inappropriate">
+<i aria-hidden="true" class="icon icon-flag"></i>
+</a>
+</li>
+</ul>
+<div class="indicator"></div>
+
+<div class="avatar hovercard">
+<a href="https://disqus.com/by/disqus_aklQUHzef9/" class="user" data-action="profile" data-username="disqus_aklQUHzef9">
+<img data-role="user-avatar" data-user="55554349" src="./noavatar92.png" alt="Avatar">
+</a>
+</div>
+<div class="post-body">
+<header>
+<span class="post-byline">
+<span class="author publisher-anchor-color"><a href="https://disqus.com/by/disqus_aklQUHzef9/" data-action="profile" data-username="disqus_aklQUHzef9" data-role="username">erik</a></span>
+
+</span>
+
+<span class="post-meta">
+<span class="bullet time-ago-bullet" aria-hidden="true">•</span>
+
+<a href="http://eli.thegreenplace.net/2009/08/12/framing-in-serial-communications#comment-2181612492" data-role="relative-time" class="time-ago" title="Saturday, August 8, 2015 12:42 PM">
+a year ago
+</a>
+</span>
+
+</header>
+
+<div class="post-body-inner">
+<div class="post-message-container" data-role="message-container">
+<div class="publisher-anchor-color" data-role="message-content">
+<div class="post-message " data-role="message" dir="auto">
+<p>Thanks a lot. I had missed this simple yet extremely powerful method!</p>
+</div>
+
+<span class="post-media"><ul data-role="post-media-list"></ul></span>
+</div>
+</div>
+<a class="see-more hidden" title="see more" data-action="see-more">see more</a>
+</div>
+
+<footer>
+<menu>
+
+<li class="voting" data-role="voting">
+<a href="https://disqus.com/embed/comments/?base=default&amp;version=4da460f0526b0a9d10229841b9e13ea9&amp;f=elibenderskyswebsite&amp;t_i=framing-in-serial-communications&amp;t_u=http%3A%2F%2Feli.thegreenplace.net%2F2009%2F08%2F12%2Fframing-in-serial-communications&amp;t_d=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;t_t=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;s_o=default&amp;l=en#" class="vote-up  count-0" data-action="upvote" title="Vote up">
+
+<span class="updatable count" data-role="likes">0</span>
+<span class="control"><i aria-hidden="true" class="icon icon-arrow-2"></i></span>
+</a>
+<span role="button" class="vote-down  count-0" data-action="downvote" title="Vote down">
+
+<span class="control"><i aria-hidden="true" class="icon icon-arrow"></i></span>
+</span>
+</li>
+<li class="bullet" aria-hidden="true">•</li>
+
+
+<li class="reply" data-role="reply-link">
+<a href="https://disqus.com/embed/comments/?base=default&amp;version=4da460f0526b0a9d10229841b9e13ea9&amp;f=elibenderskyswebsite&amp;t_i=framing-in-serial-communications&amp;t_u=http%3A%2F%2Feli.thegreenplace.net%2F2009%2F08%2F12%2Fframing-in-serial-communications&amp;t_d=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;t_t=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;s_o=default&amp;l=en#" data-action="reply">
+<i class="icon icon-mobile icon-reply"></i><span class="text">Reply</span></a></li>
+<li class="bullet" aria-hidden="true">•</li>
+
+
+<li class="share">
+<a class="toggle"><i class="icon icon-mobile icon-share"></i><span class="text">Share ›</span></a>
+<ul>
+<li class="twitter"><a href="https://disqus.com/embed/comments/?base=default&amp;version=4da460f0526b0a9d10229841b9e13ea9&amp;f=elibenderskyswebsite&amp;t_i=framing-in-serial-communications&amp;t_u=http%3A%2F%2Feli.thegreenplace.net%2F2009%2F08%2F12%2Fframing-in-serial-communications&amp;t_d=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;t_t=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;s_o=default&amp;l=en#" data-action="share:twitter">Twitter</a></li>
+<li class="facebook"><a href="https://disqus.com/embed/comments/?base=default&amp;version=4da460f0526b0a9d10229841b9e13ea9&amp;f=elibenderskyswebsite&amp;t_i=framing-in-serial-communications&amp;t_u=http%3A%2F%2Feli.thegreenplace.net%2F2009%2F08%2F12%2Fframing-in-serial-communications&amp;t_d=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;t_t=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;s_o=default&amp;l=en#" data-action="share:facebook">Facebook</a></li>
+<li class="link"><a href="http://disq.us/p/102viz0">Link</a></li>
+</ul>
+</li>
+
+<li class="realtime" data-role="realtime-notification:2181612492">
+<span style="display:none;" class="realtime-replies"></span>
+<a style="display:none;" href="https://disqus.com/embed/comments/?base=default&amp;version=4da460f0526b0a9d10229841b9e13ea9&amp;f=elibenderskyswebsite&amp;t_i=framing-in-serial-communications&amp;t_u=http%3A%2F%2Feli.thegreenplace.net%2F2009%2F08%2F12%2Fframing-in-serial-communications&amp;t_d=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;t_t=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;s_o=default&amp;l=en#" class="btn btn-small"></a>
+</li>
+
+</menu>
+</footer>
+</div>
+
+<div data-role="blacklist-form"></div>
+<div class="reply-form-container" data-role="reply-form"></div>
+</div>
+
+<ul data-role="children" class="children"></ul>
+
+</li><li class="post" id="post-2503783276"><div role="alert"></div>
+<div data-role="post-content" class="post-content">
+<ul class="post-menu dropdown" data-role="menu">
+<li class="collapse">
+<a href="https://disqus.com/embed/comments/?base=default&amp;version=4da460f0526b0a9d10229841b9e13ea9&amp;f=elibenderskyswebsite&amp;t_i=framing-in-serial-communications&amp;t_u=http%3A%2F%2Feli.thegreenplace.net%2F2009%2F08%2F12%2Fframing-in-serial-communications&amp;t_d=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;t_t=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;s_o=default&amp;l=en#" data-action="collapse" title="Collapse"><span>−</span></a>
+</li>
+<li class="expand">
+<a href="https://disqus.com/embed/comments/?base=default&amp;version=4da460f0526b0a9d10229841b9e13ea9&amp;f=elibenderskyswebsite&amp;t_i=framing-in-serial-communications&amp;t_u=http%3A%2F%2Feli.thegreenplace.net%2F2009%2F08%2F12%2Fframing-in-serial-communications&amp;t_d=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;t_t=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;s_o=default&amp;l=en#" data-action="collapse" title="Expand"><span>+</span></a>
+</li>
+
+<li class="" role="menu">
+<a class="dropdown-toggle" href="https://disqus.com/embed/comments/?base=default&amp;version=4da460f0526b0a9d10229841b9e13ea9&amp;f=elibenderskyswebsite&amp;t_i=framing-in-serial-communications&amp;t_u=http%3A%2F%2Feli.thegreenplace.net%2F2009%2F08%2F12%2Fframing-in-serial-communications&amp;t_d=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;t_t=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;s_o=default&amp;l=en#" data-action="flag" data-role="flag" title="Flag as inappropriate">
+<i aria-hidden="true" class="icon icon-flag"></i>
+</a>
+</li>
+</ul>
+<div class="indicator"></div>
+
+<div class="avatar hovercard">
+<a href="https://disqus.com/by/a3f/" class="user" data-action="profile" data-username="a3f">
+<img data-role="user-avatar" data-user="142878856" src="./noavatar92.png" alt="Avatar">
+</a>
+</div>
+<div class="post-body">
+<header>
+<span class="post-byline">
+<span class="author publisher-anchor-color"><a href="https://disqus.com/by/a3f/" data-action="profile" data-username="a3f" data-role="username">a3f</a></span>
+
+</span>
+
+<span class="post-meta">
+<span class="bullet time-ago-bullet" aria-hidden="true">•</span>
+
+<a href="http://eli.thegreenplace.net/2009/08/12/framing-in-serial-communications#comment-2503783276" data-role="relative-time" class="time-ago" title="Monday, February 8, 2016 11:09 PM">
+5 months ago
+</a>
+</span>
+
+</header>
+
+<div class="post-body-inner">
+<div class="post-message-container" data-role="message-container">
+<div class="publisher-anchor-color" data-role="message-content">
+<div class="post-message " data-role="message" dir="auto">
+<p>XOR-ing allows a participant to identify frames by only listening for STX/ETX. Otherwise, it would need to account for DLEs too, because the user data might contain an escaped STX/ETX.</p>
+</div>
+
+<span class="post-media"><ul data-role="post-media-list"></ul></span>
+</div>
+</div>
+<a class="see-more hidden" title="see more" data-action="see-more">see more</a>
+</div>
+
+<footer>
+<menu>
+
+<li class="voting" data-role="voting">
+<a href="https://disqus.com/embed/comments/?base=default&amp;version=4da460f0526b0a9d10229841b9e13ea9&amp;f=elibenderskyswebsite&amp;t_i=framing-in-serial-communications&amp;t_u=http%3A%2F%2Feli.thegreenplace.net%2F2009%2F08%2F12%2Fframing-in-serial-communications&amp;t_d=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;t_t=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;s_o=default&amp;l=en#" class="vote-up  count-0" data-action="upvote" title="Vote up">
+
+<span class="updatable count" data-role="likes">0</span>
+<span class="control"><i aria-hidden="true" class="icon icon-arrow-2"></i></span>
+</a>
+<span role="button" class="vote-down  count-0" data-action="downvote" title="Vote down">
+
+<span class="control"><i aria-hidden="true" class="icon icon-arrow"></i></span>
+</span>
+</li>
+<li class="bullet" aria-hidden="true">•</li>
+
+
+<li class="reply" data-role="reply-link">
+<a href="https://disqus.com/embed/comments/?base=default&amp;version=4da460f0526b0a9d10229841b9e13ea9&amp;f=elibenderskyswebsite&amp;t_i=framing-in-serial-communications&amp;t_u=http%3A%2F%2Feli.thegreenplace.net%2F2009%2F08%2F12%2Fframing-in-serial-communications&amp;t_d=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;t_t=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;s_o=default&amp;l=en#" data-action="reply">
+<i class="icon icon-mobile icon-reply"></i><span class="text">Reply</span></a></li>
+<li class="bullet" aria-hidden="true">•</li>
+
+
+<li class="share">
+<a class="toggle"><i class="icon icon-mobile icon-share"></i><span class="text">Share ›</span></a>
+<ul>
+<li class="twitter"><a href="https://disqus.com/embed/comments/?base=default&amp;version=4da460f0526b0a9d10229841b9e13ea9&amp;f=elibenderskyswebsite&amp;t_i=framing-in-serial-communications&amp;t_u=http%3A%2F%2Feli.thegreenplace.net%2F2009%2F08%2F12%2Fframing-in-serial-communications&amp;t_d=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;t_t=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;s_o=default&amp;l=en#" data-action="share:twitter">Twitter</a></li>
+<li class="facebook"><a href="https://disqus.com/embed/comments/?base=default&amp;version=4da460f0526b0a9d10229841b9e13ea9&amp;f=elibenderskyswebsite&amp;t_i=framing-in-serial-communications&amp;t_u=http%3A%2F%2Feli.thegreenplace.net%2F2009%2F08%2F12%2Fframing-in-serial-communications&amp;t_d=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;t_t=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;s_o=default&amp;l=en#" data-action="share:facebook">Facebook</a></li>
+<li class="link"><a href="http://disq.us/p/15eorjg">Link</a></li>
+</ul>
+</li>
+
+<li class="realtime" data-role="realtime-notification:2503783276">
+<span style="display:none;" class="realtime-replies"></span>
+<a style="display:none;" href="https://disqus.com/embed/comments/?base=default&amp;version=4da460f0526b0a9d10229841b9e13ea9&amp;f=elibenderskyswebsite&amp;t_i=framing-in-serial-communications&amp;t_u=http%3A%2F%2Feli.thegreenplace.net%2F2009%2F08%2F12%2Fframing-in-serial-communications&amp;t_d=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;t_t=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;s_o=default&amp;l=en#" class="btn btn-small"></a>
+</li>
+
+</menu>
+</footer>
+</div>
+
+<div data-role="blacklist-form"></div>
+<div class="reply-form-container" data-role="reply-form"></div>
+</div>
+
+<ul data-role="children" class="children"></ul>
+
+</li></ul>
+
+<div class="load-more" data-role="more" style="display:none">
+<a href="https://disqus.com/embed/comments/?base=default&amp;version=4da460f0526b0a9d10229841b9e13ea9&amp;f=elibenderskyswebsite&amp;t_i=framing-in-serial-communications&amp;t_u=http%3A%2F%2Feli.thegreenplace.net%2F2009%2F08%2F12%2Fframing-in-serial-communications&amp;t_d=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;t_t=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;s_o=default&amp;l=en#" data-action="more-posts" class="btn">Load more comments</a>
+</div>
+</div>
+
+</section>
+
+<div id="placement-bottom" data-tracking-area="discovery-south"><div class="post-list" style="height: 0px; visibility: hidden;"></div></div>
+
+<div id="footer" data-tracking-area="footer">
+<ul class="disqus-footer">
+<li class="logo disqus-footer__item"><a href="https://disqus.com/" rel="nofollow" title="Powered by Disqus">Powered by Disqus</a></li>
+<li id="thread-subscribe-button" class="email disqus-footer__item"> 
+<div class="default">
+<a href="https://disqus.com/embed/comments/?base=default&amp;version=4da460f0526b0a9d10229841b9e13ea9&amp;f=elibenderskyswebsite&amp;t_i=framing-in-serial-communications&amp;t_u=http%3A%2F%2Feli.thegreenplace.net%2F2009%2F08%2F12%2Fframing-in-serial-communications&amp;t_d=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;t_t=Framing%20in%20serial%20communications%20-%20Eli%20Bendersky%27s%20website&amp;s_o=default&amp;l=en#" rel="nofollow" data-action="subscribe" title="Subscribe and get email updates from this discussion"><i aria-hidden="true" class="icon icon-mail"></i><span class="clip">Subscribe</span> <i aria-hidden="true" class="icon icon-checkmark"></i></a>
+</div>
+<div class="form">
+<div class="input-wrapper"><input id="thread-subscribe-email" type="email" placeholder="yourname@email.com"></div>
+</div>
+</li>
+<li class="install disqus-footer__item">
+<a href="https://publishers.disqus.com/engage?utm_source=elibenderskyswebsite&amp;utm_medium=Disqus-Footer" rel="nofollow" target="_blank">
+<i aria-hidden="true" class="icon icon-disqus"></i>
+<span class="clip hidden-sm">Add Disqus to your site</span>
+<span class="clip visible-sm hidden-xs">Add Disqus</span>
+<span class="clip visible-xs">Add</span>
+</a>
+</li>
+<li class="privacy disqus-footer__item">
+<a href="https://help.disqus.com/customer/portal/articles/1657951?utm_source=disqus&amp;utm_medium=embed-footer&amp;utm_content=privacy-btn" rel="nofollow" target="_blank">
+<i aria-hidden="true" class="icon icon-lock"></i>
+<span class="clip">Privacy</span>
+</a>
+</li>
+</ul>
+</div>
+</div></body></html>

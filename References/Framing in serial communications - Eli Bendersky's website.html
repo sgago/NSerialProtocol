@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<!-- saved from url=(0072)http://eli.thegreenplace.net/2009/08/12/framing-in-serial-communications -->
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:og="http://ogp.me/ns#" xmlns:fb="https://www.facebook.com/2008/fbml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Framing in serial communications - Eli Bendersky's website</title>
+    <!-- Using the latest rendering mode for IE -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link href="http://eli.thegreenplace.net/favicon.ico" rel="icon">
+
+    <!-- Bootstrap -->
+        <link rel="stylesheet" href="./Framing in serial communications - Eli Bendersky&#39;s website_files/bootstrap.min.css" type="text/css">
+    <link href="./Framing in serial communications - Eli Bendersky&#39;s website_files/font-awesome.min.css" rel="stylesheet">
+
+    <link href="./Framing in serial communications - Eli Bendersky&#39;s website_files/vs.css" rel="stylesheet">
+    <link rel="stylesheet" href="./Framing in serial communications - Eli Bendersky&#39;s website_files/style.css" type="text/css">
+
+        <link href="http://eli.thegreenplace.net/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Eli Bendersky&#39;s website ATOM Feed">
+
+<script async="" src="http://www.google-analytics.com/analytics.js"></script><script type="text/javascript" async="" src="./Framing in serial communications - Eli Bendersky&#39;s website_files/embed.js"></script><style type="text/css">:root #content > #center > .dose > .dosesingle,
+:root #content > #right > .dose > .dosesingle
+{display:none !important;}</style></head>
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="http://eli.thegreenplace.net/" class="navbar-brand">
+                <img src="./Framing in serial communications - Eli Bendersky&#39;s website_files/logosmall.png" width="32"> 
+Eli Bendersky's website            </a>
+        </div>
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="http://eli.thegreenplace.net/pages/about">
+                        <i class="fa fa-question"></i>
+                        <span class="icon-label">About</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="http://eli.thegreenplace.net/pages/code">
+                        <i class="fa fa-github"></i>
+                        <span class="icon-label">Code</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="http://eli.thegreenplace.net/archives/all">
+                        <i class="fa fa-th-list"></i>
+                        <span class="icon-label">Archives</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+</div> <!-- /.navbar -->
+
+<div class="container">
+    <div class="row">
+    <section id="content">
+        <article>
+            <header class="page-header">
+                <h1>
+                    <a href="http://eli.thegreenplace.net/2009/08/12/framing-in-serial-communications" rel="bookmark" title="Permalink to Framing in serial communications">
+                        Framing in serial communications 
+                    </a>
+                </h1>
+            </header>
+            <div class="entry-content">
+                <div class="panel">
+                    <div class="panel-body">
+<footer class="post-info">
+    <span class="published">
+        <i class="fa fa-calendar"></i>
+        <time> August 12, 2009 at 05:16</time>
+    </span>
+<span class="label label-default">Tags</span>
+    <a href="http://eli.thegreenplace.net/tag/articles">Articles</a>
+        ,
+    <a href="http://eli.thegreenplace.net/tag/ee-embedded">EE &amp; Embedded</a>
+        ,
+    <a href="http://eli.thegreenplace.net/tag/serial-port">Serial port</a>
+</footer><!-- /.post-info -->                    </div>
+                </div>
+                
+        <div class="section" id="introduction">
+<h3>Introduction</h3>
+<p>In the <a class="reference external" href="http://eli.thegreenplace.net/2009/08/07/a-live-data-monitor-with-python-pyqt-and-pyserial/">previous post</a> we've seen how to send and receive data on the serial port with Python and plot it live using a pretty GUI.</p>
+<p>Notice that the sender script (sender_sim.py) is just sending one byte at a time. The "chunks" of data in the protocol between the sender and receiver are single bytes. This is simple and convenient, but hardly sufficient in the general sense. We want to be able to send multiple-byte data frames between the communicating parties.</p>
+<p>However, there are some challenges that arise immediately:</p>
+<ul class="simple">
+<li>The receiver is just receiving a stream of bytes from the serial port. How does it know when a message begins or ends? How does it know how long the message is?</li>
+<li>Even more seriously, we can not assume a noise-free channel. This is real, physical hardware stuff. Bytes and whole chunks can and will be lost due to electrical noise. Worse, other bytes will be distorted (say, a single bit can be flipped due to noise).</li>
+</ul>
+<p>To see how this can be done in a safe and tested manner, we first have to learn about the basics of the Data Link Layer in computer networks.</p>
+</div>
+<div class="section" id="data-link-layer">
+<h3>Data Link Layer</h3>
+<p>Given a physical layer that can transmit signals between devices, the job of the Data Link Layer <a class="footnote-reference" href="http://eli.thegreenplace.net/2009/08/12/framing-in-serial-communications#id9" id="id1">[1]</a> is (roughly stated) to transmit whole frames of data, with some means of assuring the integrity of the data (lack of errors). When we use sockets to communicate over TCP or UDP on the internet, the framing is taken care of deep in the hardware, and we don't even feel it. On the serial port, however, we must take care of the framing and error handling ourselves <a class="footnote-reference" href="http://eli.thegreenplace.net/2009/08/12/framing-in-serial-communications#id10" id="id2">[2]</a>.</p>
+<div class="section" id="framing">
+<h4>Framing</h4>
+<p>In chapter 3 of his <a class="reference external" href="http://eli.thegreenplace.net/2009/08/08/book-review-computer-networks-4th-edition-by-andrew-tanenbaum/">"Computer Networks"</a> textbook, Tanenbaum defines the following methods of framing:</p>
+<ol class="arabic simple">
+<li>Inserting time gaps between frames</li>
+<li>Physical layer coding violations</li>
+<li>Character count</li>
+<li>Flag bytes with byte stuffing</li>
+<li>Flag bytes with bit stuffing</li>
+</ol>
+<p>Methods (1) and (2) are only suitable for a hardware-implemented data link layer <a class="footnote-reference" href="http://eli.thegreenplace.net/2009/08/12/framing-in-serial-communications#id11" id="id3">[3]</a>. It is very difficult (read: impossible) to ensure timing when multiple layers of software (running on Windows!) are involved. (2) is an interesting hardware method - but out of the scope of this article.</p>
+<p>Method (3) means specifying in the frame header the number of bytes in the frame. The trouble with this is that the count can be garbled by a transmission error. In such a case, it's very difficult to "resynchronize". This method is rarely used.</p>
+<p>Methods (4) and (5) are somewhat similar. In this article I'll focus on (4), as (5) is not suitable for serial port communications.</p>
+</div>
+<div class="section" id="flag-bytes-with-byte-stuffing">
+<h4>Flag bytes with byte stuffing</h4>
+<p>Let's begin with a simple idea and develop it into a full, robust scheme.</p>
+<p><em>Flag bytes</em> are special byte values that denote when a frame begins and ends. Suppose that we want to be able to send frames of arbitrary length. A special start flag byte will denote the beginning of the frame, and an end flag byte will denote its end.</p>
+<img src="./Framing in serial communications - Eli Bendersky&#39;s website_files/flags_data.png">
+<p>A question arises, however. Suppose that the value of the end flag is 0x98. What if the value 0x98 appears somewhere in the data? The protocol will get confused and end the message.</p>
+<p>There is a simple solution to this problem that will be familiar to all programmers who know about escaping quotes and special characters in strings. It is called <em>byte stuffing</em>, or <em>octet stuffing</em>, or simply <em>escaping</em> <a class="footnote-reference" href="http://eli.thegreenplace.net/2009/08/12/framing-in-serial-communications#id12" id="id4">[4]</a>. The scheme goes as follows:</p>
+<ul class="simple">
+<li>Whenever a flag (start or end) byte appears in the data, we shall insert a special escape byte (ESC) before it. When the receiver sees an ESC, it knows to ignore it and not insert it into the actual data received (de-stuffing).</li>
+<li>Whenever ESC itself has to appear in the data, another ESC is prepended to it. The receiver removes the first one but keeps the second one <a class="footnote-reference" href="http://eli.thegreenplace.net/2009/08/12/framing-in-serial-communications#id13" id="id5">[5]</a>.</li>
+</ul>
+<p>Here are a few examples:</p>
+<img src="./Framing in serial communications - Eli Bendersky&#39;s website_files/escaping.png">
+<p>Note that we didn't specify what the data is - it's arbitrary and up the the protocol to decide. The only really required part of the data is some kind of error checking - a checksum, or better yet a CRC. This is customarily the last byte (or last word) of the frame, referring to all the bytes in the frame (in its un-stuffed form).</p>
+<p>This scheme is quite robust: any lost byte (be it a flag, an escape, a data byte or a checksum byte) will cause the receiver to lose just one frame, after which it will resynchronize onto the start flag byte of the next one.</p>
+</div>
+<div class="section" id="ppp">
+<h4>PPP</h4>
+<p>As a matter of fact, this method is a slight simplification of the <a class="reference external" href="http://en.wikipedia.org/wiki/Point-to-Point_Protocol">Point-to-Point Protocol</a> (PPP) which is used by most ISPs for providing ADSL internet to home users, so there's a good chance you're using it now to surf the net and read this article! The framing of PPP is defined in <a class="reference external" href="http://tools.ietf.org/html/rfc1662">RFC 1662</a>.</p>
+<p>In particular, PPP does the following:</p>
+<ul class="simple">
+<li>Both the start and end flag bytes are 0x7E (they shouldn't really be different, if you think about it)</li>
+<li>The escape byte is 0x7D</li>
+<li>Whenever a flag or escape byte appears in the message, it is escaped by 0x7D and the byte itself is XOR-ed with 0x20. So, for example 0x7E becomes 0x7D 0x5E. Similarly 0x7D becomes 0x7D 0x5D. The receiver unsuffs the escape byte and XORs the next byte with 0x20 again to get the original <a class="footnote-reference" href="http://eli.thegreenplace.net/2009/08/12/framing-in-serial-communications#id14" id="id6">[6]</a>.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="an-example">
+<h3>An example</h3>
+<p>Let's now see a completely worked-out example that demonstrates how this works.</p>
+<p>Suppose we define the following protocol:</p>
+<ul class="simple">
+<li>Start flag: 0x12</li>
+<li>End flag: 0x13</li>
+<li>Escape (DLE): 0x7D</li>
+</ul>
+<p>And the sender wants to send the following data message (let's ignore its contents for the sake of the example - they're really not that important). The original data is in <strong>(a)</strong>:</p>
+<img src="./Framing in serial communications - Eli Bendersky&#39;s website_files/example1.png">
+<p>The data contains two flags that need to be escaped - an end flag at position 2 (counting from 0, of course!), and a DLE at position 4.</p>
+<p>The sender's data link layer <a class="footnote-reference" href="http://eli.thegreenplace.net/2009/08/12/framing-in-serial-communications#id15" id="id7">[7]</a> turns the data into the frame shown in <strong>(b)</strong> - start and end flags are added, and in-message flags are escaped.</p>
+<p>Let's see how the receiver handles such a frame. For demonstration, assume that the first byte the receiver draws from the serial port is not a real part of the message (we want to see how it handles this). In the following diagram, 'Receiver state' is the state of the receiver <em>after</em> the received byte. 'Data buffer' is the currently accumulated message buffer to pass to an upper level:</p>
+<img src="./Framing in serial communications - Eli Bendersky&#39;s website_files/example1_rcv.png">
+<p>A few things to note:</p>
+<ul class="simple">
+<li>The "stray" byte before the header is ignored: according to the protocol each frame has to start with a header, so this isn't part of the frame.</li>
+<li>The start and end flags are not inserted into the data buffer</li>
+<li>Escapes (DLEs) are correctly handled by a special state</li>
+<li>When the frame is finished with an end flag, the receiver has a frame ready to pass to an upper level, and comes back waiting for a header - a new frame.</li>
+</ul>
+<p>Finally, we see that the message received is exactly the message sent. All the protocol details (flags, escapes and so on) were transparently handled by the data link layer <a class="footnote-reference" href="http://eli.thegreenplace.net/2009/08/12/framing-in-serial-communications#id16" id="id8">[8]</a>.</p>
+</div>
+<div class="section" id="conclusion">
+<h3>Conclusion</h3>
+<p>There are several methods of handling framing in communications, although most are unsuitable to be used on top of the serial port. Among the ones that are suitable, the most commonly used is <em>byte stuffing</em>. By defining a couple of "magic value" flags and careful rules of escaping, this framing methods is both robust and easy to implement as a software layer. It is also widely used as PPP depends on it.</p>
+<p>Finally, it's important to remember that for a high level of robustness, it's required to add some kind of error checking into the protocol - such as computing a CRC on the message and appending it as the last word of the message, which the receiver can verify before deciding that the message is valid.</p>
+<div align="center" class="align-center"><img class="align-center" src="./Framing in serial communications - Eli Bendersky&#39;s website_files/hline.jpg" style="width: 320px; height: 5px;"></div>
+<table class="docutils footnote" frame="void" id="id9" rules="none">
+<colgroup><col class="label"><col></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="http://eli.thegreenplace.net/2009/08/12/framing-in-serial-communications#id1">[1]</a></td><td>The Data Link Layer is layer 2 in the <a class="reference external" href="http://en.wikipedia.org/wiki/OSI_model">OSI model</a>. In the <a class="reference external" href="http://en.wikipedia.org/wiki/TCP/IP_model">TCP/IP model</a> it's simply called the "link layer".</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id10" rules="none">
+<colgroup><col class="label"><col></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="http://eli.thegreenplace.net/2009/08/12/framing-in-serial-communications#id2">[2]</a></td><td>The serial port can be configured to add parity bits to bytes. These days, this option is rarely used, because:</td></tr>
+</tbody>
+</table>
+<ul class="simple">
+<li>A single parity bit isn't a very strong means of detecting errors. 2-bit errors fool it.</li>
+<li>Error handling is usually done by stronger means at a higher level.</li>
+</ul>
+<table class="docutils footnote" frame="void" id="id11" rules="none">
+<colgroup><col class="label"><col></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="http://eli.thegreenplace.net/2009/08/12/framing-in-serial-communications#id3">[3]</a></td><td>For example Ethernet (802.3) uses 12 octets of idle characters between frames.</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id12" rules="none">
+<colgroup><col class="label"><col></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="http://eli.thegreenplace.net/2009/08/12/framing-in-serial-communications#id4">[4]</a></td><td>You might run into the term DLE - Data Link Escape, which means the same thing. I will use the acronyms DLE and ESC interchangeably.</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id13" rules="none">
+<colgroup><col class="label"><col></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="http://eli.thegreenplace.net/2009/08/12/framing-in-serial-communications#id5">[5]</a></td><td>Just like quotes and escape characters in strings! In C: <tt class="docutils literal"><span class="pre">"I</span> <span class="pre">say</span> <span class="pre">\"Hello\""</span></tt>. To escape the escape, repeat it: <tt class="docutils literal"><span class="pre">"Here</span> <span class="pre">comes</span> <span class="pre">the</span> <span class="pre">backslash:</span> <span class="pre">\\</span> <span class="pre">-</span> <span class="pre">seen</span> <span class="pre">it?"</span></tt></td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id14" rules="none">
+<colgroup><col class="label"><col></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="http://eli.thegreenplace.net/2009/08/12/framing-in-serial-communications#id6">[6]</a></td><td>I'd love to hear why this XOR-ing is required. One simple reason I can think of is to prevent the flag and escape bytes appearing "on the line" even after they're escaped. Presumably this improves resynchronization if the escape byte is lost?</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id15" rules="none">
+<colgroup><col class="label"><col></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="http://eli.thegreenplace.net/2009/08/12/framing-in-serial-communications#id7">[7]</a></td><td>Which is just a fancy way to say "a protocol wrapping function", since the layer is implemented in software.</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id16" rules="none">
+<colgroup><col class="label"><col></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="http://eli.thegreenplace.net/2009/08/12/framing-in-serial-communications#id8">[8]</a></td><td>Such transparency is one of the greatest ideas of layered network protocols. So when we implement protocols in software, it's a good thing to keep in mind - transparency aids modularity and decoupling, it's a <em>good thing</em>.</td></tr>
+</tbody>
+</table>
+</div>
+
+    
+            </div>
+            <!-- /.entry-content -->
+
+    <hr>
+    <section class="comments" id="comments">
+        <h2>Comments</h2>
+        <div id="disqus_thread"><iframe id="dsq-app2" name="dsq-app2" allowtransparency="true" frameborder="0" scrolling="no" tabindex="0" title="Disqus" width="100%" src="./Framing in serial communications - Eli Bendersky&#39;s website_files/saved_resource.html" style="width: 1px !important; min-width: 100% !important; border: none !important; overflow: hidden !important; height: 511px !important;" horizontalscrolling="no" verticalscrolling="no"></iframe></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'elibenderskyswebsite'; // required: replace example with your forum shortname
+            var disqus_identifier = 'framing-in-serial-communications';
+            var disqus_url = 'http://eli.thegreenplace.net/2009/08/12/framing-in-serial-communications';
+            var disqus_config = function () {
+                this.language = "en";
+            };
+
+            /* * * DON'T EDIT BELOW THIS LINE * * */
+            (function () {
+                var dsq = document.createElement('script');
+                dsq.type = 'text/javascript';
+                dsq.async = true;
+                dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();
+        </script>
+        <noscript>Please enable JavaScript to view the &lt;a href="http://disqus.com/?ref_noscript"&gt;comments powered by
+            Disqus.&lt;/a&gt;</noscript>
+        
+
+    </section>
+        </article>
+    </section>
+
+    </div>
+</div>
+<footer>
+   <div class="container">
+      <hr>
+      <div class="row">
+         <div class="col-xs-10">
+            © 2003-2016 Eli Bendersky
+         </div>
+         <div class="col-xs-2"><p class="pull-right"><i class="fa fa-arrow-up"></i> <a href="http://eli.thegreenplace.net/2009/08/12/framing-in-serial-communications#">Back to top</a></p></div>
+      </div>
+   </div>
+</footer>
+<script src="./Framing in serial communications - Eli Bendersky&#39;s website_files/jquery-2.1.1.min.js"></script>
+
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="./Framing in serial communications - Eli Bendersky&#39;s website_files/bootstrap.min.js"></script>
+
+<!-- Enable responsive features in IE8 with Respond.js (https://github.com/scottjehl/Respond) -->
+<script src="./Framing in serial communications - Eli Bendersky&#39;s website_files/respond.min.js"></script>
+
+<script type="text/javascript">
+
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-54426790-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+</body></html>

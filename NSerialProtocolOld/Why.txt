@@ -1,0 +1,167 @@
+﻿Problem 1: .NET libraries fails to clear the fAbortOnError flag when opening the serial port.  This causes
+	a) Mysterious behavior that changes based on when the computer is restarted and what programs are run
+	b) Unexplained IOExceptions
+Problem 2a: Someone has posted a fix to Problem 1; however, IMHO, it could be better.  Rewriting it will
+	make it cleaner and easier to use.
+Problem 2b: The fix to Problem 1 lacks unit testing.  I like unit testing.
+Problem 3: There does not appear to be any great solutions to serial communications online.
+	I've written like 7+ serial port routines and have, IMO, an elegant solution to it.
+	a) I have an elegant function for synchronous/asynchronous serial communications
+	b) The solution is simple and it works
+	c) I can provide great examples of how to use it
+		1) By itself
+		2) With WPF
+Problem 4: There is a lack of good serial communication code on the internet with tutorials.
+Problem 5: The fix is arcane, yet extremely useful.  It should not be forgotten.
+Problem 6: Current SerialPort library is hard to use with WPF.  Especially if one wants HyperTerminal like components.
+Problem 7: Unit testing hardware is irritating.  The new code could fix that.
+
+
+
+
+What do programmers want for a solution?
+	A functioning solution.
+	Simple solution to problem.
+	Explanations.
+	Examples.
+	Good commenting.
+	Unit tests verifying the code's suitability for its intended use.
+	Deep integration tests.
+	A choice of how much code to use.  They should be able to choose how much code they want.
+	Expandable.  They can change it easily.
+
+How will the solution look?
+	A project with the simple fix and serial port niceties.
+	A separate project with unit tests.
+	A separate project with simple exmaple.
+	A separate project with WPF examples.
+	A static Kernel32 class that wraps unmanged kernel32.dll calls.
+	Will take a dependency to SerialPort.  Unit testing my code becomes trivial.
+
+What do I need to figure out?
+	Should we check for "COMXY" for the port name?
+		(No, Microsoft's libraries will do that.  It's the programmer's job and MS's, not mine.)
+	Should we use partial for the SerialPortEx class?  This is prettttty minor.
+		(If yes, does it appear that I'm hiding something?)
+		(If no, how does partial make things clearer?  Hint: I think it doesn't.)
+		I think yes, it is hiding stuff - so lets not do that
+
+
+TODO:
+Should we be setting the DCB fAbortOnError flag when we set the port name?
+Should the constructor be clearing the DCB fAbortOnError flag?
+Should events be using EventHandler<T> or delegates + event?
+
+GitHub
+README.txt
+Class library, simple
+Class library, WPF?
+Mailing lists through Google Groups
+	NSerialPort_Users
+	NSerialPort_Devs
+Simple Example
+	Demonstrate turning on Dtr Cts lines on how that may help
+	Demonstrate always listening, always talking, full communication
+	Demonstrate how to make could for Automated
+WPF Example
+Unit tests
+Profile message parsing code.  Look at IL to determine efficency.
+Markdown
+	Brief intro para
+	About
+	Why bother using
+	Where to get a copy
+	Pros and cons of NSerialPort
+	When to use NSerialPort
+Announcements, Facebook, Twitter, website, etc.
+Thanks to Zach Saw
+
+
+
+We can implement a software loopback for testing...or whatever
+
+
+
+
+ISerialPort sp = SerialPort();
+SerialPortEx spex = SerialPortEx(sp);
+
+
+using NCrc.CyclicRedundancyChecks;
+using NUnit.Framework;
+using System.Collections;
+using System.Text;
+
+namespace CrcUnitTests
+{
+    [TestFixture]
+    public class Checksum8UnitTests
+    {
+        public static IEnumerable Encodings
+        {
+            get
+            {
+                yield return Encoding.ASCII;
+                yield return Encoding.UTF8;
+                yield return Encoding.UTF32;
+                yield return Encoding.Unicode;
+            }
+        }
+
+        private static string GetEncodedString(string value, Encoding encoding)
+        {
+            return encoding.GetString(Encoding.Convert(Encoding.Unicode, encoding, encoding.GetBytes(value)));
+        }
+
+        public static IEnumerable Checksum8_Calculate_TestCases
+        {
+            get
+            {
+                foreach (Encoding encoding in Encodings)
+                {
+                    yield return new TestCaseData(GetEncodedString(string.Empty, encoding), encoding).Returns((byte)0);
+                }
+
+                yield return new TestCaseData(GetEncodedString("a", Encoding.ASCII), Encoding.ASCII).Returns((byte)97);
+                yield return new TestCaseData(GetEncodedString("a", Encoding.UTF8), Encoding.UTF8).Returns((byte)97);
+                yield return new TestCaseData(GetEncodedString("a", Encoding.UTF32), Encoding.UTF32).Returns((byte)97);
+                yield return new TestCaseData(GetEncodedString("a", Encoding.Unicode), Encoding.Unicode).Returns((byte)97);
+
+                yield return new TestCaseData(GetEncodedString("aaa", Encoding.ASCII), Encoding.ASCII).Returns((byte)35);
+                yield return new TestCaseData(GetEncodedString("aaa", Encoding.UTF8), Encoding.UTF8).Returns((byte)35);
+                yield return new TestCaseData(GetEncodedString("aaa", Encoding.UTF32), Encoding.UTF32).Returns((byte)35);
+                yield return new TestCaseData(GetEncodedString("aaa", Encoding.Unicode), Encoding.Unicode).Returns((byte)35);
+            }
+        }
+
+        [TestCaseSource(nameof(Checksum8_Calculate_TestCases))]
+        public byte Checksum8_Calculate_Test(string value, Encoding encoding)
+        {
+            return new Checksum8().Calculate(value, encoding);
+        }
+    }
+}
+
+
+        // Use pre-canned message structures/protocols/whatever
+        //    NSerialPort.Messages.StartWith("|");            Params = starting string or character
+        //    NSerialPort.Messages.EndWith("\r\n");           Params = ending string or character
+        //    NSerialPort.Messages.FixedLength(10);           Params = the exact message length
+        //    NSerialPort.Messages.LengthAt<T>(1);            Params = Index of the length data, T = length data type (int, byte, short, whatever)
+        //    NSerialPort.Messages.CrcAt(2, CRC.32, false);   Params = Index of the CRC, CRC type, and whether to CRC is at start or end of message
+        //    NserialPort.Messages.CustomCrc(ICrc crc);       Params = Define a custom CRC
+
+        // Or define your own
+        //    NSerialPort.Messages.Custom = IList<string> ParseMessages(StringBuilder inputBuffer);
+
+        // Tell NSerialPort how it can work better
+        //    NSerialPort.InputBuffer.Capacity = 100;
+        //    NSerialPort.InputBuffer.MaxCapacity = 200;
+
+
+		// TODO: Tranceive = Transmit + Receive
+        // public string Tranceive(string text, byte[] buffer, int offset, int count, int timeout = 200, int retries = 0)
+        // public string Tranceive(string text, char[] buffer, int offset, int count, int timeout = 200, int retries = 0)
+        // public string TranceiveTo(string text, string value, int timeout = 200, int retries = 0);
+        // public string TranceiveLine(string text, int timeout = 200, int retries = 0);
+        // public string TranceivePacket(string text, int timeout = 200, int retries = 0);

@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{C62D822F-87D0-4629-9730-6EB3A89442A5}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>NSerialProtocol</RootNamespace>
+    <AssemblyName>NSerialProtocol</AssemblyName>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="protobuf-net, Version=2.4.0.0, Culture=neutral, PublicKeyToken=257b51d87d2e4d67, processorArchitecture=MSIL">
+      <HintPath>..\packages\protobuf-net.2.4.0\lib\net40\protobuf-net.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="EventArgs\FrameErrorReceivedEventArgs.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="FrameParsers\EndFlagFrameParser.cs" />
+    <Compile Include="EventArgs\SerialFrameReceivedEventArgs.cs" />
+    <Compile Include="FrameParsers\SerialFrameErrorEventHandler.cs" />
+    <Compile Include="FrameParsers\SerialFrameReceivedEventHandler.cs" />
+    <Compile Include="SerialPacketParser.cs" />
+    <Compile Include="PacketParsers\EndFlagPacketParser.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="NSerialProtocol.cs" />
+    <Compile Include="Attributes\SerialPacketLengthAttribute.cs" />
+    <Compile Include="Attributes\SerialPacketErrorCorrectionCodeAttribute.cs" />
+    <Compile Include="Attributes\SerialPacketPayloadAttribute.cs" />
+    <Compile Include="SerialPacket.cs" />
+    <Compile Include="SerialFrameParser.cs" />
+    <Compile Include="EventArgs\SerialPacketReceivedEventArgs.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\NCobs\NByteStuff.csproj">
+      <Project>{a4c4f6f3-b97f-4a05-b13b-fc2b0d6dc930}</Project>
+      <Name>NByteStuff</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NFec\NFec.csproj">
+      <Project>{3ce276a5-65ee-4b05-96d8-2f034997455c}</Project>
+      <Name>NFec</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NSerialPort\NSerialPort.csproj">
+      <Project>{e877e876-42e5-4a10-8228-6c6b6e412ec5}</Project>
+      <Name>NSerialPort</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SerialPortFix\SerialPortFix.csproj">
+      <Project>{1AA928C0-EDC0-41E4-8D9F-F4C45018B52C}</Project>
+      <Name>SerialPortFix</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

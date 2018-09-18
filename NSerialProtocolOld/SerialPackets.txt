@@ -1,0 +1,33 @@
+﻿
+
+Message protcols that exist:
+1. Messages that end with a special character
+2. Messages that start and end with a special character
+3. Messages that tell how long they are
+4. Messages that contain CRC check
+5. Any combination of the above
+
+StartsWith("\a").EndsWith("\r\n").LengthStartsAt(1).CheckAt(4)
+
+
+.StartsWith(string/char/char[]/etc)
+.EndsWith(string/char/char[]/etc)
+.LengthStartsAt(index, bytes that describe length of message)
+.[Fec/Eec]StartsAt(index, bytes of error check)
+
+
+Message.StartsWith<byte>(1)
+
+
+
+NSerialPort.SerialPackets.StartWith("|").EndWith("\r\n");
+
+NSerialPort.SerialPackets.Custom(Regex regex);
+NSerialPort.SerialPackets.Custom(Func func);
+
+Start character
+Message length byte/int
+End character
+
+
+1. End Character.
