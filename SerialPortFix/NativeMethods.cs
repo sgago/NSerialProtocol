@@ -109,7 +109,7 @@
         public readonly uint cbInQue;
 
         /// <summary>
-        /// THe number of bytes of user data remaining to be transmitted for all
+        /// The number of bytes of user data remaining to be transmitted for all
         /// write operations.  This value will be zero for a nonoverlapped write.
         /// </summary>
         public readonly uint cbOutQue;
@@ -366,7 +366,6 @@
         /// TCHARs stored in the output buffer, excluding the terminating null
         /// character.
         /// </returns>
-        //[DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         public static extern int FormatMessage(int dwFlags,
                                                HandleRef lpSource,
@@ -440,7 +439,6 @@
         /// access right.</param>
         /// <returns>If the function succeeds, the return value is an open handle to the specified
         /// file, device, named pipe, or mail slot.</returns>
-        //[DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         public static extern SafeFileHandle CreateFile(string lpFileName,
                                                        int dwDesiredAccess,

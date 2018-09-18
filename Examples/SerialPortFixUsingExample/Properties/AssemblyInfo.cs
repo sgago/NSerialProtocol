@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("NserialProtocolDemo")]
+[assembly: AssemblyTitle("SerialPortFixExample")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("NserialProtocolDemo")]
+[assembly: AssemblyProduct("SerialPortFixExample")]
 [assembly: AssemblyCopyright("Copyright ©  2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("ea706cb4-edf3-48da-ae97-3b2a3b98d3c4")]
+[assembly: Guid("d33a5d8c-78f0-4c58-b89d-2ac8196c97df")]
 
 // Version information for an assembly consists of the following four values:
 //
