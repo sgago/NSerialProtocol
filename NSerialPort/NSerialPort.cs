@@ -18,7 +18,7 @@
         /// <summary>
         /// Gets or sets the serial port object that is being wrapped.
         /// </summary>
-        private INSerialPort SerialPort { get; set; }
+        private ISerialPort SerialPort { get; set; }
 
         /// <summary>
         /// Represents a method that will handle the LineReceived event when
@@ -58,49 +58,18 @@
         /// </summary>
         public event NSerialLineReceivedEventHandler LineReceived;
 
-        //[Obsolete("This event has been overriden to avoid runtime errors." +
-        //          "Use the NSerialPort.DataReceived event which replaces this one.")]
-        //event SerialDataReceivedEventHandler INSerialPort.DataReceived
-        //{
-        //    add
-        //    {
-        //        // Does nothing to stop users from stealing (reading) data from
-        //        // the serial port before NSerialPort can read it.
-        //        // It has been replaced with the vastly superior NSerialPort.DataReceived event.
-        //    }
-
-        //    remove
-        //    {
-        //        // Does nothing
-        //    }
-        //}
-
         event NSerialLineReceivedEventHandler INSerialPort.LineReceived
         {
             add
             {
-                throw new NotImplementedException();
+                LineReceived += value;
             }
 
             remove
             {
-                throw new NotImplementedException();
+                LineReceived -= value;
             }
         }
-
-        event SerialDataReceivedEventHandler ISerialPort.DataReceived
-        {
-            add
-            {
-                throw new NotImplementedException();
-            }
-
-            remove
-            {
-                throw new NotImplementedException();
-            }
-        }
-
 
         /// <summary>
         /// Gets the underlying Stream object for a SerialPort object.
@@ -673,7 +642,7 @@
         /// </summary>
         public void Close()
         {
-            SerialPort.Close();
+            SerialPort?.Close();
             RaisePropertyChangedEvent(nameof(IsOpen));
         }
 
