@@ -9,8 +9,8 @@
     <ProjectGuid>{A4C4F6F3-B97F-4A05-B13B-FC2B0D6DC930}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NCobs</RootNamespace>
-    <AssemblyName>NCobs</AssemblyName>
+    <RootNamespace>NByteStuff</RootNamespace>
+    <AssemblyName>NByteStuff</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>
@@ -47,11 +47,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Algorithms\Cobs.cs" />
-    <None Include="Algorithms\Babs.cs" />
-    <None Include="Algorithms\CobsR.cs" />
-    <None Include="Algorithms\CobsZpe.cs" />
-    <None Include="Algorithms\Escape.cs" />
+    <Compile Include="Algorithms\Cobs.cs" />
+    <Compile Include="Algorithms\Babs.cs" />
+    <Compile Include="Algorithms\CobsR.cs" />
+    <Compile Include="Algorithms\CobsZpe.cs" />
+    <Compile Include="Algorithms\Escape.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="IByteStuff.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

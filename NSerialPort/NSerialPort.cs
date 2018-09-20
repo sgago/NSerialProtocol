@@ -6,13 +6,14 @@
     using System.IO.Ports;
     using System.Text;
     using System.Threading;
+    using global::NSerialPort.EventArgs;
     using NativeMethods;
     using SerialPortFix;
 
     /// <summary>
     /// Represents a serial port resource.
     /// </summary>
-    public class NSerialPort : ISerialPort, INotifyPropertyChanged, IDisposable
+    public class NSerialPort : INSerialPort, INotifyPropertyChanged, IDisposable
     {
         /// <summary>
         /// Gets or sets the serial port object that is being wrapped.
@@ -20,13 +21,55 @@
         private ISerialPort SerialPort { get; set; }
 
         /// <summary>
+        /// Represents a method that will handle the LineReceived event when
+        /// a line is read from the serial port.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">A SerialLineReceivedEventArgs that contains the event data.</param>
+        public delegate void NSerialLineReceivedEventHandler(object sender, NSerialLineReceivedEventArgs e);
+
+
+        public delegate void NSerialDataReceivedEventHandler(object sender, NSerialDataReceivedEventArgs e);
+
+        /// <summary>
         /// Occurs when a property value changes.
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public delegate void LineReceivedEventHandler(object sender, LineReceivedEventArgs e);
+        /// <summary>
+        /// Indicates that data has been received through a port represented by the SerialPort
+        /// object.
+        /// </summary>
+        public event NSerialDataReceivedEventHandler DataReceived;
 
-        public event LineReceivedEventHandler OnLineReceived;
+        /// <summary>
+        /// Indicates that an error has ocurred with a port represented by a SerialPort object.
+        /// </summary>
+        public event SerialErrorReceivedEventHandler ErrorReceived;
+
+        /// <summary>
+        /// Indicates that a non-data signal event has occurred on the port represented
+        /// by the SerialPort object.
+        /// </summary>
+        public event SerialPinChangedEventHandler PinChanged;
+
+        /// <summary>
+        /// Indicates that a line has been received on the serial port.
+        /// </summary>
+        public event NSerialLineReceivedEventHandler LineReceived;
+
+        event NSerialLineReceivedEventHandler INSerialPort.LineReceived
+        {
+            add
+            {
+                LineReceived += value;
+            }
+
+            remove
+            {
+                LineReceived -= value;
+            }
+        }
 
         /// <summary>
         /// Gets the underlying Stream object for a SerialPort object.
@@ -423,23 +466,6 @@
         }
 
         /// <summary>
-        /// Indicates that data has been received through a port represented by the SerialPort
-        /// object.
-        /// </summary>
-        public event SerialDataReceivedEventHandler DataReceived;
-
-        /// <summary>
-        /// Indicates that an error has ocurred with a port represented by a SerialPort object.
-        /// </summary>
-        public event SerialErrorReceivedEventHandler ErrorReceived;
-
-        /// <summary>
-        /// Indicates that a non-data signal event has occurred on the port represented
-        /// by the SerialPort object.
-        /// </summary>
-        public event SerialPinChangedEventHandler PinChanged;
-
-        /// <summary>
         /// Initializes a new instance of the SerialPort class using the specified
         /// port name, baud rate, parity bit, data bits, and stop bits.
         /// </summary>
@@ -467,7 +493,8 @@
             StopBits = stopBits;
 
             // Subscribe to SerialPort events so we can raise them from NSerialPort
-            SerialPort.DataReceived += RaiseDataReceivedEvent;
+
+            //SerialPort.DataReceived += SerialPortModel_DataReceived;
             SerialPort.ErrorReceived += RaiseErrorReceivedEvent;
             SerialPort.PinChanged += RaisePinChangedEvent;
         }
@@ -513,7 +540,7 @@
         /// </summary>
         /// <param name="sender">The sender of the event, which is the NSerialPort object.</param>
         /// <param name="e">The serial data received event data.</param>
-        protected void RaiseDataReceivedEvent(object sender, SerialDataReceivedEventArgs e)
+        protected void RaiseDataReceivedEvent(object sender, NSerialDataReceivedEventArgs e)
         {
             DataReceived?.Invoke(this, e);
         }
@@ -538,6 +565,17 @@
         protected void RaisePinChangedEvent(object sender, SerialPinChangedEventArgs e)
         {
             PinChanged?.Invoke(this, e);
+        }
+
+        /// <summary>
+        /// Raises the PinChanged event indicating that a non-data signal event has occurred
+        /// on the port represented by the NSerialPort object.
+        /// </summary>
+        /// <param name="sender">The sender of the event, which is the NSerialPort object.</param>
+        /// <param name="e">The serial pin changed event data.</param>
+        protected void RaiseLineReceivedEvent(object sender, NSerialLineReceivedEventArgs e)
+        {
+            LineReceived?.Invoke(this, e);
         }
 
         /// <summary>
@@ -604,7 +642,7 @@
         /// </summary>
         public void Close()
         {
-            SerialPort.Close();
+            SerialPort?.Close();
             RaisePropertyChangedEvent(nameof(IsOpen));
         }
 
@@ -761,49 +799,66 @@
         }
 
         /// <summary>
-        ///
+        /// 
         /// </summary>
         /// <param name="sender">The sender of the event, which is the BaseSerialPort object.</param>
         /// <param name="e">The SerialDataReceivedEventArgs.</param>
         private void SerialPortModel_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
-            string data = string.Empty;
+            string data = ReadExisting();
 
-            // Read characters from SerialPort IOStream to our input buffer
-            //InputBuffer.Append(ReadExisting());
+            string[] lines = data.Split(new[] { NewLine }, StringSplitOptions.RemoveEmptyEntries);
 
-            
+            foreach (string line in lines)
+            {
+                if (line.Contains(NewLine))
+                {
+                    RaiseLineReceivedEvent(this, new NSerialLineReceivedEventArgs(e.EventType, line));
+                }
+            }
+
+            RaiseDataReceivedEvent(this, new NSerialDataReceivedEventArgs(e.EventType, data));
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="timeout"></param>
+        /// <param name="retries"></param>
+        /// <returns></returns>
         public string TranceiveLine(string text, int timeout = 100, int retries = 0)
         {
             bool gotPacket = false;
             string result = null;
 
-            // TODO: is this AutoResetEvent used safely?  (No, it should be in (static?) variable above
-            // and properly disposed of.)
-            AutoResetEvent lineReceived = new AutoResetEvent(false); // For thread blocking
+            AutoResetEvent lineReceivedEvent = new AutoResetEvent(false); // For thread blocking
 
             // Define a temporary MessageReceived event handler to capture a serial message
-            LineReceivedEventHandler lineReceivedHandler = (sender, lineReceivedEventArgs) =>
+            NSerialLineReceivedEventHandler lineReceivedHandler = (sender, lineReceivedEventArgs) =>
             {
-                result = lineReceivedEventArgs.LineReceived; // Grab received message from event args
-                lineReceived.Set();  // Unblock thread
+                result = lineReceivedEventArgs.Line; // Grab received message from event args
+                lineReceivedEvent.Set();  // Unblock thread
             };
 
             // Subscribe to message received event we just created to get messages
-            OnLineReceived += lineReceivedHandler;
+            LineReceived += lineReceivedHandler;
 
             do
             {
                 WriteLine(text);
-                gotPacket = lineReceived.WaitOne(timeout);   // Block until we get a message or timeout
+
+                // Block until we get a message or timeout
+                gotPacket = lineReceivedEvent.WaitOne(timeout);
             }
             while (!gotPacket && --retries > 0);  // Transmit until we get a message back or run out of retries
 
-            // Unsubscribe (save RAM, removes possible event problems for delegates with similar signature, etc.)
-            OnLineReceived -= lineReceivedHandler;
+            // Unsubscribe (save RAM, removes possible event problems
+            // for delegates with similar signature, etc.)
+            LineReceived -= lineReceivedHandler;
+
+            // Release resources held by this AutoResetEvent (it uses a SafeHandle)
+            lineReceivedEvent.Dispose();
 
             return result;
         }

@@ -13,6 +13,7 @@ namespace NSerialPortUnitTests
     using System.IO;
     using System.IO.Ports;
     using System.Text;
+    using static NSerialPort.NSerialPort;
 
     /// <summary>
     /// Contains unit tests for NSerialPort.
@@ -59,7 +60,7 @@ namespace NSerialPortUnitTests
         public void BaseStream_GetAccessor_ReturnsCorrectReference()
         {
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             serialPortSub.BaseStream.Returns(new MemoryStream());
 
@@ -78,7 +79,7 @@ namespace NSerialPortUnitTests
         public void BaudRate_GetAccessor_ReturnsCorrectValue()
         {
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             int expected = 123;
             int actual = 0;
@@ -100,7 +101,7 @@ namespace NSerialPortUnitTests
         public void BaudRate_SetAccessor_SetsCorrectValue()
         {
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             int expected = int.MaxValue;
             int actual = 0;
@@ -136,7 +137,7 @@ namespace NSerialPortUnitTests
         {
             bool wasCalled = false;
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             (nSerialPort as INotifyPropertyChanged).PropertyChanged += (sender, e) =>
             {
@@ -159,7 +160,7 @@ namespace NSerialPortUnitTests
         public void BreakState_GetAccessor_ReturnsCorrectValue()
         {
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             bool expected = true;
             bool actual = false;
@@ -181,7 +182,7 @@ namespace NSerialPortUnitTests
         public void BreakState_SetAccessor_SetsCorrectValue()
         {
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             bool expected = true;
             bool actual = false;
@@ -217,7 +218,7 @@ namespace NSerialPortUnitTests
         {
             bool wasCalled = false;
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             (nSerialPort as INotifyPropertyChanged).PropertyChanged += (sender, e) =>
             {
@@ -240,7 +241,7 @@ namespace NSerialPortUnitTests
         public void BytesToRead_GetAccessor_ReturnsCorrectValue()
         {
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             int expected = 99;
             int actual = 0;
@@ -262,7 +263,7 @@ namespace NSerialPortUnitTests
         public void BytesToWrite_GetAccessor_ReturnsCorrectValue()
         {
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             int expected = 101;
             int actual = 0;
@@ -284,7 +285,7 @@ namespace NSerialPortUnitTests
         public void CDHolding_GetAccessor_ReturnsCorrectValue()
         {
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             bool expected = true;
             bool actual = false;
@@ -306,7 +307,7 @@ namespace NSerialPortUnitTests
         public void CtsHolding_GetAccessor_ReturnsCorrectValue()
         {
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             bool expected = true;
             bool actual = false;
@@ -328,7 +329,7 @@ namespace NSerialPortUnitTests
         public void DataBits_GetAccessor_ReturnsCorrectValue()
         {
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             int expected = 73;
             int actual = 0;
@@ -350,7 +351,7 @@ namespace NSerialPortUnitTests
         public void DataBits_SetAccessor_SetsCorrectValue()
         {
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             int expected = 24;
             int actual = 0;
@@ -386,7 +387,7 @@ namespace NSerialPortUnitTests
         {
             bool wasCalled = false;
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             (nSerialPort as INotifyPropertyChanged).PropertyChanged += (sender, e) =>
             {
@@ -409,7 +410,7 @@ namespace NSerialPortUnitTests
         public void DiscardNull_GetAccessor_ReturnsCorrectValue()
         {
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             bool expected = true;
             bool actual = false;
@@ -431,7 +432,7 @@ namespace NSerialPortUnitTests
         public void DiscardNull_SetAccessor_SetsCorrectValue()
         {
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             bool expected = true;
             bool actual = false;
@@ -467,7 +468,7 @@ namespace NSerialPortUnitTests
         {
             bool wasCalled = false;
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             (nSerialPort as INotifyPropertyChanged).PropertyChanged += (sender, e) =>
             {
@@ -490,7 +491,7 @@ namespace NSerialPortUnitTests
         public void DsrHolding_GetAccessor_ReturnsCorrectValue()
         {
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             bool expected = true;
             bool actual = false;
@@ -512,7 +513,7 @@ namespace NSerialPortUnitTests
         public void DtrEnable_GetAccessor_ReturnsCorrectValue()
         {
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             bool expected = true;
             bool actual = false;
@@ -534,7 +535,7 @@ namespace NSerialPortUnitTests
         public void DtrEnable_SetAccessor_SetsCorrectValue()
         {
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             bool expected = true;
             bool actual = false;
@@ -570,7 +571,7 @@ namespace NSerialPortUnitTests
         {
             bool wasCalled = false;
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             (nSerialPort as INotifyPropertyChanged).PropertyChanged += (sender, e) =>
             {
@@ -593,7 +594,7 @@ namespace NSerialPortUnitTests
         public void Encoding_GetAccessor_ReturnsCorrectReference()
         {
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             serialPortSub.Encoding.Returns(Encoding.ASCII);
 
@@ -612,7 +613,7 @@ namespace NSerialPortUnitTests
         public void Encoding_SetAccessor_SetsCorrectReference()
         {
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             Encoding expected = Encoding.BigEndianUnicode;
             nSerialPort.Encoding = expected;
@@ -644,7 +645,7 @@ namespace NSerialPortUnitTests
         {
             bool wasCalled = false;
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             (nSerialPort as INotifyPropertyChanged).PropertyChanged += (sender, e) =>
             {
@@ -667,7 +668,7 @@ namespace NSerialPortUnitTests
         public void Handshake_GetAccessor_ReturnsCorrectValue()
         {
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             Handshake expected = Handshake.XOnXOff;
             Handshake actual = Handshake.None;
@@ -689,7 +690,7 @@ namespace NSerialPortUnitTests
         public void Handshake_SetAccessor_SetsCorrectValue()
         {
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             Handshake expected = Handshake.XOnXOff;
             Handshake actual = Handshake.None;
@@ -725,7 +726,7 @@ namespace NSerialPortUnitTests
         {
             bool wasCalled = false;
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             (nSerialPort as INotifyPropertyChanged).PropertyChanged += (sender, e) =>
             {
@@ -748,7 +749,7 @@ namespace NSerialPortUnitTests
         public void IsOpen_GetAccessor_ReturnsCorrectValue()
         {
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             bool expected = true;
             bool actual = false;
@@ -785,7 +786,7 @@ namespace NSerialPortUnitTests
         {
             bool wasCalled = false;
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             (nSerialPort as INotifyPropertyChanged).PropertyChanged += (sender, e) =>
             {
@@ -812,7 +813,7 @@ namespace NSerialPortUnitTests
         {
             bool wasCalled = false;
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             (nSerialPort as INotifyPropertyChanged).PropertyChanged += (sender, e) =>
             {
@@ -835,7 +836,7 @@ namespace NSerialPortUnitTests
         public void NewLine_GetAccessor_ReturnsCorrectValue()
         {
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             string expected = "newline";
             string actual = "abc";
@@ -856,7 +857,7 @@ namespace NSerialPortUnitTests
         public void NewLine_SetAccessor_SetsCorrectValue()
         {
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             string expected = "newline";
             string actual = "abc";
@@ -892,7 +893,7 @@ namespace NSerialPortUnitTests
         {
             bool wasCalled = false;
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             (nSerialPort as INotifyPropertyChanged).PropertyChanged += (sender, e) =>
             {
@@ -915,7 +916,7 @@ namespace NSerialPortUnitTests
         public void Parity_GetAccessor_ReturnsCorrectValue()
         {
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             Parity expected = Parity.Mark;
             Parity actual = Parity.None;
@@ -937,7 +938,7 @@ namespace NSerialPortUnitTests
         public void Parity_SetAccessor_SetsCorrectValue()
         {
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             Parity expected = Parity.Space;
             Parity actual = Parity.None;
@@ -973,7 +974,7 @@ namespace NSerialPortUnitTests
         {
             bool wasCalled = false;
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             (nSerialPort as INotifyPropertyChanged).PropertyChanged += (sender, e) =>
             {
@@ -996,7 +997,7 @@ namespace NSerialPortUnitTests
         public void ParityReplace_GetAccessor_ReturnsCorrectValue()
         {
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             byte expected = 33;
             byte actual = 0;
@@ -1018,7 +1019,7 @@ namespace NSerialPortUnitTests
         public void ParityReplace_SetAccessor_SetsCorrectValue()
         {
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             byte expected = 55;
             byte actual = 0;
@@ -1054,7 +1055,7 @@ namespace NSerialPortUnitTests
         {
             bool wasCalled = false;
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             (nSerialPort as INotifyPropertyChanged).PropertyChanged += (sender, e) =>
             {
@@ -1077,7 +1078,7 @@ namespace NSerialPortUnitTests
         public void PortName_GetAccessor_ReturnsCorrectValue()
         {
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             string expected = "COM9";
             string actual = "abc";
@@ -1099,7 +1100,7 @@ namespace NSerialPortUnitTests
         public void PortName_SetAccessor_SetsCorrectValue()
         {
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             string expected = "COM7";
             string actual = "abc";
@@ -1135,7 +1136,7 @@ namespace NSerialPortUnitTests
         {
             bool wasCalled = false;
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             (nSerialPort as INotifyPropertyChanged).PropertyChanged += (sender, e) =>
             {
@@ -1158,7 +1159,7 @@ namespace NSerialPortUnitTests
         public void ReadBufferSize_GetAccessor_ReturnsCorrectValue()
         {
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             int expected = 100;
             int actual = 0;
@@ -1180,7 +1181,7 @@ namespace NSerialPortUnitTests
         public void ReadBufferSize_SetAccessor_SetsCorrectValue()
         {
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             int expected = 77;
             int actual = 0;
@@ -1216,7 +1217,7 @@ namespace NSerialPortUnitTests
         {
             bool wasCalled = false;
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             (nSerialPort as INotifyPropertyChanged).PropertyChanged += (sender, e) =>
             {
@@ -1239,7 +1240,7 @@ namespace NSerialPortUnitTests
         public void ReadTimeout_GetAccessor_ReturnsCorrectValue()
         {
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             int expected = 3;
             int actual = 0;
@@ -1261,7 +1262,7 @@ namespace NSerialPortUnitTests
         public void ReadTimeout_SetAccessor_SetsCorrectValue()
         {
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             int expected = 2;
             int actual = 0;
@@ -1297,7 +1298,7 @@ namespace NSerialPortUnitTests
         {
             bool wasCalled = false;
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             (nSerialPort as INotifyPropertyChanged).PropertyChanged += (sender, e) =>
             {
@@ -1320,7 +1321,7 @@ namespace NSerialPortUnitTests
         public void ReceivedBytesThreshold_GetAccessor_ReturnsCorrectValue()
         {
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             int expected = 5;
             int actual = 0;
@@ -1342,7 +1343,7 @@ namespace NSerialPortUnitTests
         public void ReceivedBytesThreshold_SetAccessor_SetsCorrectValue()
         {
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             int expected = 8;
             int actual = 0;
@@ -1378,7 +1379,7 @@ namespace NSerialPortUnitTests
         {
             bool wasCalled = false;
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             (nSerialPort as INotifyPropertyChanged).PropertyChanged += (sender, e) =>
             {
@@ -1401,7 +1402,7 @@ namespace NSerialPortUnitTests
         public void RtsEnable_GetAccessor_ReturnsCorrectValue()
         {
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             bool expected = true;
             bool actual = false;
@@ -1423,7 +1424,7 @@ namespace NSerialPortUnitTests
         public void RtsEnable_SetAccessor_SetsCorrectValue()
         {
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             bool expected = true;
             bool actual = false;
@@ -1459,7 +1460,7 @@ namespace NSerialPortUnitTests
         {
             bool wasCalled = false;
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             (nSerialPort as INotifyPropertyChanged).PropertyChanged += (sender, e) =>
             {
@@ -1482,7 +1483,7 @@ namespace NSerialPortUnitTests
         public void StopBits_GetAccessor_ReturnsCorrectValue()
         {
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             StopBits expected = StopBits.OnePointFive;
             StopBits actual = StopBits.None;
@@ -1504,7 +1505,7 @@ namespace NSerialPortUnitTests
         public void StopBits_SetAccessor_SetsCorrectValue()
         {
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             StopBits expected = StopBits.Two;
             StopBits actual = StopBits.None;
@@ -1540,7 +1541,7 @@ namespace NSerialPortUnitTests
         {
             bool wasCalled = false;
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             (nSerialPort as INotifyPropertyChanged).PropertyChanged += (sender, e) =>
             {
@@ -1563,7 +1564,7 @@ namespace NSerialPortUnitTests
         public void WriteBufferSize_GetAccessor_ReturnsCorrectValue()
         {
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             int expected = 4;
             int actual = 0;
@@ -1585,7 +1586,7 @@ namespace NSerialPortUnitTests
         public void WriteBufferSize_SetAccessor_SetsCorrectValue()
         {
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             int expected = 88;
             int actual = 0;
@@ -1621,7 +1622,7 @@ namespace NSerialPortUnitTests
         {
             bool wasCalled = false;
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             (nSerialPort as INotifyPropertyChanged).PropertyChanged += (sender, e) =>
             {
@@ -1644,7 +1645,7 @@ namespace NSerialPortUnitTests
         public void WriteTimeout_GetAccessor_ReturnsCorrectValue()
         {
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             int expected = 4;
             int actual = 0;
@@ -1666,7 +1667,7 @@ namespace NSerialPortUnitTests
         public void WriteTimeout_SetAccessor_SetsCorrectValue()
         {
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             int expected = 88;
             int actual = 0;
@@ -1702,7 +1703,7 @@ namespace NSerialPortUnitTests
         {
             bool wasCalled = false;
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             (nSerialPort as INotifyPropertyChanged).PropertyChanged += (sender, e) =>
             {
@@ -1717,18 +1718,14 @@ namespace NSerialPortUnitTests
             return wasCalled;
         }
 
-
-
-
-
-
-        // TODO: Rename!
-        // TODO: Is this test correct and useful?
+        /// <summary>
+        /// Verifies that a COMStat struct is returned.
+        /// </summary>
         [TestCase]
-        public void GetComStat_ReturnsStruct()
+        public void GetComStat_ReturnsStruct_Test()
         {
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             Dcb dcb = new Dcb();
             ComStat comStat = nSerialPort.GetComStat(ref dcb);
@@ -1736,13 +1733,14 @@ namespace NSerialPortUnitTests
             Assert.That(comStat, Is.EqualTo(default(ComStat)));
         }
 
-        // TODO: Rename!
-        // TODO: Is this test correct and useful?
+        /// <summary>
+        /// Verifies that the COMStat struct fills in the DCB struct.
+        /// </summary>
         [TestCase]
         public void GetComStat_PopulatesDcb()
         {
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             Dcb dcb = new Dcb();
             ComStat comStat = nSerialPort.GetComStat(ref dcb);
@@ -1750,18 +1748,14 @@ namespace NSerialPortUnitTests
             Assert.That(dcb, Is.EqualTo(default(Dcb)));
         }
 
-
-
-
-
-
-
-        // TODO: Rename!
+        /// <summary>
+        /// Verifies that the close method is called to release unmanaged resources.
+        /// </summary>
         [TestCase]
-        public void Close_IsCalled()
+        public void Close_IsCalled_Test()
         {
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             nSerialPort.Close();
 
@@ -1773,54 +1767,46 @@ namespace NSerialPortUnitTests
 
 
 
+        /*
+         * TODO: Need to test the following
+         *  - If the new DataReceived event is called
+         *  - If the new LineReceived event is called
+         *  - if the old events are still being called
+         *  - If lines are being read from the serial port properly
+         *  - If the tranceive methods works
+         */
 
-
-
-
-        // TODO: Rename!
-        [TestCase]
-        public void DataReceived_Event_IsRaised()
-        {
-            bool wasCalled = false;
-            ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
-
-            nSerialPort.DataReceived += (sender, e) => wasCalled = true;
-
-            //serialPortSub.DataReceived += Raise.Event<SerialDataReceivedEventHandler>(this, System.EventArgs.Empty);
-
-            //Assert.That(wasCalled, Is.True);
-        }
-
-        // TODO: Rename!
         [TestCase]
         public void ErrorReceived_Event_IsRaised()
         {
             bool wasCalled = false;
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             nSerialPort.ErrorReceived += (sender, e) => wasCalled = true;
 
-            //serialPortSub.ErrorReceived += Raise.Event<SerialErrorReceivedEventHandler>(this, System.EventArgs.Empty);
+            serialPortSub.ErrorReceived += Raise.Event<SerialErrorReceivedEventHandler>(this, System.EventArgs.Empty);
 
-            //Assert.That(wasCalled, Is.True);
+            Assert.That(wasCalled, Is.True);
         }
+        
 
-        // TODO: Rename!
         [TestCase]
         public void PinChanged_Event_IsRaised()
         {
             bool wasCalled = false;
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialPort nSerialPort = new NSerialPort(serialPortSub);
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
             nSerialPort.PinChanged += (sender, e) => wasCalled = true;
 
-            //serialPortSub.PinChanged += Raise.Event<SerialPinChangedEventHandler>(this, System.EventArgs.Empty);
+            serialPortSub.PinChanged += Raise.Event<SerialPinChangedEventHandler>(this, System.EventArgs.Empty);
 
-            //Assert.That(wasCalled, Is.True);
+            Assert.That(wasCalled, Is.True);
         }
+
+
+
 
 
 

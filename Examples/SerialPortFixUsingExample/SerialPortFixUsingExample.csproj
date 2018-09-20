@@ -4,14 +4,13 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{EA706CB4-EDF3-48DA-AE97-3B2A3B98D3C4}</ProjectGuid>
+    <ProjectGuid>{D33A5D8C-78F0-4C58-B89D-2AC8196C97DF}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>NserialProtocolDemo</RootNamespace>
-    <AssemblyName>NserialProtocolDemo</AssemblyName>
-    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <RootNamespace>SerialPortFixExample</RootNamespace>
+    <AssemblyName>SerialPortFixExample</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -33,14 +32,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="protobuf-net, Version=2.4.0.0, Culture=neutral, PublicKeyToken=257b51d87d2e4d67, processorArchitecture=MSIL">
-      <HintPath>..\packages\protobuf-net.2.4.0\lib\net40\protobuf-net.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -54,18 +47,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\NSerialPort\NSerialPort.csproj">
-      <Project>{e877e876-42e5-4a10-8228-6c6b6e412ec5}</Project>
-      <Name>NSerialPort</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\NSerialProtocol\NSerialProtocol.csproj">
-      <Project>{C62D822F-87D0-4629-9730-6EB3A89442A5}</Project>
-      <Name>NSerialProtocol</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SerialPortFix\SerialPortFix.csproj">
+    <ProjectReference Include="..\..\SerialPortFix\SerialPortFix.csproj">
       <Project>{1aa928c0-edc0-41e4-8d9f-f4c45018b52c}</Project>
       <Name>SerialPortFix</Name>
     </ProjectReference>

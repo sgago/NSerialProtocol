@@ -57,7 +57,11 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\NSerialProtocol\NSerialProtocol.csproj">
+    <ProjectReference Include="..\..\NFec\NFec.csproj">
+      <Project>{3CE276A5-65EE-4B05-96D8-2F034997455C}</Project>
+      <Name>NFec</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NSerialProtocol\NSerialProtocol.csproj">
       <Project>{C62D822F-87D0-4629-9730-6EB3A89442A5}</Project>
       <Name>NSerialProtocol</Name>
     </ProjectReference>

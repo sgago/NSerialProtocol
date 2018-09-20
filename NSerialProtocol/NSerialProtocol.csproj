@@ -47,22 +47,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\SerialFrameAttributes.cs" />
     <Compile Include="EventArgs\FrameErrorReceivedEventArgs.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
-    <Compile Include="FrameParsers\EndFlagFrameParser.cs" />
+    <Compile Include="SerialFrame.cs" />
+    <Compile Include="SerialFrameParsers\EndFlagFrameParser.cs" />
     <Compile Include="EventArgs\SerialFrameReceivedEventArgs.cs" />
-    <Compile Include="FrameParsers\SerialFrameErrorEventHandler.cs" />
-    <Compile Include="FrameParsers\SerialFrameReceivedEventHandler.cs" />
-    <Compile Include="SerialPacketParser.cs" />
-    <Compile Include="PacketParsers\EndFlagPacketParser.cs" />
+    <Compile Include="SerialPacketParsers\EndFlagPacketParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="NSerialProtocol.cs" />
-    <Compile Include="Attributes\SerialPacketLengthAttribute.cs" />
-    <Compile Include="Attributes\SerialPacketErrorCorrectionCodeAttribute.cs" />
-    <Compile Include="Attributes\SerialPacketPayloadAttribute.cs" />
     <Compile Include="SerialPacket.cs" />
     <Compile Include="SerialFrameParser.cs" />
     <Compile Include="EventArgs\SerialPacketReceivedEventArgs.cs" />
+    <Compile Include="SerialPacketParser.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NCobs\NByteStuff.csproj">
@@ -85,6 +82,8 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="EventHandlers\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

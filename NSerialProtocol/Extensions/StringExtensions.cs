@@ -6,8 +6,17 @@ using System.Threading.Tasks;
 
 namespace NSerialProtocol.Extensions
 {
+
     internal static class StringExtensions
     {
+        /// <summary>
+        /// Removes all characters up to, but not including, a given string value.
+        /// </summary>
+        /// <param name="str"></param>
+        /// <param name="value"></param>
+        /// <param name="startIndex"></param>
+        /// <param name="stringComparison"></param>
+        /// <returns></returns>
         internal static string RemoveTo(this string str, string value, int startIndex = 0, StringComparison stringComparison = StringComparison.CurrentCulture)
         {
             int removeLength = str.IndexOf(value, startIndex, stringComparison);
@@ -15,6 +24,14 @@ namespace NSerialProtocol.Extensions
             return result;
         }
 
+        /// <summary>
+        /// Removes all characters up to and including a given string value.
+        /// </summary>
+        /// <param name="str"></param>
+        /// <param name="value"></param>
+        /// <param name="startIndex"></param>
+        /// <param name="stringComparison"></param>
+        /// <returns></returns>
         internal static string RemoveThrough(this string str, string value, int startIndex = 0, StringComparison stringComparison = StringComparison.CurrentCulture)
         {
             int removeLength = str.IndexOf(value, startIndex, stringComparison) + value.Length;
@@ -22,6 +39,14 @@ namespace NSerialProtocol.Extensions
             return result;
         }
 
+        /// <summary>
+        /// Removes the first occurence of given string value.
+        /// </summary>
+        /// <param name="str"></param>
+        /// <param name="value"></param>
+        /// <param name="startIndex"></param>
+        /// <param name="stringComparison"></param>
+        /// <returns></returns>
         internal static string RemoveFirstOccurenceOf(this string str, string value, int startIndex = 0, StringComparison stringComparison = StringComparison.CurrentCulture)
         {
             int startIndexOfOccurence = str.IndexOf(value, startIndex);
