@@ -182,5 +182,15 @@
 
             return string.Join("", dataOut.Select(x => (char)x));
         }
+
+        public byte[] Stuff(byte[] value)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public byte[] Unstuff(byte[] value)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

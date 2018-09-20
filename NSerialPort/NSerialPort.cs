@@ -475,7 +475,7 @@
         /// <param name="parity">One of the Parity values.</param>
         /// <param name="dataBits">The data bits value.</param>
         /// <param name="stopBits">One of the StopBits values.</param>
-        internal NSerialPort(INSerialPort serialPort,
+        internal NSerialPort(ISerialPort serialPort,
                              string portName = "COM1",
                              int baudRate = 57600,
                              Parity parity = Parity.None,

@@ -17,7 +17,17 @@
             throw new NotImplementedException();
         }
 
+        public byte[] Stuff(byte[] value)
+        {
+            throw new NotImplementedException();
+        }
+
         public string Unstuff(string text)
+        {
+            throw new NotImplementedException();
+        }
+
+        public byte[] Unstuff(byte[] value)
         {
             throw new NotImplementedException();
         }

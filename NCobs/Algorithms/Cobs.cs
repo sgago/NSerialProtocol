@@ -86,6 +86,11 @@
             return result;
         }
 
+        public byte[] Stuff(byte[] value)
+        {
+            throw new NotImplementedException();
+        }
+
         public string Unstuff(string text)
         {
             int index = 0;
@@ -125,6 +130,11 @@
             }
 
             return result;
+        }
+
+        public byte[] Unstuff(byte[] value)
+        {
+            throw new NotImplementedException();
         }
     }
 }

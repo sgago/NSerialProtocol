@@ -34,5 +34,15 @@
 
             return text;
         }
+
+        public byte[] Stuff(byte[] value)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public byte[] Unstuff(byte[] value)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

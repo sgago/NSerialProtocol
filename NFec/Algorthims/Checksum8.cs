@@ -10,42 +10,9 @@
     public class Checksum8 : IFec
     {
         /// <summary>
-        /// The encoding of the received
-        /// </summary>
-        private Encoding encoding;
-
-        /// <summary>
-        /// Gets or sets the encoding used to
-        /// convert strings to byte arrays and vice versa.
-        /// </summary>
-        protected Encoding Encoding
-        {
-            get
-            {
-                return encoding;
-            }
-
-            set
-            {
-                encoding = value;
-            }
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the Checksum8Ascii using a specified
-        /// encoding to convert strings to byte arrays.
-        /// </summary>
-        /// <param name="encoding">The string encoding used.</param>
-        public Checksum8(Encoding encoding)
-        {
-            Encoding = encoding;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the Checksum8Ascii.
+        /// Initializes a new instance of the Checksum8 class.
         /// </summary>
         public Checksum8()
-            : this(Encoding.Unicode)
         {
         }
 
@@ -59,18 +26,28 @@
         /// in plain text with a length of 2 characters instead of a single byte
         /// value.
         /// </remarks>
-        public byte[] Compute(byte[] bytes)
+        public byte[] Compute(byte[] values)
         {
             byte checksum8 = 0;
 
-            foreach(byte b in bytes)
+            foreach(byte b in values)
             {
                 // Sum the byte values, ignoring overflow
                 checksum8 = unchecked((byte)(checksum8 + b));
             }
 
             // TODO: What is the encoding of the returned string????
-            return BitConverter.GetBytes(checksum8);
+            return new byte[] { checksum8 };
+        }
+
+        public byte[] Compute(string value, Encoding encoding)
+        {
+            return Compute(encoding.GetBytes(value));
+        }
+
+        public byte[] Compute(string value)
+        {
+            return Compute(value, Encoding.Default);
         }
     }
 }
