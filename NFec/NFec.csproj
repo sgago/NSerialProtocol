@@ -9,8 +9,8 @@
     <ProjectGuid>{3CE276A5-65EE-4B05-96D8-2F034997455C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NCrc</RootNamespace>
-    <AssemblyName>NCrc</AssemblyName>
+    <RootNamespace>NFec</RootNamespace>
+    <AssemblyName>NFec</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>

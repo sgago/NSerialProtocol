@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace NSerialProtocol
+﻿namespace NSerialProtocol.PacketParsers
 {
-    public class SerialPacketParser<T>
+    public class SerialPacketParser<T> where T : SerialPacket
     {
-
     }
 }
