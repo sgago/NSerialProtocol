@@ -50,6 +50,8 @@
     <Compile Include="Attributes\SerialFrameAttributes.cs" />
     <Compile Include="EventArgs\FrameErrorReceivedEventArgs.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="SerialFrame3.cs" />
+    <Compile Include="SerialFrame2.cs" />
     <Compile Include="SerialFrame.cs" />
     <Compile Include="SerialFrameParsers\EndFlagFrameParser.cs" />
     <Compile Include="EventArgs\SerialFrameReceivedEventArgs.cs" />

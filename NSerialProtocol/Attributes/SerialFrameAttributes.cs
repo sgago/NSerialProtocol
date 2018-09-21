@@ -4,40 +4,141 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace NSerialProtocol.Attributes
 {
-    public class ByteStuffAttribute : Attribute
+
+    // SerialFrameConstantAttribute?
+    // SerialFrameVariableAttribute?
+
+
+    public abstract class SerialFrameMemberAttribute : Attribute
+    {
+        public int Tag { get; set; }
+
+        public SerialFrameMemberAttribute(int tag)
+        {
+            Tag = tag;
+        }
+
+        public abstract int GetByteCount();
+    }
+
+
+
+
+
+
+
+
+    public class SerialFrameConstantAttribute : SerialFrameMemberAttribute
+    {
+        public byte[] Bytes = new byte[0];
+
+        public SerialFrameConstantAttribute(int tag, byte[] bytes)
+            : base(tag)
+        {
+
+        }
+
+        public override int GetByteCount()
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+
+    public class SerialFrameVariableAttribute : SerialFrameMemberAttribute
+    {
+        public PropertyInfo Property { get; set; }
+
+        public SerialFrameVariableAttribute(int tag, Type propertyType, string propertyName)
+            : base(tag)
+        {
+
+        }
+
+        public PropertyInfo GetProperty<T>(string propertyName)
+        {
+            return typeof(T).GetProperty(propertyName);
+        }
+
+        public Type GetPropertyType<T>(string propertyName)
+        {
+            return GetProperty<T>(propertyName).PropertyType;
+        }
+
+
+        public override int GetByteCount()
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+
+
+
+    public class SerialFrameDataAttribute : SerialFrameMemberAttribute
+    {
+        public byte[] Bytes { get; set; }
+
+        public SerialFrameDataAttribute(int tag, byte[] bytes)
+            : base(tag)
+        {
+            Bytes = bytes ?? new byte[0];
+        }
+
+        public override int GetByteCount()
+        {
+            return Bytes?.Length ?? 0;
+        }
+    }
+
+
+
+
+
+    public class SerialFrameDescriptorAttribute : Attribute
+    {
+
+    }
+
+
+    public class FrameByteStuffAttribute : Attribute
     {
         Type ByteStuff { get; set; }
 
-        public ByteStuffAttribute(Type byteStuff)
+        public FrameByteStuffAttribute(Type byteStuffType)
         {
-            ByteStuff = byteStuff;
+            ByteStuff = byteStuffType;
         }
     }
 
-    public class EndFlagAttribute : Attribute
+    public class FrameEndFlagAttribute : SerialFrameDataAttribute
     {
-        public byte[] EndFlag { get; private set; }
-
-        public EndFlagAttribute(byte[] endFlag)
+        public FrameEndFlagAttribute(byte[] endFlag)
+            : base(int.MaxValue, endFlag)
         {
-            EndFlag = endFlag;
+
         }
     }
 
-    public class ErrorCorrectionCodeAttribute : Attribute
+    public class FrameErrorCorrectionCodeAttribute : SerialFrameMemberAttribute
     {
-        public int Tag { get; set; }
         public Type Fec { get; private set; }
 
-        public ErrorCorrectionCodeAttribute(int tag, Type fec)
+        public FrameErrorCorrectionCodeAttribute(int tag, Type fec)
+            : base(tag)
         {
-            Tag = tag;
             Fec = fec;
+        }
+
+        public override int GetByteCount()
+        {
+            return Marshal.SizeOf(Fec);
         }
     }
 
@@ -61,23 +162,35 @@ namespace NSerialProtocol.Attributes
         }
     }
 
-    public class FrameLengthAttribute : Attribute
+    public class FrameLengthAttribute : SerialFrameMemberAttribute
     {
-        public int Tag { get; set; }
+        public Type Type { get; }
 
-        public FrameLengthAttribute(int tag)
+        public FrameLengthAttribute(int tag, Type type)
+            : base(tag)
         {
-            Tag = tag;
+            Type = type;
+        }
+
+        public override int GetByteCount()
+        {
+
+
+            return Marshal.SizeOf(Type);
         }
     }
 
-    public class PayloadAttribute : Attribute
+    public class FramePayloadAttribute : SerialFrameMemberAttribute
     {
-        public int Tag { get; set; }
-
-        public PayloadAttribute(int tag)
+        public FramePayloadAttribute(int tag)
+            : base(tag)
         {
-            Tag = tag;
+            
+        }
+
+        public override int GetByteCount()
+        {
+            throw new NotImplementedException();
         }
     }
 
@@ -85,17 +198,12 @@ namespace NSerialProtocol.Attributes
     {
     }
 
-    public class LengthAttribute : Attribute
+    public class FrameStartFlagAttribute : SerialFrameDataAttribute
     {
-    }
-
-    public class StartFlagAttribute : Attribute
-    {
-        private string v;
-
-        public StartFlagAttribute(string v)
+        public FrameStartFlagAttribute(byte[] startFlag)
+            : base(int.MinValue, startFlag)
         {
-            this.v = v;
+
         }
     }
 }
