@@ -17,18 +17,18 @@ using System.Threading.Tasks;
 
 namespace FrameParserPlayground
 {
-    [ProtoContract]
-    [ProtoInclude(1, typeof(SerialPacket))]
-    public class MySerialPacket : SerialPacket
-    {
-        [ProtoMember(2)]
-        public int Payload { get; set; } = 123;
+    //[ProtoContract]
+    //[ProtoInclude(1, typeof(SerialPacket))]
+    //public class MySerialPacket : SerialPacket
+    //{
+    //    [ProtoMember(2)]
+    //    public int Payload { get; set; } = 123;
 
-        public MySerialPacket()
-        {
+    //    public MySerialPacket()
+    //    {
 
-        }
-    }
+    //    }
+    //}
 
     //[SerialFrame]
     //[FrameStartFlag(new byte[] { 97 })]
@@ -139,14 +139,14 @@ namespace FrameParserPlayground
             return data;
         }
 
-        private static void PacketParser_OnSerialPacketReceived(object sender, SerialPacketReceivedEventArgs<MySerialPacket> e)
-        {
-            MySerialPacket mySerialPacket = e.serialPacket;
-        }
+        //private static void PacketParser_OnSerialPacketReceived(object sender, SerialPacketReceivedEventArgs<MySerialPacket> e)
+        //{
+        //    MySerialPacket mySerialPacket = e.serialPacket;
+        //}
 
-        private static void Parser_SerialFrameReceived(object sender, SerialFrameReceivedEventArgs e)
-        {
-            Console.WriteLine(e.Frame);
-        }
+        //private static void Parser_SerialFrameReceived(object sender, SerialFrameReceivedEventArgs e)
+        //{
+        //    Console.WriteLine(e.Frame);
+        //}
     }
 }

@@ -39,6 +39,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SerialPortFixUsingExample",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NSerialPortUnitTests", "UnitTests\NSerialPortUnitTests\NSerialPortUnitTests.csproj", "{D5AF97EF-659F-4621-AFF1-7EADB3F52346}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NSerialProtocolUnitTests", "NSerialProtocolUnitTests\NSerialProtocolUnitTests.csproj", "{5A2F3533-5997-4E31-B023-9F47A28745E1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -81,6 +83,10 @@ Global
 		{D5AF97EF-659F-4621-AFF1-7EADB3F52346}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D5AF97EF-659F-4621-AFF1-7EADB3F52346}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D5AF97EF-659F-4621-AFF1-7EADB3F52346}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A2F3533-5997-4E31-B023-9F47A28745E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A2F3533-5997-4E31-B023-9F47A28745E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A2F3533-5997-4E31-B023-9F47A28745E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A2F3533-5997-4E31-B023-9F47A28745E1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -91,6 +97,7 @@ Global
 		{EEFB5A66-9D58-4E91-9DFB-AFD96C8EE204} = {C4371EF6-3558-462D-97A4-3B6C77462496}
 		{D33A5D8C-78F0-4C58-B89D-2AC8196C97DF} = {C4371EF6-3558-462D-97A4-3B6C77462496}
 		{D5AF97EF-659F-4621-AFF1-7EADB3F52346} = {B3672852-589F-4247-A991-D8F4871C48B1}
+		{5A2F3533-5997-4E31-B023-9F47A28745E1} = {B3672852-589F-4247-A991-D8F4871C48B1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {91871512-CA16-4108-BDBC-0645BAB249EE}
