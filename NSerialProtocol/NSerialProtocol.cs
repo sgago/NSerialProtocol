@@ -74,49 +74,53 @@ namespace NSerialProtocol
         {
             throw new NotImplementedException();
 
-            return this;
+            //return this;
         }
 
         public NSerialProtocol SetLengthField()
         {
             throw new NotImplementedException();
 
-            return this;
+            //return this;
         }
 
         public NSerialProtocol SetByteStuff(IByteStuff byteStuff)
         {
             throw new NotImplementedException();
 
-            return this;
+            //return this;
         }
 
         public NSerialProtocol SetStartFlag(byte[] startFlag)
         {
             StartFlag = startFlag;
 
-            return this;
+            //return this;
+
+            throw new NotImplementedException();
         }
 
         public NSerialProtocol SetEndFlag(byte[] endFlag)
         {
             EndFlag = endFlag;
 
-            return this;
+            //return this;
+
+            throw new NotImplementedException();
         }
 
         public NSerialProtocol SetMaximumLength(int length)
         {
             throw new NotImplementedException();
 
-            return this;
+            //return this;
         }
 
         public NSerialProtocol SetFixedLength(int length)
         {
             throw new NotImplementedException();
 
-            return this;
+            //return this;
         }
 
 

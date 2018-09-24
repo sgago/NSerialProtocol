@@ -1,17 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\NUnit.3.10.1\build\NUnit.props" Condition="Exists('..\packages\NUnit.3.10.1\build\NUnit.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{C62D822F-87D0-4629-9730-6EB3A89442A5}</ProjectGuid>
+    <ProjectGuid>{5A2F3533-5997-4E31-B023-9F47A28745E1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NSerialProtocol</RootNamespace>
-    <AssemblyName>NSerialProtocol</AssemblyName>
+    <RootNamespace>NSerialProtocolUnitTests</RootNamespace>
+    <AssemblyName>NSerialProtocolUnitTests</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -31,14 +34,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="protobuf-net, Version=2.4.0.0, Culture=neutral, PublicKeyToken=257b51d87d2e4d67, processorArchitecture=MSIL">
-      <HintPath>..\packages\protobuf-net.2.4.0\lib\net40\protobuf-net.dll</HintPath>
+    <Reference Include="nunit.framework, Version=3.10.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\NUnit.3.10.1\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -47,22 +47,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Attributes\SerialFrameAttributes.cs" />
-    <Compile Include="EventArgs\FrameErrorReceivedEventArgs.cs" />
-    <Compile Include="Extensions\StringExtensions.cs" />
-    <Compile Include="SerialFrame.cs" />
-    <None Include="SerialFrame2.bak" />
-    <None Include="SerialFrame.bak" />
-    <Compile Include="SerialFrameParsers\EndFlagFrameParser.cs" />
-    <Compile Include="EventArgs\SerialFrameReceivedEventArgs.cs" />
-    <Compile Include="SerialFrameSerializer.cs" />
-    <Compile Include="SerialPacketParsers\EndFlagPacketParser.cs" />
+    <Compile Include="SerialFrameSerializerUnitTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="NSerialProtocol.cs" />
-    <Compile Include="SerialPacket.cs" />
-    <Compile Include="SerialFrameParser.cs" />
-    <Compile Include="EventArgs\SerialPacketReceivedEventArgs.cs" />
-    <Compile Include="SerialPacketParser.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NCobs\NByteStuff.csproj">
@@ -77,16 +66,20 @@
       <Project>{e877e876-42e5-4a10-8228-6c6b6e412ec5}</Project>
       <Name>NSerialPort</Name>
     </ProjectReference>
+    <ProjectReference Include="..\NSerialProtocol\NSerialProtocol.csproj">
+      <Project>{c62d822f-87d0-4629-9730-6eb3a89442a5}</Project>
+      <Name>NSerialProtocol</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SerialPortFix\SerialPortFix.csproj">
-      <Project>{1AA928C0-EDC0-41E4-8D9F-F4C45018B52C}</Project>
+      <Project>{1aa928c0-edc0-41e4-8d9f-f4c45018b52c}</Project>
       <Name>SerialPortFix</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="EventHandlers\" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\NUnit.3.10.1\build\NUnit.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NUnit.3.10.1\build\NUnit.props'))" />
+  </Target>
 </Project>

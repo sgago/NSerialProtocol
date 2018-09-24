@@ -1,4 +1,4 @@
-![NSerialProtocol Logo](Logo.png)
+![NSerialProtocol Logo](https://github.com/sgago/NSerialProtocol/blob/master/logo.png)
 
 # NSerialProtocol Project
 
