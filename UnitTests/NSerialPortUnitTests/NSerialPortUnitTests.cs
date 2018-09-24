@@ -1776,34 +1776,34 @@ namespace NSerialPortUnitTests
          *  - If the tranceive methods works
          */
 
-        [TestCase]
-        public void ErrorReceived_Event_IsRaised()
-        {
-            bool wasCalled = false;
-            ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
+        //[TestCase]
+        //public void ErrorReceived_Event_IsRaised()
+        //{
+        //    bool wasCalled = false;
+        //    ISerialPort serialPortSub = Substitute.For<ISerialPort>();
+        //    INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
-            nSerialPort.ErrorReceived += (sender, e) => wasCalled = true;
+        //    nSerialPort.ErrorReceived += (sender, e) => wasCalled = true;
 
-            serialPortSub.ErrorReceived += Raise.Event<SerialErrorReceivedEventHandler>(this, System.EventArgs.Empty);
+        //    serialPortSub.ErrorReceived += Raise.Event<SerialErrorReceivedEventHandler>(this, System.EventArgs.Empty);
 
-            Assert.That(wasCalled, Is.True);
-        }
+        //    Assert.That(wasCalled, Is.True);
+        //}
         
 
-        [TestCase]
-        public void PinChanged_Event_IsRaised()
-        {
-            bool wasCalled = false;
-            ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
+        //[TestCase]
+        //public void PinChanged_Event_IsRaised()
+        //{
+        //    bool wasCalled = false;
+        //    ISerialPort serialPortSub = Substitute.For<ISerialPort>();
+        //    INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
-            nSerialPort.PinChanged += (sender, e) => wasCalled = true;
+        //    nSerialPort.PinChanged += (sender, e) => wasCalled = true;
 
-            serialPortSub.PinChanged += Raise.Event<SerialPinChangedEventHandler>(this, System.EventArgs.Empty);
+        //    serialPortSub.PinChanged += Raise.Event<SerialPinChangedEventHandler>(this, System.EventArgs.Empty);
 
-            Assert.That(wasCalled, Is.True);
-        }
+        //    Assert.That(wasCalled, Is.True);
+        //}
 
 
 

@@ -168,8 +168,17 @@ namespace NSerialProtocolUnitTests
         public string Value3 { get; } = "abc";
     }
 
+    public class FieldOrderTestFrame : SerialFrame
+    {
+        [SerialFrameMember(3)]
+        public byte Value1 { get; } = 1;
 
+        [SerialFrameMember(2)]
+        public int Value2 { get; } = 2;
 
+        [SerialFrameMember(1)]
+        public string Value3 { get; } = "abc";
+    }
 
     [TestFixture]
     public class SerialFrameSerializerUnitTests
@@ -184,16 +193,23 @@ namespace NSerialProtocolUnitTests
             new Tuple<SerialFrame, byte[]>(new SByteTestSerialFrame(123), new byte[1]{ 123 }),
             new Tuple<SerialFrame, byte[]>(new Int16TestSerialFrame(123), new byte[2]{ 123, 0 }),
             new Tuple<SerialFrame, byte[]>(new Int32TestSerialFrame(123), new byte[4]{ 123, 0, 0, 0 }),
-            new Tuple<SerialFrame, byte[]>(new Int64TestSerialFrame(123), new byte[8]{ 123, 0, 0, 0, 0, 0, 0, 0 }),
+            new Tuple<SerialFrame, byte[]>(new Int64TestSerialFrame(123),
+                new byte[8]{ 123, 0, 0, 0, 0, 0, 0, 0 }),
             new Tuple<SerialFrame, byte[]>(new ByteTestSerialFrame(123), new byte[1]{ 123 }),
             new Tuple<SerialFrame, byte[]>(new UInt16TestSerialFrame(123), new byte[2]{ 123, 0 }),
             new Tuple<SerialFrame, byte[]>(new UInt32TestSerialFrame(123), new byte[4]{ 123, 0, 0, 0 }),
-            new Tuple<SerialFrame, byte[]>(new UInt64TestSerialFrame(123), new byte[8]{ 123, 0, 0, 0, 0, 0, 0, 0 }),
-            new Tuple<SerialFrame, byte[]>(new ByteArrayTestSerialFrame(new byte[3] { 1, 2, 3 }), new byte[3]{ 1, 2, 3 }),
-            new Tuple<SerialFrame, byte[]>(new CharArrayTestSerialFrame(new char[3] { 'a', 'b', 'c' }), new byte[3]{ 97, 98, 99 }),
-            new Tuple<SerialFrame, byte[]>(new StringTestSerialFrame("abc"), new byte[3]{ 97, 98, 99 }),
+            new Tuple<SerialFrame, byte[]>(new UInt64TestSerialFrame(123),
+                new byte[8]{ 123, 0, 0, 0, 0, 0, 0, 0 }),
+            new Tuple<SerialFrame, byte[]>(new ByteArrayTestSerialFrame(new byte[3] { 1, 2, 3 }),
+                new byte[3]{ 1, 2, 3 }),
+            new Tuple<SerialFrame, byte[]>(new CharArrayTestSerialFrame(new char[3] { 'a', 'b', 'c' }),
+                new byte[3]{ 97, 98, 99 }),
+            new Tuple<SerialFrame, byte[]>(new StringTestSerialFrame("abc"),
+                new byte[4]{ 3, 97, 98, 99 }),
             new Tuple<SerialFrame, byte[]>(new ManySimpleTypesTestFrame(),
-                new byte[8]{ 1, 2, 0, 0, 0, 97, 98, 99 }),
+                new byte[9]{ 1, 2, 0, 0, 0, 3, 97, 98, 99 }),
+            new Tuple<SerialFrame, byte[]>(new FieldOrderTestFrame(),
+                new byte[9]{ 3, 97, 98, 99, 2, 0, 0, 0, 1 }),
         };
 
         private static IEnumerable<TestCaseData> GetSerialFrameTestCaseData()
