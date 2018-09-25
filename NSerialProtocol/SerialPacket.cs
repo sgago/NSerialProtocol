@@ -14,11 +14,5 @@ namespace NSerialProtocol
         {
 
         }
-
-        [ProtoAfterSerialization]
-        public void AfterSerialization()
-        {
-
-        }
     }
 }

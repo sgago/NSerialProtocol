@@ -2,5 +2,6 @@
 {
     public class SerialPacketParser<T> where T : SerialPacket
     {
+
     }
 }

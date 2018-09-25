@@ -57,6 +57,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\NCobs\NByteStuff.csproj">
+      <Project>{A4C4F6F3-B97F-4A05-B13B-FC2B0D6DC930}</Project>
+      <Name>NByteStuff</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\NFec\NFec.csproj">
       <Project>{3CE276A5-65EE-4B05-96D8-2F034997455C}</Project>
       <Name>NFec</Name>

@@ -51,8 +51,10 @@
     <Compile Include="EventArgs\FrameErrorReceivedEventArgs.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="SerialFrame.cs" />
+    <None Include="SerialFrame.bak" />
     <Compile Include="SerialFrameParsers\EndFlagFrameParser.cs" />
     <Compile Include="EventArgs\SerialFrameReceivedEventArgs.cs" />
+    <Compile Include="SerialFrameSerializer.cs" />
     <Compile Include="SerialPacketParsers\EndFlagPacketParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="NSerialProtocol.cs" />
