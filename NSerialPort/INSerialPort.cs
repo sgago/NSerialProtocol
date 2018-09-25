@@ -7,6 +7,9 @@ using static NSerialPort.NSerialPort;
 
 namespace NSerialPort
 {
+    /// <summary>
+    /// Represents a NSerialPort resource.
+    /// </summary>
     public interface INSerialPort
     {
         /// <summary>

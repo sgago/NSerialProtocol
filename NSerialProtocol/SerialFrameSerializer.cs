@@ -45,6 +45,7 @@ namespace NSerialProtocol
             // Sort the KVPs by tag number
             pairs = pairs.OrderBy(x => x.Key.Tag).ToList();
 
+
             using (MemoryStream stream = new MemoryStream())
             {
                 binaryWriter = new BinaryWriter(stream);
@@ -141,10 +142,121 @@ namespace NSerialProtocol
 
             return serializedFrame;
         }
-    
-        public T Deserialize<T>(T frame)
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="frameType"></param>
+        /// <param name="serializedFrame"></param>
+        /// <returns></returns>
+        public SerialFrame Deserialize(Type frameType, byte[] serializedFrame)
         {
-            throw new NotImplementedException();
+            BinaryReader binaryReader;
+            SerialFrame serialFrame = Activator.CreateInstance(frameType) as SerialFrame;
+
+            // Dictionary of attributes and properties for sorting, reading, etc.
+            List<SerialMemberKvp> pairs = new List<SerialMemberKvp>();
+
+            // Get the properties on the SerialFrame instance
+            List<PropertyInfo> properties = serialFrame.GetType()
+                .GetProperties()
+                .Where(x => x.IsDefined(typeof(SerialFrameMemberAttribute)))
+                .ToList();
+
+            // For each property in frame...
+            foreach (PropertyInfo property in properties)
+            {
+                // FIXME: This line is painful to read
+                // Grab the SerialFrameAttribute connected to the property
+                pairs.Add(new SerialMemberKvp
+                    ((SerialFrameMemberAttribute)Attribute.GetCustomAttribute(property,
+                        typeof(SerialFrameMemberAttribute)), property));
+            }
+
+            // Sort the KVPs by tag number
+            pairs = pairs.OrderBy(x => x.Key.Tag).ToList();
+
+            using (MemoryStream stream = new MemoryStream(serializedFrame))
+            {
+                binaryReader = new BinaryReader(stream);
+
+                foreach (SerialMemberKvp pair in pairs)
+                {
+                    PropertyInfo property = pair.Value;
+
+                    if (property.PropertyType == typeof(byte))
+                    {
+                        property.SetValue(serialFrame, binaryReader.ReadByte());
+                    }
+                    else if (property.PropertyType == typeof(sbyte))
+                    {
+                        property.SetValue(serialFrame, binaryReader.ReadSByte());
+                    }
+                    else if (property.PropertyType == typeof(char))
+                    {
+                        property.SetValue(serialFrame, binaryReader.ReadChar());
+                    }
+                    else if (property.PropertyType == typeof(bool))
+                    {
+                        property.SetValue(serialFrame, binaryReader.ReadBoolean());
+                    }
+                    else if (property.PropertyType == typeof(short))
+                    {
+                        property.SetValue(serialFrame, binaryReader.ReadInt16());
+                    }
+                    else if (property.PropertyType == typeof(int))
+                    {
+                        property.SetValue(serialFrame, binaryReader.ReadInt32());
+                    }
+                    else if (property.PropertyType == typeof(long))
+                    {
+                        property.SetValue(serialFrame, binaryReader.ReadInt64());
+                    }
+                    else if (property.PropertyType == typeof(ushort))
+                    {
+                        property.SetValue(serialFrame, binaryReader.ReadUInt16());
+                    }
+                    else if (property.PropertyType == typeof(uint))
+                    {
+                        property.SetValue(serialFrame, binaryReader.ReadUInt32());
+                    }
+                    else if (property.PropertyType == typeof(ulong))
+                    {
+                        property.SetValue(serialFrame, binaryReader.ReadUInt64());
+                    }
+                    else if (property.PropertyType == typeof(float))
+                    {
+                        property.SetValue(serialFrame, binaryReader.ReadSingle());
+                    }
+                    else if (property.PropertyType == typeof(double))
+                    {
+                        property.SetValue(serialFrame, binaryReader.ReadDouble());
+                    }
+                    else if (property.PropertyType == typeof(decimal))
+                    {
+                        property.SetValue(serialFrame, binaryReader.ReadDecimal());
+                    }
+                    else if (property.PropertyType == typeof(string))
+                    {
+                        // TODO: Support for different string encodings?
+                        property.SetValue(serialFrame, binaryReader.ReadString());
+                    }
+                    else if (property.PropertyType == typeof(byte[]))
+                    {
+                        property.SetValue(serialFrame, binaryReader.ReadBytes(
+                                (property.GetValue(serialFrame) as Array).Length
+                        ));
+                    }
+                    else if (property.PropertyType == typeof(char[]))
+                    {
+                        property.SetValue(serialFrame, binaryReader.ReadChars(
+                                (property.GetValue(serialFrame) as Array).Length
+                        ));
+                    }
+                }
+            }
+
+            return serialFrame;
         }
 
         // FIXME: This should probably go into a reflection extension class or similar
