@@ -11,7 +11,7 @@
     using SerialPortFix;
 
     /// <summary>
-    /// Represents a serial port resource.
+    /// Represents a NSerialPort resource.
     /// </summary>
     public class NSerialPort : INSerialPort, INotifyPropertyChanged, IDisposable
     {

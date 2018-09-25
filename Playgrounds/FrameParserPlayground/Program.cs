@@ -2,7 +2,6 @@
 using NFec;
 using NFec.Algorithms;
 using NSerialProtocol;
-using NSerialProtocol.Attributes;
 using NSerialProtocol.FrameParsers;
 using NSerialProtocol.PacketParsers;
 using ProtoBuf;

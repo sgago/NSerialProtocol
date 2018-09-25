@@ -15,6 +15,7 @@ namespace NSerialProtocol
 
     public class SerialFrameParser
     {
-        protected RegexOptions RegexOptions { get; } = RegexOptions.CultureInvariant | RegexOptions.Multiline;
+        protected RegexOptions RegexOptions { get; } =
+            RegexOptions.CultureInvariant | RegexOptions.Multiline;
     }
 }

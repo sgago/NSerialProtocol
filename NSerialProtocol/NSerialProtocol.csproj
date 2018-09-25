@@ -51,7 +51,6 @@
     <Compile Include="EventArgs\FrameErrorReceivedEventArgs.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="SerialFrame.cs" />
-    <None Include="SerialFrame2.bak" />
     <None Include="SerialFrame.bak" />
     <Compile Include="SerialFrameParsers\EndFlagFrameParser.cs" />
     <Compile Include="EventArgs\SerialFrameReceivedEventArgs.cs" />

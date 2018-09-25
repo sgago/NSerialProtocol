@@ -39,7 +39,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SerialPortFixUsingExample",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NSerialPortUnitTests", "UnitTests\NSerialPortUnitTests\NSerialPortUnitTests.csproj", "{D5AF97EF-659F-4621-AFF1-7EADB3F52346}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NSerialProtocolUnitTests", "NSerialProtocolUnitTests\NSerialProtocolUnitTests.csproj", "{5A2F3533-5997-4E31-B023-9F47A28745E1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NSerialProtocolUnitTests", "UnitTests\NSerialProtocolUnitTests\NSerialProtocolUnitTests.csproj", "{5A2F3533-5997-4E31-B023-9F47A28745E1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
