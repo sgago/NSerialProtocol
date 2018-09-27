@@ -5,7 +5,7 @@ namespace NSerialPort
     /// <summary>
     /// Contains event data about a received line from the serial port.
     /// </summary>
-    public class NSerialLineReceivedEventArgs
+    public class NSerialLineReceivedEventArgs : System.EventArgs
     {
         /// <summary>
         /// Gets the event type.

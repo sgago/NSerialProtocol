@@ -7,11 +7,14 @@ namespace NSerialPortUnitTests
     using NSubstitute;
     using NUnit.Framework;
     using SerialPortFix;
+    using System;
     using System.Collections;
     using System.Collections.Generic;
     using System.ComponentModel;
+    using System.Diagnostics;
     using System.IO;
     using System.IO.Ports;
+    using System.Reflection;
     using System.Text;
     using static NSerialPort.NSerialPort;
 
@@ -1764,51 +1767,306 @@ namespace NSerialPortUnitTests
 
 
 
-
-
-
-        /*
-         * TODO: Need to test the following
-         *  - If the new DataReceived event is called
-         *  - If the new LineReceived event is called
-         *  - if the old events are still being called
-         *  - If lines are being read from the serial port properly
-         *  - If the tranceive methods works
-         */
-
-        //[TestCase]
-        //public void ErrorReceived_Event_IsRaised()
-        //{
-        //    bool wasCalled = false;
-        //    ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-        //    INSerialPort nSerialPort = new NSerialPort(serialPortSub);
-
-        //    nSerialPort.ErrorReceived += (sender, e) => wasCalled = true;
-
-        //    serialPortSub.ErrorReceived += Raise.Event<SerialErrorReceivedEventHandler>(this, System.EventArgs.Empty);
-
-        //    Assert.That(wasCalled, Is.True);
-        //}
-        
-
-        //[TestCase]
-        //public void PinChanged_Event_IsRaised()
-        //{
-        //    bool wasCalled = false;
-        //    ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-        //    INSerialPort nSerialPort = new NSerialPort(serialPortSub);
-
-        //    nSerialPort.PinChanged += (sender, e) => wasCalled = true;
-
-        //    serialPortSub.PinChanged += Raise.Event<SerialPinChangedEventHandler>(this, System.EventArgs.Empty);
-
-        //    Assert.That(wasCalled, Is.True);
-        //}
+        // TODO: Verify wrapped methods are called correctly
 
 
 
 
+        /// <summary>
+        /// Verifies that the NSerialDataReceivedEvent is raised.
+        /// </summary>
+        [TestCase]
+        public void DataReceived_Event_IsRaised()
+        {
+            bool wasCalled = false;
+            ISerialPort serialPortSub = Substitute.For<ISerialPort>();
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
+
+            // Need to use reflection to instantiate a SerialDataReceivedEventArgs
+            ConstructorInfo constructor = typeof(SerialDataReceivedEventArgs)
+                .GetConstructor(
+                    BindingFlags.NonPublic | BindingFlags.Instance,
+                    null,
+                    new[] { typeof(SerialData) },
+                    null);
+
+            SerialDataReceivedEventArgs args =
+                (SerialDataReceivedEventArgs)constructor.Invoke(new object[] { SerialData.Eof });
+
+            serialPortSub.NewLine.Returns("\n");
+
+            nSerialPort.DataReceived += (sender, e) => wasCalled = true;
+
+            serialPortSub.DataReceived +=
+                Raise.Event<SerialDataReceivedEventHandler>(args);
+
+            Assert.That(wasCalled, Is.True);
+        }
+
+        /// <summary>
+        /// Verifies that the SerialErrorReceivedEvent is raised.
+        /// </summary>
+        [TestCase]
+        public void ErrorReceived_Event_IsRaised()
+        {
+            bool wasCalled = false;
+            ISerialPort serialPortSub = Substitute.For<ISerialPort>();
+            SerialErrorReceivedEventArgs args =
+                System.EventArgs.Empty as SerialErrorReceivedEventArgs;
+
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
+
+            nSerialPort.ErrorReceived += (sender, e) => wasCalled = true;
+
+            serialPortSub.ErrorReceived +=
+                Raise.Event<SerialErrorReceivedEventHandler>(args);
+
+            Assert.That(wasCalled, Is.True);
+        }
+
+        /// <summary>
+        /// Verifies that the SerialPinChangedEvent is raised.
+        /// </summary>
+        [TestCase]
+        public void PinChanged_Event_IsRaised()
+        {
+            bool wasCalled = false;
+            ISerialPort serialPortSub = Substitute.For<ISerialPort>();
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
+            SerialPinChangedEventArgs args =
+                EventArgs.Empty as SerialPinChangedEventArgs;
+
+            nSerialPort.PinChanged += (sender, e) => wasCalled = true;
+
+            serialPortSub.PinChanged +=
+                Raise.Event<SerialPinChangedEventHandler>(args);
+
+            Assert.That(wasCalled, Is.True);
+        }
+
+        /// <summary>
+        /// Test cases for the LineReceived_Event_IsRaised.
+        /// </summary>
+        /// <returns></returns>
+        private static IEnumerable GetSerialLinesTestCaseData()
+        {
+            yield return new TestCaseData(null)
+                .Returns(new List<string>());
+
+            yield return new TestCaseData("")
+                .Returns(new List<string>());
+
+            yield return new TestCaseData("abc")
+                .Returns(new List<string>());
+
+            yield return new TestCaseData("abc\n")
+                .Returns(new List<string>() { "abc\n" });
+
+            yield return new TestCaseData("\nabc\n")
+                .Returns(new List<string>() { "\n", "abc\n" });
+
+            yield return new TestCaseData("abc\nabc\n")
+                .Returns(new List<string>() { "abc\n", "abc\n" });
+
+            yield return new TestCaseData("abc\nabc\n\n")
+                .Returns(new List<string>() { "abc\n", "abc\n", "\n" });
+        }
+
+        /// <summary>
+        /// Verifies that the SerialLineReceivedEvent is raised.
+        /// </summary>
+        [TestCaseSource(nameof(GetSerialLinesTestCaseData))]
+        public IList<string> LineRecieved_Event_LinesParsedCorrectly(string data)
+        {
+            List<string> linesReceived = new List<string>();
+            ISerialPort serialPortSub = Substitute.For<ISerialPort>();
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
+
+            // Need to use reflection to instantiate a SerialDataReceivedEventArgs
+            ConstructorInfo constructor = typeof(SerialDataReceivedEventArgs)
+                .GetConstructor(
+                    BindingFlags.NonPublic | BindingFlags.Instance,
+                    null,
+                    new[] { typeof(SerialData) },
+                    null);
+
+            SerialDataReceivedEventArgs args =
+                (SerialDataReceivedEventArgs)constructor.Invoke(new object[] { SerialData.Eof });
+
+            serialPortSub.NewLine.Returns("\n");
+            serialPortSub.ReadExisting().Returns(data);
+
+            nSerialPort.LineReceived += (sender, e) =>
+            {
+                linesReceived.Add(e.Line);
+            };
+
+            serialPortSub.DataReceived +=
+                Raise.Event<SerialDataReceivedEventHandler>(args);
+
+            return linesReceived;
+        }
+
+        /// <summary>
+        /// Verifies that TranceiveLine calls the WriteLine method
+        /// to transmit data.
+        /// </summary>
+        [TestCase]
+        public void TranceiveLine_WriteLine_IsCalled()
+        {
+            bool actual = false;
+            const bool expected = true;
+            const string output = "write test";
+
+            ISerialPort serialPortSub = Substitute.For<ISerialPort>();
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
+
+            // Need to use reflection to instantiate a SerialDataReceivedEventArgs
+            ConstructorInfo constructor = typeof(SerialDataReceivedEventArgs)
+                .GetConstructor(
+                    BindingFlags.NonPublic | BindingFlags.Instance,
+                    null,
+                    new[] { typeof(SerialData) },
+                    null);
+
+            SerialDataReceivedEventArgs args =
+                (SerialDataReceivedEventArgs)constructor.Invoke(new object[] { SerialData.Eof });
+
+            serialPortSub.NewLine.Returns("\n");
+
+            serialPortSub.ReadExisting().Returns("");
+
+            serialPortSub.When(x => x.WriteLine(output))
+                .Do(x =>
+                {
+                    actual = true;
+                });
+
+            nSerialPort.TranceiveLine(output);
+
+            Assert.That(actual, Is.EqualTo(expected));
+        }
+
+        /// <summary>
+        /// Verifies that TranceiveLien returns a received string.
+        /// </summary>
+        [TestCase]
+        public void TranceiveLine_ReturnsLine_Test()
+        {
+            string actual = "";
+            const string expected = "abc\n";
+            const string output = "write test";
+
+            ISerialPort serialPortSub = Substitute.For<ISerialPort>();
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
+
+            // Need to use reflection to instantiate a SerialDataReceivedEventArgs
+            ConstructorInfo constructor = typeof(SerialDataReceivedEventArgs)
+                .GetConstructor(
+                    BindingFlags.NonPublic | BindingFlags.Instance,
+                    null,
+                    new[] { typeof(SerialData) },
+                    null);
+
+            SerialDataReceivedEventArgs args =
+                (SerialDataReceivedEventArgs)constructor.Invoke(new object[] { SerialData.Eof });
+
+            serialPortSub.NewLine.Returns("\n");
+
+            serialPortSub.ReadExisting().Returns(expected);
+
+            serialPortSub.When(x => x.WriteLine(output))
+                .Do(x =>
+                {
+                    serialPortSub.DataReceived +=
+                        Raise.Event<SerialDataReceivedEventHandler>(args);
+                });
+
+            actual = nSerialPort.TranceiveLine(output);
+
+            Assert.That(actual, Is.EqualTo(expected));
+        }
 
 
+        // TODO: Need more test cases for negative timeouts, zero timeout, etc.
+        /// <summary>
+        /// Verifies that the TranceiveLine timeout is calculated
+        /// and used appropriately.
+        /// </summary>
+        [TestCase]
+        public void TranceiveLine_Timeout_Test()
+        {
+            long actual = 0;
+            const int retries = 5;
+            const int timeout = 100;
+            const long expected = retries * timeout;
+            const string output = "write test";
+
+            ISerialPort serialPortSub = Substitute.For<ISerialPort>();
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
+
+            // Need to use reflection to instantiate a SerialDataReceivedEventArgs
+            ConstructorInfo constructor = typeof(SerialDataReceivedEventArgs)
+                .GetConstructor(
+                    BindingFlags.NonPublic | BindingFlags.Instance,
+                    null,
+                    new[] { typeof(SerialData) },
+                    null);
+
+            SerialDataReceivedEventArgs args =
+                (SerialDataReceivedEventArgs)constructor.Invoke(new object[] { SerialData.Eof });
+
+            Stopwatch stopwatch = new Stopwatch();
+
+            stopwatch.Start();
+            nSerialPort.TranceiveLine(output, timeout, retries);
+            stopwatch.Stop();
+
+            actual = stopwatch.ElapsedMilliseconds;
+
+            Assert.That(actual, Is.AtLeast(expected));
+
+        }
+
+        // TODO: Need multiple testcases for negative retries, zero retries, etc.
+        /// <summary>
+        /// Verifies that TranceiveLine retries appropriately.
+        /// </summary>
+        [TestCase]
+        public void TranceiveLine_Retries_Test()
+        {
+            int retries = 0;
+            string result = "";
+            const int expected = 3;
+            const string output = "write test";
+
+            ISerialPort serialPortSub = Substitute.For<ISerialPort>();
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
+
+            // Need to use reflection to instantiate a SerialDataReceivedEventArgs
+            ConstructorInfo constructor = typeof(SerialDataReceivedEventArgs)
+                .GetConstructor(
+                    BindingFlags.NonPublic | BindingFlags.Instance,
+                    null,
+                    new[] { typeof(SerialData) },
+                    null);
+
+            SerialDataReceivedEventArgs args =
+                (SerialDataReceivedEventArgs)constructor.Invoke(new object[] { SerialData.Eof });
+
+            serialPortSub.NewLine.Returns("\n");
+
+            serialPortSub.ReadExisting().Returns("");
+
+            serialPortSub.When(x => x.WriteLine(output))
+                .Do(x =>
+                {
+                    retries++;
+                });
+
+            result = nSerialPort.TranceiveLine(output, 100, expected);
+
+            Assert.That(retries, Is.EqualTo(expected));
+        }
     }
 }
