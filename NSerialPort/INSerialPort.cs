@@ -1,5 +1,6 @@
 ﻿using NativeMethods;
 using SerialPortFix;
+using System;
 using System.IO;
 using System.IO.Ports;
 using System.Text;
@@ -275,6 +276,9 @@ namespace NSerialPort
         /// </summary>
         /// <param name="text">The string to write to the output buffer.</param>
         void WriteLine(string text);
+
+
+        string TranceiveLine(string text, int timeout = 100, int retries = 0);
 
         /// <summary>
         /// Gets the ComStat structure for the communications device.

@@ -53,6 +53,10 @@
             {
                 SerialPortHandle = GetSerialPortHandle(value);
 
+                // FIXME: Magic number 14 is the fAbortOnError flag
+                // FIXME: Should be using a NativeMethods enum or similar
+                SetDcbFlag(14, false);
+
                 base.PortName = value;
             }
         }

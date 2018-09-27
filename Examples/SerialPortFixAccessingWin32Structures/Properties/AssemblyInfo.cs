@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("NSerialProtocolUnitTests2")]
+[assembly: AssemblyTitle("SerialPortFixAccessingWin32Structures")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("NSerialProtocolUnitTests2")]
+[assembly: AssemblyProduct("SerialPortFixAccessingWin32Structures")]
 [assembly: AssemblyCopyright("Copyright ©  2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("73a9170c-4ae7-4806-b1a6-46324284405c")]
+[assembly: Guid("af6b8203-d64a-4106-a1c8-34102378d05e")]
 
 // Version information for an assembly consists of the following four values:
 //

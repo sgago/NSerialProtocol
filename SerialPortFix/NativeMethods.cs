@@ -100,19 +100,19 @@
         /// <summary>
         /// Comstat structure flags.
         /// </summary>
-        public readonly uint Flags;
+        public uint Flags;
 
         /// <summary>
         /// The number of bytes received by the serial provider but not yet
         /// read by a ReadFile operation.
         /// </summary>
-        public readonly uint cbInQue;
+        public uint cbInQue;
 
         /// <summary>
         /// The number of bytes of user data remaining to be transmitted for all
         /// write operations.  This value will be zero for a nonoverlapped write.
         /// </summary>
-        public readonly uint cbOutQue;
+        public uint cbOutQue;
     }
 
     /// <summary>
@@ -125,7 +125,7 @@
         /// If this member is true, binary mode is enabled.  Windows does not support
         /// nonbinary mode transfers, so this member must be true.
         /// </summary>
-        fBinary,
+        fBinary = 1,
 
         /// <summary>
         /// If this member is true, parity checking is performed and errors are
@@ -237,12 +237,12 @@
         /// The length of the structure in bytes.  The caller must set this member
         /// to sizeof(DCB).
         /// </summary>
-        public readonly uint DCBlength;
+        public uint DCBlength;
 
         /// <summary>
         /// The baud rate at which the communications device operates.
         /// </summary>
-        public readonly uint BaudRate;
+        public uint BaudRate;
 
         /// <summary>
         /// DCB flags for control settings.
@@ -252,7 +252,7 @@
         /// <summary>
         /// Reserved; must be zero.
         /// </summary>
-        public readonly ushort wReserved;
+        public ushort wReserved;
 
         /// <summary>
         /// The minimum number of bytes in use allowed in the input buffer before flow
@@ -260,59 +260,59 @@
         /// that either XON/XOFF, RTS, or DTR inputs flow control is specified in the
         /// fInX, fRtsControl, or fDtrControl members.
         /// </summary>
-        public readonly ushort XonLim;
+        public ushort XonLim;
 
         /// <summary>
         /// The minimum number of free bytes allowed in the input buffer before flow
         /// control is activated to inhibit the sender.
         /// </summary>
-        public readonly ushort XoffLim;
+        public ushort XoffLim;
 
         /// <summary>
         /// The number of bits in the bytes transmitted and received.
         /// </summary>
-        public readonly byte ByteSize;
+        public byte ByteSize;
 
         /// <summary>
         /// The parity scheme to be used.
         /// </summary>
-        public readonly byte Parity;
+        public byte Parity;
 
         /// <summary>
         /// The number of stop bits to be used.
         /// </summary>
-        public readonly byte StopBits;
+        public byte StopBits;
 
         /// <summary>
         /// The value of the XON character for both transmission and reception.
         /// </summary>
-        public readonly byte XonChar;
+        public byte XonChar;
 
         /// <summary>
         /// The value of the XOFF character for both transmission and reception.
         /// </summary>
-        public readonly byte XoffChar;
+        public byte XoffChar;
 
         /// <summary>
         /// The value of the character used to replace bytes received with a parity
         /// error.
         /// </summary>
-        public readonly byte ErrorChar;
+        public byte ErrorChar;
 
         /// <summary>
         /// The value of the character used to signal the end of data.
         /// </summary>
-        public readonly byte EofChar;
+        public byte EofChar;
 
         /// <summary>
         /// The value of the character used to signal an event.
         /// </summary>
-        public readonly byte EvtChar;
+        public byte EvtChar;
 
         /// <summary>
         /// Reserved; do not use.
         /// </summary>
-        public readonly ushort wReserved1;
+        public ushort wReserved1;
     }
 
     /// <summary>

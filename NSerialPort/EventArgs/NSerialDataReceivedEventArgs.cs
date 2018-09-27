@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO.Ports;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO.Ports;
 
 namespace NSerialPort.EventArgs
 {
-    public class NSerialDataReceivedEventArgs
+    public class NSerialDataReceivedEventArgs : System.EventArgs
     {
         /// <summary>
         /// Gets the Event type.
