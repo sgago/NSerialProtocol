@@ -1765,12 +1765,25 @@ namespace NSerialPortUnitTests
             serialPortSub.Received().Close();
         }
 
-
-
-        // TODO: Verify wrapped methods are called correctly
-
-
-
+        // TODO: Verify wrapped methods are called correctly:
+        /*
+         * These monsters are lower on my unit test concerns:
+         * Constructors
+         * GetComStat
+         * GetComStatFlag
+         * GetDcb
+         * SetDcb
+         * GetDcbFlag
+         * SetDcbFlag
+         * Close
+         * DiscardInBuffer
+         * DiscardOutBuffer
+         * Dispose
+         * Open
+         * Read(s), ReadByte, ReadChar, ReadExisiting, ReadLine
+         * Write(s), WriteLine
+         * 
+         */
 
         /// <summary>
         /// Verifies that the NSerialDataReceivedEvent is raised.

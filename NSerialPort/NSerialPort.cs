@@ -78,22 +78,6 @@
         public event NSerialLineReceivedEventHandler LineReceived;
 
         /// <summary>
-        /// 
-        /// </summary>
-        event NSerialLineReceivedEventHandler INSerialPort.LineReceived
-        {
-            add
-            {
-                LineReceived += value;
-            }
-
-            remove
-            {
-                LineReceived -= value;
-            }
-        }
-
-        /// <summary>
         /// Gets the underlying Stream object for a SerialPort object.
         /// </summary>
         public Stream BaseStream
@@ -515,7 +499,6 @@
             StopBits = stopBits;
 
             // Subscribe to SerialPort events so we can raise them from NSerialPort
-
             SerialPort.DataReceived += SerialPort_DataReceived;
             SerialPort.ErrorReceived += RaiseErrorReceivedEvent;
             SerialPort.PinChanged += RaisePinChangedEvent;
@@ -826,7 +809,8 @@
         }
 
         /// <summary>
-        /// 
+        /// SerialDataReceivedHandler to capture any data received on the serial port.
+        /// Parses any lines received and raises the LineReceived event.
         /// </summary>
         /// <param name="sender">The sender of the event, which is the BaseSerialPort object.</param>
         /// <param name="e">The SerialDataReceivedEventArgs.</param>
