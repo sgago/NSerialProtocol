@@ -11,6 +11,7 @@
     using global::NSerialPort.EventArgs;
     using NativeMethods;
     using SerialPortFix;
+    using System.Data;
 
     /// <summary>
     /// Represents a NSerialPort resource.
@@ -883,219 +884,64 @@
             return result;
         }
 
-
-        // TODO: Contemplated design of async methods here
-        /// <summary>
-        /// A slim semaphore for thread-safety when calling async methods.
-        /// Only one thread can be allowed to talk on the serial port.
-        /// </summary>
-        private static readonly SemaphoreSlim SemaphoreSlim =
-            new SemaphoreSlim(1, 1);
-
-        // TODO: Really need to consider a timeout parameter or property
-        // for the call to Value.WaitAsync(timeout goes here).  Else,
-        // we can weait forever for a Line that never comes...
         /// <summary>
         /// 
         /// </summary>
         /// <typeparam name="TResult"></typeparam>
         /// <param name="func"></param>
         /// <returns></returns>
-        private async Task<TResult> CallFuncWithSerialPortSemaphore<TResult>(Func<TResult> func,
-            int timeout, CancellationToken cancellationToken)
+        private async Task<TResult> CallFunc<TResult>(Func<TResult> func, CancellationToken cancellationToken)
         {
-            TResult result;
-            await SemaphoreSlim.WaitAsync(timeout, cancellationToken);
-
-            try
-            {
-                result = await Task.Run(() => func.Invoke());
-            }
-            finally
-            {
-                SemaphoreSlim.Release();
-            }
-
-            return result;
+            return await Task.Run(() => func.Invoke(), cancellationToken);
         }
 
-        private async Task<TResult> CallFuncWithSerialPortSemaphore<TResult>(Func<TResult> func,
-            TimeSpan timeout, CancellationToken cancellationToken)
+        private async Task<TResult> CallFunc<TResult>(Func<TResult> func)
         {
-            return await CallFuncWithSerialPortSemaphore(func, timeout.Milliseconds, cancellationToken);
+            return await Task.Run(() => func.Invoke(), CancellationToken.None);
         }
 
-        private async Task<TResult> CallFuncWithSerialPortSemaphore<TResult>(Func<TResult> func, int timeout)
+        private async Task CallAction(Action action, CancellationToken cancellationToken)
         {
-            return await CallFuncWithSerialPortSemaphore(func, timeout, CancellationToken.None);
-        }
-
-        private async Task<TResult> CallFuncWithSerialPortSemaphore<TResult>(Func<TResult> func, TimeSpan timeout)
-        {
-            return await CallFuncWithSerialPortSemaphore(func, timeout.Milliseconds, CancellationToken.None);
-        }
-
-        private async Task<TResult> CallFuncWithSerialPortSemaphore<TResult>(Func<TResult> func, CancellationToken cancellationToken)
-        {
-            return await CallFuncWithSerialPortSemaphore(func, Timeout.Infinite, CancellationToken.None);
-        }
-
-        private async Task<TResult> CallFuncWithSerialPortSemaphore<TResult>(Func<TResult> func)
-        {
-            return await CallFuncWithSerialPortSemaphore(func, Timeout.Infinite, CancellationToken.None);
-        }
-
-        private async Task CallActionWithSerialPortSemaphore(Action action, int timeout, CancellationToken cancellationToken)
-        {
-            await SemaphoreSlim.WaitAsync(timeout, cancellationToken);
-
-            try
-            {
-                await Task.Run(() => action.Invoke());
-            }
-            finally
-            {
-                SemaphoreSlim.Release();
-            }
-        }
-
-        private async Task CallActionWithSerialPortSemaphore(Action action, TimeSpan timeout, CancellationToken cancellationToken)
-        {
-            await CallActionWithSerialPortSemaphore(action, timeout.Milliseconds, cancellationToken);
-        }
-
-        private async Task CallActionWithSerialPortSemaphore(Action action, int timeout)
-        {
-            await CallActionWithSerialPortSemaphore(action, timeout, CancellationToken.None);
-        }
-
-        private async Task CallActionWithSerialPortSemaphore(Action action, TimeSpan timeout)
-        {
-            await CallActionWithSerialPortSemaphore(action, timeout.Milliseconds, CancellationToken.None);
-        }
-
-        private async Task CallActionWithSerialPortSemaphore(Action action, CancellationToken cancellationToken)
-        {
-            await CallActionWithSerialPortSemaphore(action, Timeout.Infinite, cancellationToken);
+            await Task.Run(() => action.Invoke(), cancellationToken);
         }
 
         private async Task CallActionWithSerialPortSemaphore(Action action)
         {
-            await CallActionWithSerialPortSemaphore(action, Timeout.Infinite, CancellationToken.None);
+            await CallAction(action, CancellationToken.None);
         }
 
         // FIXME: MUST REMOVE WARNING DISABLE WHEN METHODS ARE WRITTEN, this only here for development purposes!!!!!!!
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-
-        /// <summary>
-        /// Reads a number of bytes from the SerialPort input buffer and writes those
-        /// bytes into a byte array at the specified offset.
-        /// </summary>
-        /// <param name="buffer">The byte array to write the input to.</param>
-        /// <param name="offset">The offset in buffer at which to write the bytes.</param>
-        /// <param name="count">The maximum number of bytes to read.  Fewer bytes are
-        /// read if count is greater than the number of bytes in the input buffer.</param>
-        /// <returns></returns>
-        public async Task<int> ReadAsync(byte[] buffer, int offset, int count)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<int> ReadAsync(byte[] buffer, int offset, int count, int timeout)
-        {
-            throw new NotImplementedException();
-        }
 
         public async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<int> ReadAsync(byte[] buffer, int offset, int count, TimeSpan timeSpan)
+        public async Task<int> ReadAsync(byte[] buffer, int offset, int count)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<int> ReadAsync(byte[] buffer, int offset, int count, int timeout, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<int> ReadAsync(byte[] buffer, int offset, int count, TimeSpan timeSpan, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Reads a number of characters from the SerialPort input buffer and writes them into
-        /// an array of characters at a given offset.
-        /// </summary>
-        /// <param name="buffer">The character array to write the input to.</param>
-        /// <param name="offset">The offset in buffer at which to write the characters</param>
-        /// <param name="count">The maximum number of bytes to read.  Fewer bytes are
-        /// read if count is greater than the number of bytes in the input buffer.</param>
-        /// <returns></returns>
-        public async Task<int> ReadAsync(char[] buffer, int offset, int count)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<int> ReadAsync(char[] buffer, int offset, int count, int timeout)
-        {
-            throw new NotImplementedException();
-        }
 
         public async Task<int> ReadAsync(char[] buffer, int offset, int count, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<int> ReadAsync(char[] buffer, int offset, int count, TimeSpan timeSpan)
+        public async Task<int> ReadAsync(char[] buffer, int offset, int count)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<int> ReadAsync(char[] buffer, int offset, int count, int timeout, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
 
-        public async Task<int> ReadAsync(char[] buffer, int offset, int count, TimeSpan timeSpan, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Synchronously reads one byte from the SerialPort input buffer.
-        /// </summary>
-        /// <returns>The byte, cast to an Int32 or -1 if the end of the stream has been
-        /// read.</returns>
-        public async Task<int> ReadByteAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<int> ReadByteAsync(int timeout)
-        {
-            throw new NotImplementedException();
-        }
 
         public async Task<int> ReadByteAsync(CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<int> ReadByteAsync(TimeSpan timeSpan)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<int> ReadByteAsync(int timeout, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<int> ReadByteAsync(TimeSpan timeSpan, CancellationToken cancellationToken)
+        public async Task<int> ReadByteAsync()
         {
             throw new NotImplementedException();
         }
@@ -1109,62 +955,23 @@
             throw new NotImplementedException();
         }
 
-        public async Task<char> ReadCharAsync(int timeout)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<char> ReadCharAsync(CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<char> ReadCharAsync(TimeSpan timeSpan)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<char> ReadCharAsync(int timeout, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<char> ReadCharAsync(TimeSpan timeSpan, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
 
         /// <summary>
         /// Reads all immediately available bytes, based on the encoding, in both the stream
         /// and the input buffer of the SerialPOrt object.
         /// </summary>
         /// <returns>The contents of the stream and the input buffer of the SerialPort object.</returns>
-        public Task<string> ReadExistingAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<string> ReadExistingAsync(int timeout)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<string> ReadExistingAsync(CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<string> ReadExistingAsync(TimeSpan timeSpan)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<string> ReadExistingAsync(int timeout, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<string> ReadExistingAsync(TimeSpan timeSpan, CancellationToken cancellationToken)
+        public Task<string> ReadExistingAsync()
         {
             throw new NotImplementedException();
         }
@@ -1175,35 +982,16 @@
         /// </summary>
         /// <returns>The contents of the input buffer up to the first occurrence of a
         /// NewLine value.</returns>
-        public Task<string> ReadLineAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<string> ReadLineAsync(int timeout)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<string> ReadLineAsync(CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<string> ReadLineAsync(TimeSpan timeSpan)
+        public Task<string> ReadLineAsync()
         {
             throw new NotImplementedException();
         }
 
-        public async Task<string> ReadLineAsync(int timeout, CancellationToken cancellationToken)
-        {
-            return await CallFuncWithSerialPortSemaphore(() => ReadLine(), timeout, cancellationToken);
-        }
-
-        public async Task<string> ReadLineAsync(TimeSpan timeSpan, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
 
 
         /// <summary>
@@ -1211,12 +999,12 @@
         /// </summary>
         /// <param name="value">A value that indicates where the read operation stops</param>
         /// <returns>The contents of the input buffer up to the specified value.</returns>
-        public async Task<string> ReadToAsync(string value)
+        public async Task<string> ReadToAsync(string value, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<string> ReadToAsync(string value, CancellationToken cancellationToken)
+        public async Task<string> ReadToAsync(string value)
         {
             throw new NotImplementedException();
         }
@@ -1228,6 +1016,11 @@
         /// <param name="offset">The zero-based byte offset in the buffer parameter at which
         /// to begin copying bytes to the port.</param>
         /// <param name="count">The number of bytes to write.</param>
+        public async Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task WriteAsync(byte[] buffer, int offset, int count)
         {
             throw new NotImplementedException();
@@ -1240,7 +1033,12 @@
         /// <param name="offset">The zero-based byte offset in the buffer parameter at which
         /// to begin copying bytes to the port.</param>
         /// <param name="count">The number of characters to write.</param>
-        public async void WriteAsync(char[] buffer, int offset, int count)
+        public async Task WriteAsync(char[] buffer, int offset, int count, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task WriteAsync(char[] buffer, int offset, int count)
         {
             throw new NotImplementedException();
         }
@@ -1249,7 +1047,12 @@
         /// Writes the specified string to the serial port.
         /// </summary>
         /// <param name="text">The string to write to the output buffer.</param>
-        public async void WriteAsync(string text)
+        public async Task WriteAsync(string text, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task WriteAsync(string text)
         {
             throw new NotImplementedException();
         }
@@ -1258,14 +1061,14 @@
         /// Writes the specified string and the NewLine value to the output buffer.
         /// </summary>
         /// <param name="text">The string to write to the output buffer.</param>
-        public async void WriteLineAsync(string text)
+        public async Task WriteLineAsync(string text, CancellationToken cancellationToken)
         {
-            await CallActionWithSerialPortSemaphore(() => WriteLine(text));
+            await CallAction(() => WriteLine(text), cancellationToken);
         }
 
-        public async Task<string> TranceiveLineAsync(string text, int timeout = Timeout.Infinite, int retries = 0)
+        public async Task WriteLineAsync(string text)
         {
-            return await CallFuncWithSerialPortSemaphore(() => TranceiveLine(text, timeout, retries));
+            await CallActionWithSerialPortSemaphore(() => WriteLine(text));
         }
 
         public async Task<string> TranceiveLineAsync(string text, CancellationToken cancellationToken,
@@ -1273,6 +1076,12 @@
         {
             throw new NotImplementedException();
         }
+
+        public async Task<string> TranceiveLineAsync(string text, int timeout = Timeout.Infinite, int retries = 0)
+        {
+            return await CallFunc(() => TranceiveLine(text, timeout, retries), CancellationToken.None);
+        }
+
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
     }
 }

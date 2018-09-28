@@ -16,6 +16,8 @@ namespace NSerialPortUnitTests
     using System.IO.Ports;
     using System.Reflection;
     using System.Text;
+    using System.Threading;
+    using System.Threading.Tasks;
     using static NSerialPort.NSerialPort;
 
     /// <summary>
@@ -2080,6 +2082,111 @@ namespace NSerialPortUnitTests
             result = nSerialPort.TranceiveLine(output, 100, expected);
 
             Assert.That(retries, Is.EqualTo(expected));
+        }
+
+        /// <summary>
+        /// Verifies that ReadAsync calls the proper method with correct arguments.
+        /// </summary>
+        /// <returns></returns>
+        [TestCase]
+        public async Task ReadByteArrayAsync_Calls_ReadByteArray()
+        {
+            ISerialPort serialPortSub = Substitute.For<ISerialPort>();
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
+            byte[] buffer = new byte[3];
+
+            serialPortSub.Read(buffer, 0, 3).Returns(3);
+
+            await nSerialPort.ReadAsync(buffer, 0, 3, CancellationToken.None);
+
+            serialPortSub.Received().Read(buffer, 0, 3);
+        }
+
+
+        // TODO: Figure out how to unit test CancellationTokens
+        //[TestCase]
+        //[Timeout(1000)]
+        //public async Task ReadAsync_StopWith_CancellationToken()
+        //{
+        //    ISerialPort serialPortSub = Substitute.For<ISerialPort>();
+        //    INSerialPort nSerialPort = new NSerialPort(serialPortSub);
+        //    CancellationTokenSource cts = new CancellationTokenSource();
+
+        //    byte[] buffer = new byte[3];
+
+        //    serialPortSub.Read(buffer, 0, 3).Returns(3);
+
+        //    //cts.CancelAfter(300);
+
+        //    CancellationToken token = cts.Token;
+
+        //    System.Timers.Timer t = new System.Timers.Timer(200);
+
+        //    t.Elapsed += (o, s) => cts.Cancel();
+
+        //    await nSerialPort.ReadAsync(buffer, 0, 3,
+        //        Timeout.Infinite, token);
+
+
+
+        //    //serialPortSub.Received().Read(buffer, 0, 3);
+        //}
+
+
+        [TestCase]
+        public async Task ReadCharArrayAsync_Calls_ReadCharArray()
+        {
+            ISerialPort serialPortSub = Substitute.For<ISerialPort>();
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
+            char[] buffer = new char[3];
+
+            serialPortSub.Read(buffer, 0, 3).Returns(3);
+
+            await nSerialPort.ReadAsync(buffer, 0, 3, CancellationToken.None);
+
+            serialPortSub.Received().Read(buffer, 0, 3);
+        }
+
+        [TestCase]
+        public async Task ReadExistingAsync_Calls_ReadExisting()
+        {
+            throw new NotImplementedException();
+        }
+
+        [TestCase]
+        public async Task ReadLineAsync_Calls_ReadLine()
+        {
+            throw new NotImplementedException();
+        }
+
+        [TestCase]
+        public async Task ReadToAsync_Calls_ReadTo()
+        {
+            throw new NotImplementedException();
+        }
+
+        [TestCase]
+        public async Task WriteByteArrayAsync_Calls_WriteByteArray()
+        {
+            throw new NotImplementedException();
+        }
+
+        [TestCase]
+        public async Task WriteCharArrayAsync_Calls_WriteCharArray()
+        {
+            throw new NotImplementedException();
+        }
+
+        [TestCase]
+        public async Task WriteStringArrayAsync_Calls_WriteStringArray()
+        {
+            throw new NotImplementedException();
+        }
+
+        [TestCase]
+        public async Task TranceiveLineAsync_Calls_TranceiveLine()
+        {
+            throw new NotImplementedException();
         }
     }
 }
