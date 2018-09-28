@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using System.IO.Ports;
 using System.Text;
+using System.Threading.Tasks;
 using static NSerialPort.NSerialPort;
 
 namespace NSerialPort
@@ -11,7 +12,7 @@ namespace NSerialPort
     /// <summary>
     /// Represents a NSerialPort resource.
     /// </summary>
-    public interface INSerialPort
+    public interface INSerialPort : IDisposable
     {
         /// <summary>
         /// Gets the underlying Stream object for a SerialPort object.
@@ -279,6 +280,9 @@ namespace NSerialPort
 
 
         string TranceiveLine(string text, int timeout = 100, int retries = 0);
+
+
+        Task<string> TranceiveLineAsync(string text, int timeout = 100, int retries = 0);
 
         /// <summary>
         /// Gets the ComStat structure for the communications device.

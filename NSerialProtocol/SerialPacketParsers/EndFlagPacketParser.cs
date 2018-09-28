@@ -23,8 +23,8 @@ namespace NSerialProtocol.PacketParsers
         {
             EndFlag = endFlag;
             Encoding = encoding;
-            frameParser.OnSerialFrameReceived += FrameParser_OnSerialFrameReceived;
-            frameParser.OnSerialFrameError += FrameParser_OnSerialFrameError;
+            frameParser.SerialFrameReceived += FrameParser_OnSerialFrameReceived;
+            frameParser.SerialFrameError += FrameParser_OnSerialFrameError;
         }
 
         private void FrameParser_OnSerialFrameReceived(object sender, SerialFrameReceivedEventArgs e)
