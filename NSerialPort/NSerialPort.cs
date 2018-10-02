@@ -11,8 +11,9 @@
     using global::NSerialPort.EventArgs;
     using NativeMethods;
     using SerialPortFix;
-    using System.Data;
 
+    // TODO: Consider a different name than INSerialPort
+    // TODO: Consider an asynchronous, synchronous, and async + sync interfaces for better separation
     /// <summary>
     /// Represents a NSerialPort resource.
     /// </summary>
@@ -844,6 +845,15 @@
             }
         }
 
+        // TODO: Debating whether this method would be useful to other programmers
+        // I think it would, but the users would need to specify the read function
+        // for NSerialPort.  Otherwise, how is NSerialPort supposed to know what to
+        // read?
+        public string Tranceive(string text, Func<string> readFunction, int timeout = 100, int retries = 0)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Writes the specified string and the NewLine value to the output buffer, and
         /// returns a line received, if any.
@@ -884,80 +894,54 @@
             return result;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="TResult"></typeparam>
-        /// <param name="func"></param>
-        /// <returns></returns>
-        private async Task<TResult> CallFunc<TResult>(Func<TResult> func, CancellationToken cancellationToken)
-        {
-            return await Task.Run(() => func.Invoke(), cancellationToken);
-        }
 
-        private async Task<TResult> CallFunc<TResult>(Func<TResult> func)
-        {
-            return await Task.Run(() => func.Invoke(), CancellationToken.None);
-        }
 
-        private async Task CallAction(Action action, CancellationToken cancellationToken)
-        {
-            await Task.Run(() => action.Invoke(), cancellationToken);
-        }
-
-        private async Task CallActionWithSerialPortSemaphore(Action action)
-        {
-            await CallAction(action, CancellationToken.None);
-        }
-
-        // FIXME: MUST REMOVE WARNING DISABLE WHEN METHODS ARE WRITTEN, this only here for development purposes!!!!!!!
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
 
         public async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return await Task.Run(() => Read(buffer, offset, count), cancellationToken);
         }
 
         public async Task<int> ReadAsync(byte[] buffer, int offset, int count)
         {
-            throw new NotImplementedException();
+            return await ReadAsync(buffer, offset, count, CancellationToken.None);
         }
 
 
         public async Task<int> ReadAsync(char[] buffer, int offset, int count, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return await Task.Run(() => Read(buffer, offset, count), cancellationToken);
         }
 
         public async Task<int> ReadAsync(char[] buffer, int offset, int count)
         {
-            throw new NotImplementedException();
+            return await ReadAsync(buffer, offset, count, CancellationToken.None);
         }
 
 
 
         public async Task<int> ReadByteAsync(CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return await Task.Run(() => ReadByte(), cancellationToken);
         }
 
         public async Task<int> ReadByteAsync()
         {
-            throw new NotImplementedException();
+            return await Task.Run(() => ReadByte(), CancellationToken.None);
         }
 
         /// <summary>
         /// Synchronously reads one character from the SerialPort input buffer.
         /// </summary>
         /// <returns>The character that was read.</returns>
-        public async Task<char> ReadCharAsync()
+        public async Task<int> ReadCharAsync(CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return await Task.Run(() => ReadChar(), cancellationToken);
         }
 
-        public async Task<char> ReadCharAsync(CancellationToken cancellationToken)
+        public async Task<int> ReadCharAsync()
         {
-            throw new NotImplementedException();
+            return await Task.Run(() => ReadChar(), CancellationToken.None);
         }
 
 
@@ -968,12 +952,12 @@
         /// <returns>The contents of the stream and the input buffer of the SerialPort object.</returns>
         public async Task<string> ReadExistingAsync(CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return await Task.Run(() => ReadExisting(), cancellationToken);
         }
 
-        public Task<string> ReadExistingAsync()
+        public async Task<string> ReadExistingAsync()
         {
-            throw new NotImplementedException();
+            return await Task.Run(() => ReadExisting(), CancellationToken.None);
         }
 
 
@@ -984,12 +968,12 @@
         /// NewLine value.</returns>
         public async Task<string> ReadLineAsync(CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return await Task.Run(() => ReadLine(), cancellationToken);
         }
 
-        public Task<string> ReadLineAsync()
+        public async Task<string> ReadLineAsync()
         {
-            throw new NotImplementedException();
+            return await Task.Run(() => ReadLine(), CancellationToken.None);
         }
 
 
@@ -1001,12 +985,12 @@
         /// <returns>The contents of the input buffer up to the specified value.</returns>
         public async Task<string> ReadToAsync(string value, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return await Task.Run(() => ReadTo(value), cancellationToken);
         }
 
         public async Task<string> ReadToAsync(string value)
         {
-            throw new NotImplementedException();
+            return await Task.Run(() => ReadTo(value), CancellationToken.None);
         }
 
         /// <summary>
@@ -1018,12 +1002,12 @@
         /// <param name="count">The number of bytes to write.</param>
         public async Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            await Task.Run(() => Write(buffer, offset, count), cancellationToken);
         }
 
         public async Task WriteAsync(byte[] buffer, int offset, int count)
         {
-            throw new NotImplementedException();
+            await Task.Run(() => Write(buffer, offset, count), CancellationToken.None);
         }
 
         /// <summary>
@@ -1035,12 +1019,12 @@
         /// <param name="count">The number of characters to write.</param>
         public async Task WriteAsync(char[] buffer, int offset, int count, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            await Task.Run(() => Write(buffer, offset, count), cancellationToken);
         }
 
         public async Task WriteAsync(char[] buffer, int offset, int count)
         {
-            throw new NotImplementedException();
+            await Task.Run(() => Write(buffer, offset, count), CancellationToken.None);
         }
 
         /// <summary>
@@ -1049,12 +1033,12 @@
         /// <param name="text">The string to write to the output buffer.</param>
         public async Task WriteAsync(string text, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            await Task.Run(() => Write(text), cancellationToken);
         }
 
         public async Task WriteAsync(string text)
         {
-            throw new NotImplementedException();
+            await Task.Run(() => Write(text), CancellationToken.None);
         }
 
         /// <summary>
@@ -1063,25 +1047,36 @@
         /// <param name="text">The string to write to the output buffer.</param>
         public async Task WriteLineAsync(string text, CancellationToken cancellationToken)
         {
-            await CallAction(() => WriteLine(text), cancellationToken);
+            await Task.Run(() => WriteLine(text), cancellationToken);
         }
 
         public async Task WriteLineAsync(string text)
         {
-            await CallActionWithSerialPortSemaphore(() => WriteLine(text));
+            await Task.Run(() => WriteLine(text), CancellationToken.None);
         }
+
+        // See: Comments about synchronous Tranceive method
+        //public async Task<string> TranceiveAsync(string text, Func<string> readFunction, CancellationToken cancellationToken,
+        //    int timeout = Timeout.Infinite, int retries = 0)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        // See: Comments about synchronous Tranceive method
+        //public async Task<string> TranceiveAsync(string text, Func<string> readFunction, int timeout = Timeout.Infinite, int retries = 0)
+        //{
+        //    return await CallFunc(() => Tranceive(text, readFunction, timeout, retries), CancellationToken.None);
+        //}
 
         public async Task<string> TranceiveLineAsync(string text, CancellationToken cancellationToken,
             int timeout = Timeout.Infinite, int retries = 0)
         {
-            throw new NotImplementedException();
+            return await Task.Run(() => TranceiveLine(text, timeout, retries), cancellationToken);
         }
 
         public async Task<string> TranceiveLineAsync(string text, int timeout = Timeout.Infinite, int retries = 0)
         {
-            return await CallFunc(() => TranceiveLine(text, timeout, retries), CancellationToken.None);
+            return await Task.Run(() => TranceiveLine(text, timeout, retries), CancellationToken.None);
         }
-
-#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
     }
 }

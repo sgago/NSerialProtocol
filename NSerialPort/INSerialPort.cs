@@ -339,17 +339,17 @@ namespace NSerialPort
 
         Task<int> ReadByteAsync();
 
-        Task<char> ReadCharAsync(CancellationToken cancellationToken);
+        Task<int> ReadCharAsync(CancellationToken cancellationToken);
 
-        Task<char> ReadCharAsync();
+        Task<int> ReadCharAsync();
 
         Task<string> ReadExistingAsync(CancellationToken cancellationToken);
 
         Task<string> ReadExistingAsync();
 
-        Task<string> ReadLineAysnc(CancellationToken cancellationToken);
+        Task<string> ReadLineAsync(CancellationToken cancellationToken);
 
-        Task<string> ReadLineAysnc();
+        Task<string> ReadLineAsync();
 
         Task<string> ReadToAsync(string value, CancellationToken cancellationToken);
 
