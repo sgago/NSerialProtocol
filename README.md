@@ -45,28 +45,17 @@ For all intents and purposes, SerialPortFix should be a direct
 replacement for the original SerialPort class.
 
 ~~~.language-csharp
-// Some constants cause we want to be good programmers
 const string PORT_NAME = "COM1";
 const int    BAUD_RATE = 9600;
 
-// Instantiate a SerialPortFix with the using keyword
 using (ISerialPort serialPort = new SerialPortFix(PORTNAME, BAUD_RATE))
 {
-    // Open the port so you can use it first
     serialPort.Open();
 
-    // You can send some data with WriteLine
-    serialPort.WriteLine("Send data...");
+    serialPort.WriteLine("Send some data like this...");
 
-    // Or you can get some data with ReadLine
     results = serialPort.ReadLine();
-
-    // And do something with the results
-    System.Console.WriteLine(results);
-
 }
-// using keyword automagically disposes the unmanaged resources
-// for us.  No need to call serialPort.Close()
 ~~~
 
 ### NSerialPort

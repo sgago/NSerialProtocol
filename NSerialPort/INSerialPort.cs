@@ -4,6 +4,8 @@ using System;
 using System.IO;
 using System.IO.Ports;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using static NSerialPort.NSerialPort;
 
 namespace NSerialPort
@@ -11,7 +13,7 @@ namespace NSerialPort
     /// <summary>
     /// Represents a NSerialPort resource.
     /// </summary>
-    public interface INSerialPort
+    public interface INSerialPort : IDisposable
     {
         /// <summary>
         /// Gets the underlying Stream object for a SerialPort object.
@@ -280,6 +282,7 @@ namespace NSerialPort
 
         string TranceiveLine(string text, int timeout = 100, int retries = 0);
 
+
         /// <summary>
         /// Gets the ComStat structure for the communications device.
         /// </summary>
@@ -323,5 +326,54 @@ namespace NSerialPort
         /// <param name="flag">The DCB flag to set.</param>
         /// <param name="value">Value to set the DCB flag to.</param>
         void SetDcbFlag(int flag, bool value);
+
+        Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken);
+
+        Task<int> ReadAsync(byte[] buffer, int offset, int count);
+
+        Task<int> ReadAsync(char[] buffer, int offset, int count, CancellationToken cancellationToken);
+
+        Task<int> ReadAsync(char[] buffer, int offset, int count);
+
+        Task<int> ReadByteAsync(CancellationToken cancellationToken);
+
+        Task<int> ReadByteAsync();
+
+        Task<int> ReadCharAsync(CancellationToken cancellationToken);
+
+        Task<int> ReadCharAsync();
+
+        Task<string> ReadExistingAsync(CancellationToken cancellationToken);
+
+        Task<string> ReadExistingAsync();
+
+        Task<string> ReadLineAsync(CancellationToken cancellationToken);
+
+        Task<string> ReadLineAsync();
+
+        Task<string> ReadToAsync(string value, CancellationToken cancellationToken);
+
+        Task<string> ReadToAsync(string value);
+
+        Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken);
+
+        Task WriteAsync(byte[] buffer, int offset, int count);
+
+        Task WriteAsync(char[] buffer, int offset, int count, CancellationToken cancellationToken);
+
+        Task WriteAsync(char[] buffer, int offset, int count);
+
+        Task WriteAsync(string text, CancellationToken cancellationToken);
+
+        Task WriteAsync(string text);
+
+        Task WriteLineAsync(string text, CancellationToken cancellationToken);
+
+        Task WriteLineAsync(string text);
+
+        Task<string> TranceiveLineAsync(string text, CancellationToken cancellationToken,
+            int timeout = Timeout.Infinite, int retries = 0);
+
+        Task<string> TranceiveLineAsync(string text, int timeout = Timeout.Infinite, int retries = 0);
     }
 }

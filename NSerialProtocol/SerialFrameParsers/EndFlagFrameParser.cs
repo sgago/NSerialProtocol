@@ -37,21 +37,21 @@ namespace NSerialProtocol.FrameParsers
         /// </summary>
         private Regex SerialPacketRegex { get; set; }
 
-        public delegate void SerialFrameReceivedEventHandler(object sender, SerialFrameReceivedEventArgs e);
+        //public delegate void SerialFrameReceivedEventHandler(object sender, SerialFrameReceivedEventArgs e);
 
-        public delegate void SerialFrameErrorEventHandler(object sender, SerialFrameErrorEventArgs e);
+        //public delegate void SerialFrameErrorEventHandler(object sender, SerialFrameErrorEventArgs e);
 
 
         /// <summary>
         /// Indicates that a complete serial message has been received through a port represented by the
         /// SerialPort object.
         /// </summary>
-        public event SerialFrameReceivedEventHandler OnSerialFrameReceived;
+        public override event SerialFrameReceivedEventHandler SerialFrameReceived;
 
         /// <summary>
         /// Indicates that a framing error has occured with data in the SerialPacketPrototype object.
         /// </summary>
-        public event SerialFrameErrorEventHandler OnSerialFrameError;
+        public override event SerialFrameErrorEventHandler SerialFrameError;
 
 
 
@@ -99,7 +99,7 @@ namespace NSerialProtocol.FrameParsers
             return new Regex(GetRegexPattern(pattern, endFlag), RegexOptions);
         }
 
-        public void Parse(string data)
+        public override void Parse(string data)
         {
             IList<string> frames = null;
 
@@ -123,12 +123,12 @@ namespace NSerialProtocol.FrameParsers
                     if (IsFixedLength && frames[i].Length != FixedLength)
                     {
                         // Frame is a bad length, send a frame error event
-                        OnSerialFrameError?.Invoke(this, new SerialFrameErrorEventArgs(frames[i], FrameErrorType.InvalidLength));
+                        SerialFrameError?.Invoke(this, new SerialFrameErrorEventArgs(frames[i], FrameErrorType.InvalidLength));
                     }
                     else
                     {
                         // Frame is good, send frame received event
-                        OnSerialFrameReceived?.Invoke(this, new SerialFrameReceivedEventArgs(frames[i]));
+                        SerialFrameReceived?.Invoke(this, new SerialFrameReceivedEventArgs(frames[i]));
                     }
 
                     // Clear this frame the InputBuffer to avoid an overrun
@@ -139,7 +139,7 @@ namespace NSerialProtocol.FrameParsers
             {
                 // Uhoh, buffer overran its max size
                 // Pass entire buffer via frame error event
-                OnSerialFrameError?.Invoke(this, new SerialFrameErrorEventArgs(InputBuffer, FrameErrorType.BufferOverrun));
+                SerialFrameError?.Invoke(this, new SerialFrameErrorEventArgs(InputBuffer, FrameErrorType.BufferOverrun));
 
                 // Drop the entire buffer
                 InputBuffer = "";

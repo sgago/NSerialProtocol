@@ -16,7 +16,8 @@ namespace NSerialPortUnitTests
     using System.IO.Ports;
     using System.Reflection;
     using System.Text;
-    using static NSerialPort.NSerialPort;
+    using System.Threading;
+    using System.Threading.Tasks;
 
     /// <summary>
     /// Contains unit tests for NSerialPort.
@@ -24,6 +25,7 @@ namespace NSerialPortUnitTests
     [TestFixture]
     public class NSerialPortUnitTests
     {
+        private const int ReadTimeout = 250;
         private static readonly IEnumerable propertyNames = new List<string>
         {
             nameof(NSerialPort.BaudRate),
@@ -1925,6 +1927,7 @@ namespace NSerialPortUnitTests
         /// to transmit data.
         /// </summary>
         [TestCase]
+        [Timeout(ReadTimeout)]
         public void TranceiveLine_WriteLine_IsCalled()
         {
             bool actual = false;
@@ -1964,6 +1967,7 @@ namespace NSerialPortUnitTests
         /// Verifies that TranceiveLien returns a received string.
         /// </summary>
         [TestCase]
+        [Timeout(ReadTimeout)]
         public void TranceiveLine_ReturnsLine_Test()
         {
             string actual = "";
@@ -2006,80 +2010,283 @@ namespace NSerialPortUnitTests
         /// Verifies that the TranceiveLine timeout is calculated
         /// and used appropriately.
         /// </summary>
-        [TestCase]
-        public void TranceiveLine_Timeout_Test()
-        {
-            long actual = 0;
-            const int retries = 5;
-            const int timeout = 100;
-            const long expected = retries * timeout;
-            const string output = "write test";
+        //[TestCase]
+        //[Timeout(ReadTimeout)]
+        //public void TranceiveLine_Timeout_Test()
+        //{
+        //    long actual = 0;
+        //    const int retries = 5;
+        //    const int timeout = 100;
+        //    const long expected = retries * timeout;
+        //    const string output = "write test";
 
-            ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
+        //    ISerialPort serialPortSub = Substitute.For<ISerialPort>();
+        //    INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
-            // Need to use reflection to instantiate a SerialDataReceivedEventArgs
-            ConstructorInfo constructor = typeof(SerialDataReceivedEventArgs)
-                .GetConstructor(
-                    BindingFlags.NonPublic | BindingFlags.Instance,
-                    null,
-                    new[] { typeof(SerialData) },
-                    null);
+        //    // Need to use reflection to instantiate a SerialDataReceivedEventArgs
+        //    ConstructorInfo constructor = typeof(SerialDataReceivedEventArgs)
+        //        .GetConstructor(
+        //            BindingFlags.NonPublic | BindingFlags.Instance,
+        //            null,
+        //            new[] { typeof(SerialData) },
+        //            null);
 
-            SerialDataReceivedEventArgs args =
-                (SerialDataReceivedEventArgs)constructor.Invoke(new object[] { SerialData.Eof });
+        //    SerialDataReceivedEventArgs args =
+        //        (SerialDataReceivedEventArgs)constructor.Invoke(new object[] { SerialData.Eof });
 
-            Stopwatch stopwatch = new Stopwatch();
+        //    Stopwatch stopwatch = new Stopwatch();
 
-            stopwatch.Start();
-            nSerialPort.TranceiveLine(output, timeout, retries);
-            stopwatch.Stop();
+        //    stopwatch.Start();
+        //    nSerialPort.TranceiveLine(output, timeout, retries);
+        //    stopwatch.Stop();
 
-            actual = stopwatch.ElapsedMilliseconds;
+        //    actual = stopwatch.ElapsedMilliseconds;
 
-            Assert.That(actual, Is.AtLeast(expected));
-
-        }
+        //    Assert.That(actual, Is.AtLeast(expected));
+        //}
 
         // TODO: Need multiple testcases for negative retries, zero retries, etc.
         /// <summary>
         /// Verifies that TranceiveLine retries appropriately.
         /// </summary>
-        [TestCase]
-        public void TranceiveLine_Retries_Test()
-        {
-            int retries = 0;
-            string result = "";
-            const int expected = 3;
-            const string output = "write test";
+        //[TestCase]
+        //[Timeout(ReadTimeout)]
+        //public void TranceiveLine_Retries_Test()
+        //{
+        //    int retries = 0;
+        //    string result = "";
+        //    const int expected = 3;
+        //    const string output = "write test";
 
+        //    ISerialPort serialPortSub = Substitute.For<ISerialPort>();
+        //    INSerialPort nSerialPort = new NSerialPort(serialPortSub);
+
+        //    // Need to use reflection to instantiate a SerialDataReceivedEventArgs
+        //    ConstructorInfo constructor = typeof(SerialDataReceivedEventArgs)
+        //        .GetConstructor(
+        //            BindingFlags.NonPublic | BindingFlags.Instance,
+        //            null,
+        //            new[] { typeof(SerialData) },
+        //            null);
+
+        //    SerialDataReceivedEventArgs args =
+        //        (SerialDataReceivedEventArgs)constructor.Invoke(new object[] { SerialData.Eof });
+
+        //    serialPortSub.NewLine.Returns("\n");
+
+        //    serialPortSub.ReadExisting().Returns("");
+
+        //    serialPortSub.When(x => x.WriteLine(output))
+        //        .Do(x =>
+        //        {
+        //            retries++;
+        //        });
+
+        //    result = nSerialPort.TranceiveLine(output, 100, expected);
+
+        //    Assert.That(retries, Is.EqualTo(expected));
+        //}
+
+        /// <summary>
+        /// Verifies that ReadAsync calls the proper method with correct arguments.
+        /// </summary>
+        /// <returns></returns>
+        [TestCase]
+        [Timeout(ReadTimeout)]
+        public async Task ReadByteArrayAsync_Calls_ReadByteArray()
+        {
+            ISerialPort serialPortSub = Substitute.For<ISerialPort>();
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
+            byte[] buffer = new byte[3];
+
+            serialPortSub.Read(buffer, 0, 3).Returns(3);
+
+            await nSerialPort.ReadAsync(buffer, 0, 3, CancellationToken.None);
+
+            serialPortSub.Received().Read(buffer, 0, 3);
+        }
+
+
+        // TODO: Figure out how to unit test CancellationTokens
+        //[TestCase]
+        //[Timeout(1000)]
+        //public async Task ReadAsync_StopWith_CancellationToken()
+        //{
+        //    ISerialPort serialPortSub = Substitute.For<ISerialPort>();
+        //    INSerialPort nSerialPort = new NSerialPort(serialPortSub);
+        //    CancellationTokenSource cts = new CancellationTokenSource();
+
+        //    byte[] buffer = new byte[3];
+
+        //    serialPortSub.Read(buffer, 0, 3).Returns(3);
+
+        //    //cts.CancelAfter(300);
+
+        //    CancellationToken token = cts.Token;
+
+        //    System.Timers.Timer t = new System.Timers.Timer(200);
+
+        //    t.Elapsed += (o, s) => cts.Cancel();
+
+        //    await nSerialPort.ReadAsync(buffer, 0, 3,
+        //        Timeout.Infinite, token);
+
+
+
+        //    //serialPortSub.Received().Read(buffer, 0, 3);
+        //}
+
+
+        [TestCase]
+        [Timeout(ReadTimeout)]
+        public async Task ReadCharArrayAsync_Calls_ReadCharArray()
+
+        {
+            ISerialPort serialPortSub = Substitute.For<ISerialPort>();
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
+            char[] buffer = new char[3];
+
+            serialPortSub.Read(buffer, 0, 3).Returns(3);
+
+            await nSerialPort.ReadAsync(buffer, 0, 3, CancellationToken.None);
+
+            serialPortSub.Received().Read(buffer, 0, 3);
+        }
+
+        [TestCase]
+        [Timeout(ReadTimeout)]
+        public async Task ReadExistingAsync_Calls_ReadExisting()
+        {
+            const string expected = "test";
+            string actual = "";
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
             INSerialPort nSerialPort = new NSerialPort(serialPortSub);
 
-            // Need to use reflection to instantiate a SerialDataReceivedEventArgs
-            ConstructorInfo constructor = typeof(SerialDataReceivedEventArgs)
-                .GetConstructor(
-                    BindingFlags.NonPublic | BindingFlags.Instance,
-                    null,
-                    new[] { typeof(SerialData) },
-                    null);
+            serialPortSub.ReadExisting().Returns("test");
 
-            SerialDataReceivedEventArgs args =
-                (SerialDataReceivedEventArgs)constructor.Invoke(new object[] { SerialData.Eof });
+            actual = await nSerialPort.ReadExistingAsync();
 
-            serialPortSub.NewLine.Returns("\n");
-
-            serialPortSub.ReadExisting().Returns("");
-
-            serialPortSub.When(x => x.WriteLine(output))
-                .Do(x =>
-                {
-                    retries++;
-                });
-
-            result = nSerialPort.TranceiveLine(output, 100, expected);
-
-            Assert.That(retries, Is.EqualTo(expected));
+            Assert.That(actual, Is.EqualTo(expected));
         }
+
+        [TestCase]
+        [Timeout(ReadTimeout)]
+        public async Task ReadLineAsync_Calls_ReadLine()
+        {
+            const string expected = "test\n";
+            string actual = "";
+            ISerialPort serialPortSub = Substitute.For<ISerialPort>();
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
+
+            serialPortSub.ReadLine().Returns(expected);
+
+            actual = await nSerialPort.ReadLineAsync();
+
+            Assert.That(actual, Is.EqualTo(expected));
+        }
+
+        [TestCase]
+        [Timeout(ReadTimeout)]
+        public async Task ReadToAsync_Calls_ReadTo()
+        {
+            const string expected = "test";
+            string actual = "";
+            ISerialPort serialPortSub = Substitute.For<ISerialPort>();
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
+
+            serialPortSub.ReadTo("\n").Returns(expected);
+
+            actual = await nSerialPort.ReadToAsync("\n");
+
+            Assert.That(actual, Is.EqualTo(expected));
+        }
+
+        [TestCase]
+        public async Task WriteByteArrayAsync_Calls_WriteByteArray()
+        {
+            byte[] expected = Encoding.Default.GetBytes("test");
+            ISerialPort serialPortSub = Substitute.For<ISerialPort>();
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
+
+            await nSerialPort.WriteAsync(expected, 0, expected.Length);
+
+            serialPortSub.Received().Write(expected, 0, expected.Length);
+        }
+
+        [TestCase]
+        public async Task WriteCharArrayAsync_Calls_WriteCharArray()
+        {
+            char[] expected = "test".ToCharArray();
+            ISerialPort serialPortSub = Substitute.For<ISerialPort>();
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
+
+            await nSerialPort.WriteAsync(expected, 0, expected.Length);
+
+            serialPortSub.Received().Write(expected, 0, expected.Length);
+        }
+
+        [TestCase]
+        public async Task WriteStringAsync_Calls_WriteString()
+        {
+            string expected = "test";
+            ISerialPort serialPortSub = Substitute.For<ISerialPort>();
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
+
+            await nSerialPort.WriteAsync(expected);
+
+            serialPortSub.Received().Write(expected);
+        }
+
+        [TestCase]
+        public async Task WriteLineAsync_Calls_WriteLine()
+        {
+            string expected = "test";
+            ISerialPort serialPortSub = Substitute.For<ISerialPort>();
+            INSerialPort nSerialPort = new NSerialPort(serialPortSub);
+
+            await nSerialPort.WriteLineAsync(expected);
+
+            serialPortSub.Received().WriteLine(expected);
+        }
+
+        //[TestCase]
+        //public async Task TranceiveAsync_Calls_Tranceive()
+        //{
+        //    string expected = "test";
+        //    ISerialPort serialPortSub = Substitute.For<ISerialPort>();
+        //    INSerialPort nSerialPort = new NSerialPort(serialPortSub);
+
+        //    serialPortSub.ReadLine().Returns("value");
+
+        //    string actual = await nSerialPort.TranceiveLineAsync(expected, Timeout.Infinite, 0);
+
+        //    Assert.That(actual, Is.EqualTo(expected));
+        //}
+
+        //[TestCase]
+        //[Timeout(ReadTimeout)]
+        //public async Task TranceiveLineAsync_Calls_TranceiveLine()
+        //{
+        //    string expected = "test";
+        //    ISerialPort serialPortSub = Substitute.For<ISerialPort>();
+        //    INSerialPort nSerialPort = new NSerialPort(serialPortSub);
+
+        //    // Need to use reflection to instantiate a SerialDataReceivedEventArgs
+        //    ConstructorInfo constructor = typeof(SerialDataReceivedEventArgs)
+        //        .GetConstructor(
+        //            BindingFlags.NonPublic | BindingFlags.Instance,
+        //            null,
+        //            new[] { typeof(SerialData) },
+        //            null);
+
+        //    SerialDataReceivedEventArgs args =
+        //        (SerialDataReceivedEventArgs)constructor.Invoke(new object[] { SerialData.Eof });
+
+        //    serialPortSub.ReadLine().Returns("value");
+
+        //    string actual = await nSerialPort.TranceiveLineAsync(expected, Timeout.Infinite, 0);
+
+        //    Assert.That(actual, Is.EqualTo(expected));
+        //}
     }
 }
