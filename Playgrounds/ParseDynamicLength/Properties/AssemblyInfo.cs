@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("ExpressionTrees")]
+[assembly: AssemblyTitle("ParseDynamicLength")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("ExpressionTrees")]
+[assembly: AssemblyProduct("ParseDynamicLength")]
 [assembly: AssemblyCopyright("Copyright ©  2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("bcf4cdc4-be6f-4fbf-8b6a-717b40272c4c")]
+[assembly: Guid("27de31d6-f54b-403f-999c-57eb201fdac3")]
 
 // Version information for an assembly consists of the following four values:
 //

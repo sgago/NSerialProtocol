@@ -8,6 +8,8 @@ namespace NSerialProtocol
 {
     using SerialMemberKvp = KeyValuePair<SerialFrameMemberAttribute, PropertyInfo>;
 
+    // TODO: Need to create an ISerialize interface and this class needs to use it
+    // when serializing and deserializing data
     /// <summary>
     /// Represents methods of serializing and deserializing SerialFramae instances.
     /// </summary>
@@ -26,6 +28,8 @@ namespace NSerialProtocol
             // Dictionary of attributes and properties for sorting, reading, etc.
             List<SerialMemberKvp> pairs = new List<SerialMemberKvp>();
 
+            // TODO: Reflection should not be run EVERY time this method is run
+            // TODO: This needs to be moved to the constructor
             // Get the properties on the SerialFrame instance
             List<PropertyInfo> properties = frame.GetType()
                 .GetProperties()
@@ -44,7 +48,6 @@ namespace NSerialProtocol
 
             // Sort the KVPs by tag number
             pairs = pairs.OrderBy(x => x.Key.Tag).ToList();
-
 
             using (MemoryStream stream = new MemoryStream())
             {
