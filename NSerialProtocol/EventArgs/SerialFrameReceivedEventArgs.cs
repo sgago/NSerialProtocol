@@ -1,12 +1,12 @@
-﻿namespace NSerialProtocol.EventArgs
+﻿namespace NSerialProtocol
 {
     public class SerialFrameReceivedEventArgs
     {
-        public string Frame { get; }
+        public readonly SerialFrame SerialFrame;
 
-        public SerialFrameReceivedEventArgs(string frame)
+        public SerialFrameReceivedEventArgs(SerialFrame serialFrame)
         {
-            Frame = frame;
+            SerialFrame = serialFrame;
         }
     }
 }

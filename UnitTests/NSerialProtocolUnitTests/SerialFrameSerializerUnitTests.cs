@@ -1,4 +1,5 @@
 ﻿using NSerialProtocol;
+using NSerialProtocol.Attributes;
 using NSerialProtocolUnitTests.Extensions;
 using NUnit.Framework;
 using System;
@@ -13,7 +14,7 @@ namespace NSerialProtocolUnitTests
 
     class BoolTestSerialFrame : SerialFrame
     {
-        [SerialFrameMember(1)]
+        [FrameMember(1)]
         public bool Value { get; set; } = default(bool);
 
         public BoolTestSerialFrame()
@@ -29,7 +30,7 @@ namespace NSerialProtocolUnitTests
 
     class CharTestSerialFrame : SerialFrame
     {
-        [SerialFrameMember(1)]
+        [FrameMember(1)]
         public char Value { get; set; } = default(char);
 
         public CharTestSerialFrame()
@@ -45,7 +46,7 @@ namespace NSerialProtocolUnitTests
 
     class SByteTestSerialFrame : SerialFrame
     {
-        [SerialFrameMember(1)]
+        [FrameMember(1)]
         public sbyte Value { get; set; } = default(sbyte);
 
         public SByteTestSerialFrame()
@@ -61,7 +62,7 @@ namespace NSerialProtocolUnitTests
 
     class Int16TestSerialFrame : SerialFrame
     {
-        [SerialFrameMember(1)]
+        [FrameMember(1)]
         public short Value { get; set; } = default(short);
 
         public Int16TestSerialFrame()
@@ -77,7 +78,7 @@ namespace NSerialProtocolUnitTests
 
     class Int32TestSerialFrame : SerialFrame
     {
-        [SerialFrameMember(1)]
+        [FrameMember(1)]
         public int Value { get; set; } = default(int);
 
         public Int32TestSerialFrame()
@@ -93,7 +94,7 @@ namespace NSerialProtocolUnitTests
 
     class Int64TestSerialFrame : SerialFrame
     {
-        [SerialFrameMember(1)]
+        [FrameMember(1)]
         public long Value { get; set; } = default(long);
 
         public Int64TestSerialFrame()
@@ -109,7 +110,7 @@ namespace NSerialProtocolUnitTests
 
     class ByteTestSerialFrame : SerialFrame
     {
-        [SerialFrameMember(1)]
+        [FrameMember(1)]
         public byte Value { get; set; } = default(byte);
 
         public ByteTestSerialFrame()
@@ -125,7 +126,7 @@ namespace NSerialProtocolUnitTests
 
     class UInt16TestSerialFrame : SerialFrame
     {
-        [SerialFrameMember(1)]
+        [FrameMember(1)]
         public ushort Value { get; set; } = default(ushort);
 
         public UInt16TestSerialFrame()
@@ -141,7 +142,7 @@ namespace NSerialProtocolUnitTests
 
     class UInt32TestSerialFrame : SerialFrame
     {
-        [SerialFrameMember(1)]
+        [FrameMember(1)]
         public uint Value { get; set; } = default(uint);
 
         public UInt32TestSerialFrame()
@@ -157,7 +158,7 @@ namespace NSerialProtocolUnitTests
 
     class UInt64TestSerialFrame : SerialFrame
     {
-        [SerialFrameMember(1)]
+        [FrameMember(1)]
         public ulong Value { get; set; } = default(ulong);
 
         public UInt64TestSerialFrame()
@@ -173,7 +174,7 @@ namespace NSerialProtocolUnitTests
 
     class ByteArrayTestSerialFrame : SerialFrame
     {
-        [SerialFrameMember(1)]
+        [FrameMember(1)]
         public byte[] Value { get; set; } = new byte[3];
 
         public ByteArrayTestSerialFrame()
@@ -194,7 +195,7 @@ namespace NSerialProtocolUnitTests
 
     class CharArrayTestSerialFrame : SerialFrame
     {
-        [SerialFrameMember(1)]
+        [FrameMember(1)]
         public char[] Value { get; set; } = new char[3];
 
         public CharArrayTestSerialFrame()
@@ -215,7 +216,7 @@ namespace NSerialProtocolUnitTests
 
     class StringTestSerialFrame : SerialFrame
     {
-        [SerialFrameMember(1)]
+        [FrameMember(1)]
         public string Value { get; set; } = default(string);
 
         public StringTestSerialFrame()
@@ -231,25 +232,25 @@ namespace NSerialProtocolUnitTests
 
     public class ManySimpleTypesTestFrame : SerialFrame
     {
-        [SerialFrameMember(1)]
+        [FrameMember(1)]
         public byte Value1 { get; set; } = 1;
 
-        [SerialFrameMember(2)]
+        [FrameMember(2)]
         public int Value2 { get; set; } = 2;
 
-        [SerialFrameMember(3)]
+        [FrameMember(3)]
         public string Value3 { get; set; } = "abc";
     }
 
     public class FieldOrderTestFrame : SerialFrame
     {
-        [SerialFrameMember(3)]
+        [FrameMember(3)]
         public byte Value1 { get; set; } = 1;
 
-        [SerialFrameMember(2)]
+        [FrameMember(2)]
         public int Value2 { get; set; } = 2;
 
-        [SerialFrameMember(1)]
+        [FrameMember(1)]
         public string Value3 { get; set; } = "abc";
     }
 
@@ -316,7 +317,7 @@ namespace NSerialProtocolUnitTests
         [TestCaseSource(nameof(GetSerialFrameTestCaseData))]
         public byte[] Serialize_SimpleTypes_Test(SerialFrame frame)
         {
-            SerialFrameSerializer serializer = new SerialFrameSerializer();
+            SerialFrameSerializer serializer = new SerialFrameSerializer(frame);
 
             return serializer.Serialize(frame);
         }
@@ -391,7 +392,7 @@ namespace NSerialProtocolUnitTests
         [TestCaseSource(nameof(GetSerialFrameDeserializedTestCaseData))]
         public void Deserialize_SimpleTypes_Test(Type type, byte[] serializedFrame, SerialFrame expected)
         {
-            SerialFrameSerializer serializer = new SerialFrameSerializer();
+            SerialFrameSerializer serializer = new SerialFrameSerializer(expected);
 
             SerialFrame actual = (SerialFrame)Activator.CreateInstance(type);
 

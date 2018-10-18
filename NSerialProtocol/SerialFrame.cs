@@ -19,14 +19,4 @@ namespace NSerialProtocol
     {
 
     }
-
-    public class SerialFrameMemberAttribute : Attribute
-    {
-        public int Tag { get; }
-
-        public SerialFrameMemberAttribute(int tag)
-        {
-            Tag = tag;
-        }
-    }
 }

@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 
 namespace NSerialProtocol.SerialFrameParsers
 {
+    // TODO: StartFlag and EndFlag Parsers need to be merged into one
+    // Otherwise, users won't be able to have the same starting and ending flag.
     public class StartFlagParser : SerialFrameParser, IParser
     {
         private const string BadStartFlagErrorMessage = "Start flag for a frame cannot be null or the empty string.";

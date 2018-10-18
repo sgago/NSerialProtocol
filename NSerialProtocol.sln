@@ -50,6 +50,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NSerialPortTranceiveLineExa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParseDynamicLength", "Playgrounds\ParseDynamicLength\ParseDynamicLength.csproj", "{27DE31D6-F54B-403F-999C-57EB201FDAC3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastMemberDemo", "Playgrounds\FastMemberDemo\FastMemberDemo.csproj", "{F6060EF7-89F0-4747-8FA8-12D05E74166A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -112,6 +114,10 @@ Global
 		{27DE31D6-F54B-403F-999C-57EB201FDAC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{27DE31D6-F54B-403F-999C-57EB201FDAC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{27DE31D6-F54B-403F-999C-57EB201FDAC3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6060EF7-89F0-4747-8FA8-12D05E74166A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6060EF7-89F0-4747-8FA8-12D05E74166A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6060EF7-89F0-4747-8FA8-12D05E74166A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6060EF7-89F0-4747-8FA8-12D05E74166A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -128,6 +134,7 @@ Global
 		{DF615122-FF49-4700-93BF-41240AF823A2} = {2BAE0400-83CE-48E4-9BCD-250229DE2EE5}
 		{FEBA7EB8-4170-4A8C-8032-6C5DCB93A772} = {2BAE0400-83CE-48E4-9BCD-250229DE2EE5}
 		{27DE31D6-F54B-403F-999C-57EB201FDAC3} = {C8F0F128-7044-4447-BB9D-B54DE7000882}
+		{F6060EF7-89F0-4747-8FA8-12D05E74166A} = {C8F0F128-7044-4447-BB9D-B54DE7000882}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {91871512-CA16-4108-BDBC-0645BAB249EE}

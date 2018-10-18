@@ -8,6 +8,8 @@ namespace NSerialProtocolUnitTests
 {
     using NSerialPort.EventArgs;
     using NSerialProtocol;
+    using NSerialProtocol.Attributes;
+    using ProtoBuf;
     using static NSerialPort.NSerialPort;
 
     [TestFixture]
@@ -49,7 +51,7 @@ namespace NSerialProtocolUnitTests
 
             protocol.SetStartFlag(startFlag);
 
-            protocol.SerialFrameReceived += (sender, e) =>
+            protocol.SerialFrameParsed += (sender, e) =>
             {
                 framesReceived.Add(e.Frame);
             };
@@ -99,7 +101,7 @@ namespace NSerialProtocolUnitTests
 
             protocol.SetEndFlag(endFlag);
 
-            protocol.SerialFrameReceived += (sender, e) =>
+            protocol.SerialFrameParsed += (sender, e) =>
             {
                 framesReceived.Add(e.Frame);
             };
@@ -108,6 +110,79 @@ namespace NSerialProtocolUnitTests
                 Raise.Event<NSerialDataReceivedEventHandler>(args);
 
             return framesReceived.ToArray();
+        }
+
+
+        [Test]
+        public void SerialFrame_Deserialized_Test()
+        {
+            SerialFrame actual = null;
+            string startFlag = "|";
+            string endFlag = "\0";
+            string data = "garbage|\u0008testdata\0moregarbage";
+
+            INSerialPort serialPortSub = Substitute.For<INSerialPort>();
+            NSerialProtocol protocol = new NSerialProtocol(serialPortSub);
+
+            NSerialDataReceivedEventArgs args = new NSerialDataReceivedEventArgs(
+                System.IO.Ports.SerialData.Eof, data);
+
+            protocol
+                .SetStartFlag(startFlag)
+                .SetEndFlag(endFlag);
+
+            protocol.SerialFrameReceived += (sender, e) =>
+            {
+                actual = e.SerialFrame;
+            };
+
+            serialPortSub.DataReceived +=
+                Raise.Event<NSerialDataReceivedEventHandler>(args);
+
+            //return actual;
+        }
+
+        [ProtoContract]
+        [ProtoInclude(1, typeof(SerialPacket))]
+        public class MySerialPacket : SerialPacket
+        {
+            [ProtoMember(2)]
+            public string StringData;
+
+            [ProtoMember(3)]
+            public int IntData;
+
+            public MySerialPacket()
+            {
+
+            }
+        }
+
+        public class MySerialFrame : SerialFrame
+        {
+            [FrameMember(0)]
+            public char StartFlag { get; set; } = '|';
+
+            [FrameMember(1)]
+            public MySerialPacket SerialPacket { get; set; } = new MySerialPacket();
+
+            [FrameMember(2)]
+            public char EndFlag { get; set; } = '\n';
+        }
+
+        [Test]
+        public void SerialPacket_Serialize_Test()
+        {
+            MySerialFrame mySerialFrame = new MySerialFrame();
+
+            mySerialFrame.SerialPacket.StringData = "testdata";
+            mySerialFrame.SerialPacket.IntData = 1234567890;
+
+            SerialFrameSerializer serialFrameSerializer = new SerialFrameSerializer(mySerialFrame);
+
+            byte[] bytes = serialFrameSerializer.Serialize(mySerialFrame);
+
+            SerialFrame result = serialFrameSerializer.Deserialize(typeof(MySerialFrame), bytes);
         }
     }
 }
