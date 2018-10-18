@@ -678,9 +678,9 @@
         public void Dispose()
         {
             // Release resources held by this AutoResetEvent (it uses a SafeHandle)
-            LineReceivedAutoResetEvent.Dispose();
+            LineReceivedAutoResetEvent?.Dispose();
 
-            SerialPort.Dispose();
+            SerialPort?.Dispose();
         }
 
         /// <summary>
@@ -975,8 +975,6 @@
         {
             return await Task.Run(() => ReadLine(), CancellationToken.None);
         }
-
-
 
         /// <summary>
         /// Reads a string up to the specified value in the input buffer.

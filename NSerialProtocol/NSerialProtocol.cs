@@ -9,15 +9,20 @@ using System.Threading.Tasks;
 
 namespace NSerialProtocol
 {
+    using global::NSerialProtocol.EventArgs;
+    using global::NSerialProtocol.Extensions;
+    using global::NSerialProtocol.SerialFrameParsers;
     using NByteStuff;
     using NFec;
     using NFec.Algorithms;
     using NSerialPort;
+    using NSerialPort.EventArgs;
     using SerialPortFix;
     using System.IO.Ports;
 
     public interface ISerialProtocol
     {
+
     }
 
     public class NSerialProtocol : NSerialPort, ISerialProtocol
@@ -37,13 +42,22 @@ namespace NSerialProtocol
          * 4. Byte stuff length, checksum, and data
          * 5. Prepend start flag
          * 6. Append end flag
-         */ 
+         */
 
+        private const int StartFlagParserOrder = 0;
+        private const int EndFlagParserOrder = 10;
+        private const int FixedLengthParserOrder = 30;
+
+
+        private INSerialPort SerialPort { get; set; }
         private byte[] StartFlag { get; set; }
         private byte[] EndFlag { get; set; }
         private IFec Fec { get; set; }
         private IByteStuff ByteStuff { get; set; }
-        public StringBuilder InputBuffer { get; private set; }
+        private string InputBuffer { get; set; }
+
+        private List<Tuple<int, IParser>> Parsers { get; set; } = new List<Tuple<int, IParser>>();
+
 
         /// <summary>
         /// Represents the method that will handle the MessageReceived event of a NSerialPort
@@ -54,11 +68,18 @@ namespace NSerialProtocol
         /// data.</param>
         //public delegate void SerialPacketReceivedEventHandler(object sender, SerialPacketReceivedEventArgs e);
 
-        /// <summary>
-        /// Indicates that a complete serial message has been received through a port represented by the
-        /// SerialPort object.
-        /// </summary>
-        //public event SerialPacketReceivedEventHandler PacketReceived;
+        public delegate void SerialFrameReceivedEventHandler(object sender, SerialFrameReceivedEventArgs e);
+        public delegate void SerialFrameErrorEventHandler(object sender, SerialFrameErrorEventArgs e);
+
+        public event SerialFrameReceivedEventHandler SerialFrameReceived;
+        public event SerialFrameErrorEventHandler SerialFrameError;
+
+        internal NSerialProtocol(INSerialPort serialPort)
+        {
+            SerialPort = serialPort;
+
+            SerialPort.DataReceived += SerialPort_DataReceived;
+        }
 
 
         public NSerialProtocol(string portName = "COM1",
@@ -66,8 +87,19 @@ namespace NSerialProtocol
                                Parity parity = Parity.None,
                                int dataBits = 8,
                                StopBits stopBits = StopBits.One)
+            : this(new NSerialPort(portName, baudRate, parity, dataBits, stopBits))
         {
 
+        }
+
+        public void RaiseSerialFrameReceivedEvent(object sender, SerialFrameReceivedEventArgs e)
+        {
+            SerialFrameReceived?.Invoke(sender, e);
+        }
+
+        private void RaiseSerialFrameErrorEvent(object sender, SerialFrameErrorEventArgs e)
+        {
+            SerialFrameError?.Invoke(sender, e);
         }
 
         public NSerialProtocol SetFec(IFec fec)
@@ -100,6 +132,15 @@ namespace NSerialProtocol
             throw new NotImplementedException();
         }
 
+        public NSerialProtocol SetStartFlag(string startFlag)
+        {
+            StartFlag = Encoding.Default.GetBytes(startFlag);
+
+            Parsers.Add(new Tuple<int, IParser>(StartFlagParserOrder, new StartFlagParser(startFlag)));
+
+            return this;
+        }
+
         public NSerialProtocol SetEndFlag(byte[] endFlag)
         {
             EndFlag = endFlag;
@@ -107,6 +148,15 @@ namespace NSerialProtocol
             //return this;
 
             throw new NotImplementedException();
+        }
+
+        public NSerialProtocol SetEndFlag(string endFlag)
+        {
+            EndFlag = Encoding.Default.GetBytes(endFlag);
+
+            Parsers.Add(new Tuple<int, IParser>(EndFlagParserOrder, new EndFlagParser(endFlag)));
+
+            return this;
         }
 
         public NSerialProtocol SetMaximumLength(int length)
@@ -281,20 +331,100 @@ namespace NSerialProtocol
             throw new NotImplementedException();
         }
 
+        private IList<string> Parse(string data)
+        {
+            IList<string> results;
+
+            for (int i = 0; i < Parsers.Count - 1; i++)
+            {
+                Parsers[i].Item2.SetSuccessor(Parsers[i + 1].Item2);
+            }
+
+            results = Parsers[0].Item2.Parse(data);
+
+            return results;
+        }
+
         /// <summary>
         ///
         /// </summary>
         /// <param name="sender">The sender of the event, which is the BaseSerialPort object.</param>
         /// <param name="e">The SerialDataReceivedEventArgs.</param>
-        private void SerialPortModel_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        private void SerialPort_DataReceived(object sender, NSerialDataReceivedEventArgs e)
         {
             string data = string.Empty;
 
-            // Read characters from SerialPort IOStream to our input buffer
-            InputBuffer.Append(ReadExisting());
+            // Get the received characters
+            InputBuffer += e.Data;
 
-            // Parse any packets
-            //SerialPackets.Parse(InputBuffer);
+            IList<string> frames = Parse(InputBuffer);
+
+            IList<string> errors = GetErrors(InputBuffer, frames);
+
+            // Int is the index of the value in the frame
+            // Bool is true if it's a good frame, else it's a bad frame
+            // String is the value as a string
+            List<Tuple<int, bool, string>> values = new List<Tuple<int, bool, string>>();
+
+            int index = -1;
+
+            foreach (string frame in frames)
+            {
+                index = InputBuffer.IndexOf(frame);
+
+                values.Add(new Tuple<int, bool, string>(index, true, frame));
+            }
+
+            foreach (string error in errors)
+            {
+                index = InputBuffer.IndexOf(error);
+
+                values.Add(new Tuple<int, bool, string>(index, false, error));
+            }
+
+            // Sort the frames and errors based on their index in the received data
+            values = values.OrderBy(x => x.Item1).ToList();
+
+
+            foreach (Tuple<int, bool, string> value in values)
+            {
+                if (value.Item2)
+                {
+                    RaiseSerialFrameReceivedEvent(this, new SerialFrameReceivedEventArgs(value.Item3));
+                }
+                else
+                {
+                    RaiseSerialFrameErrorEvent(this, new SerialFrameErrorEventArgs(value.Item3));
+                }
+            }
+
+            if (values.Count > 0)
+            {
+                ClearInputBuffer(InputBuffer, values);
+            }
+        }
+
+        private IList<string> GetErrors(string inputBuffer, IList<string> frames)
+        {
+            return inputBuffer.Split(frames.ToArray(), StringSplitOptions.RemoveEmptyEntries);
+        }
+
+        private void ClearInputBuffer(string inputBuffer, List<Tuple<int, bool, string>> values)
+        {
+            Tuple<int, bool, string> lastValue = values.Last();
+
+            // Is the last value a good frame?
+            if (lastValue.Item2)
+            {
+                // It's a good frame, drop the entire buffer
+                inputBuffer = string.Empty;
+            }
+            else
+            {
+                // The last value is a potentitally incomplete frame
+                // Drop everything up to, but not including, the last value received
+                inputBuffer = inputBuffer.RemoveToLast(values[values.Count - 1].Item3);
+            }
         }
 
         //TODO: Move non-packet tranceive methods to NSerialPort???

@@ -1,12 +1,11 @@
 ﻿using NSerialProtocol;
+using NSerialProtocolUnitTests.Extensions;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 
 namespace NSerialProtocolUnitTests
 {
-    using NSerialProtocolUnitTests.Extensions;
-
     class EmptyTestSerialFrame : SerialFrame
     {
 

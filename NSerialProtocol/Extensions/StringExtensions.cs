@@ -24,6 +24,13 @@ namespace NSerialProtocol.Extensions
             return result;
         }
 
+        internal static string RemoveToLast(this string str, string value, int startIndex = 0, StringComparison stringComparison = StringComparison.CurrentCulture)
+        {
+            int removeLength = str.LastIndexOf(value, startIndex, stringComparison);
+            string result = (removeLength < 0) ? str : str.Remove(startIndex, removeLength);
+            return result;
+        }
+
         /// <summary>
         /// Removes all characters up to and including a given string value.
         /// </summary>
@@ -35,6 +42,13 @@ namespace NSerialProtocol.Extensions
         internal static string RemoveThrough(this string str, string value, int startIndex = 0, StringComparison stringComparison = StringComparison.CurrentCulture)
         {
             int removeLength = str.IndexOf(value, startIndex, stringComparison) + value.Length;
+            string result = (removeLength < 0) ? str : str.Remove(startIndex, removeLength);
+            return result;
+        }
+
+        internal static string RemoveThroughLast(this string str, string value, int startIndex = 0, StringComparison stringComparison = StringComparison.CurrentCulture)
+        {
+            int removeLength = str.LastIndexOf(value, startIndex, stringComparison) + value.Length;
             string result = (removeLength < 0) ? str : str.Remove(startIndex, removeLength);
             return result;
         }

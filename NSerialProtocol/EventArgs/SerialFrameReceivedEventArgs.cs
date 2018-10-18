@@ -1,4 +1,4 @@
-﻿namespace NSerialProtocol.FrameParsers
+﻿namespace NSerialProtocol.EventArgs
 {
     public class SerialFrameReceivedEventArgs
     {

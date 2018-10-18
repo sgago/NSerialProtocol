@@ -1,5 +1,4 @@
-﻿using NSerialProtocol.FrameParsers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,33 +7,42 @@ using System.Threading.Tasks;
 
 namespace NSerialProtocol
 {
-    public enum FrameErrorType
+    public enum ParsingError
     {
-        BufferOverrun,
-        InvalidLength
+        NoStartFlag,
+        
     }
 
-    public abstract class SerialFrameParser
+    public abstract class SerialFrameParser : IParser
     {
-        protected RegexOptions RegexOptions { get; } =
-            RegexOptions.CultureInvariant | RegexOptions.Multiline;
+        private IParser Successor { get; set; }
 
-        public delegate void SerialFrameReceivedEventHandler(object sender, SerialFrameReceivedEventArgs e);
+        public abstract IList<string> Parse(IList<string> values);
 
+        public IList<string> Parse(string value)
+        {
+            return Parse(new List<string>() { value });
+        }
 
-        public delegate void SerialFrameErrorEventHandler(object sender, SerialFrameErrorEventArgs e);
+        public void SetSuccessor(IParser nextParser)
+        {
+            Successor = nextParser;
+        }
 
-        /// <summary>
-        /// Indicates that a serial frame has been received through a port represented by the
-        /// SerialPort object.
-        /// </summary>
-        public abstract event SerialFrameReceivedEventHandler SerialFrameReceived;
+        protected string RegexMetaToLiteral(string value)
+        {
+            string result = string.Empty;
 
-        /// <summary>
-        /// Indicates that a framing error has occured with data in the SerialPacketPrototype object.
-        /// </summary>
-        public abstract event SerialFrameErrorEventHandler SerialFrameError;
+            if (!string.IsNullOrEmpty(value))
+            {
+                // Regex pattern of regex meta characters to replace
+                string regexMetaCharactersPattern = @"(?=[\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\&])";
 
-        public abstract void Parse(string data);
+                // Puts a "\" in front of all regex meta characters
+                result = Regex.Replace(value, regexMetaCharactersPattern, @"\");
+            }
+
+            return result;
+        }
     }
 }

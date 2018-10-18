@@ -1,14 +1,12 @@
-﻿namespace NSerialProtocol
+﻿namespace NSerialProtocol.EventArgs
 {
     public class SerialFrameErrorEventArgs
     {
         public string Frame { get; }
-        public FrameErrorType FrameErrorType { get; }
 
-        public SerialFrameErrorEventArgs(string frame, FrameErrorType frameErrorType)
+        public SerialFrameErrorEventArgs(string frame)
         {
             Frame = frame;
-            FrameErrorType = FrameErrorType;
         }
     }
 }
