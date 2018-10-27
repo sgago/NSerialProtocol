@@ -6,6 +6,7 @@ using ProtoBuf;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using FluentAssertions;
 
 namespace NSerialProtocolUnitTests
 {
@@ -405,12 +406,6 @@ namespace NSerialProtocolUnitTests
 
         }
 
-
-
-
-
-
-
         [ProtoContract]
         [ProtoInclude(1, typeof(SerialPacket))]
         public class TestSerialPacket : SerialPacket
@@ -436,8 +431,20 @@ namespace NSerialProtocolUnitTests
             public TestSerialPacket SerialPacket { get; set; }
         }
 
+        public class PacketTestFrame : SerialFrame
+        {
+            [FrameMember(1)]
+            public string FrameString { get; set; }
+
+            [FrameMember(2)]
+            public TestSerialPacket SerialPacket { get; set; }
+
+            [FrameMember(3)]
+            public int FrameInteger { get; set; }
+        }
+
         [Test]
-        public void Serialize_SerialPacket_Test()
+        public void Serialize_SerialPacketOnly_Test()
         {
             List<byte> expected = new List<byte>();
 
@@ -476,7 +483,7 @@ namespace NSerialProtocolUnitTests
         }
 
         [Test]
-        public void Deserialize_SerialPacket_Test()
+        public void Deserialize_SerialPacketOnly_Test()
         {
             List<byte> bytes = new List<byte>();
 
@@ -505,10 +512,108 @@ namespace NSerialProtocolUnitTests
             PacketOnlyTestFrame actual =
                 frameSerializer.Deserialize<PacketOnlyTestFrame>(bytes.ToArray());
 
-            Assert.Multiple(() =>
+            actual.Should().BeEquivalentTo(expected);
+        }
+
+
+        [Test]
+        public void Serialize_SerialPacket_Test()
+        {
+            List<byte> serializedPacket = new List<byte>();
+
+            List<byte> expected = new List<byte>()
             {
-                Assert.That(actual.SerialPacket, Is.EqualTo(expected.SerialPacket));
+                3, // Length of "abc"
+                97, 98, 99 // "abc" as bytes
+            };
+
+            TestSerialPacket packet = new TestSerialPacket
+            {
+                PacketInteger = 1,
+                PacketString = "abc",
+                PacketByte = 2,
+            };
+
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                Serializer.Serialize(memoryStream, packet);
+
+                // Add the serialized packet
+                serializedPacket.AddRange(memoryStream.ToArray());
+            }
+
+            expected.AddRange(BitConverter.GetBytes(serializedPacket.Count));
+
+            expected.AddRange(serializedPacket);
+
+            // Adds the integer 123 to the expected results
+            expected.AddRange(new byte[] { 123, 0, 0, 0 });
+
+            SerialFrameSerializer frameSerializer = new SerialFrameSerializer();
+
+            PacketTestFrame testFrame = new PacketTestFrame
+            {
+                FrameString = "abc",
+
+                SerialPacket = new TestSerialPacket
+                {
+                    PacketInteger = 1,
+                    PacketString = "abc",
+                    PacketByte = 2,
+                },
+
+                FrameInteger = 123,
+            };
+
+            byte[] actual = frameSerializer.Serialize(testFrame);
+
+            Assert.That(actual, Is.EquivalentTo(expected));
+        }
+
+
+        [Test]
+        public void Deserialize_SerialPacket_Test()
+        {
+            List<byte> bytes = new List<byte>();
+
+            PacketTestFrame expected = new PacketTestFrame
+            {
+                FrameString = "abc",
+
+                SerialPacket = new TestSerialPacket
+                {
+                    PacketInteger = 1,
+                    PacketString = "abc",
+                    PacketByte = 2,
+                },
+
+                FrameInteger = 123,
+            };
+
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                Serializer.Serialize(memoryStream, expected.SerialPacket);
+
+                // Add the serialized packet
+                bytes.AddRange(memoryStream.ToArray());
+            }
+
+            bytes.InsertRange(0, BitConverter.GetBytes(bytes.Count));
+
+            bytes.InsertRange(0, new byte[]
+            {
+                3,
+                97, 98, 99
             });
+
+            bytes.AddRange(new byte[] { 123, 0, 0, 0 });
+
+            SerialFrameSerializer frameSerializer = new SerialFrameSerializer();
+
+            PacketTestFrame actual =
+                frameSerializer.Deserialize<PacketTestFrame>(bytes.ToArray());
+
+            actual.Should().BeEquivalentTo(expected);
         }
     }
 }

@@ -287,7 +287,6 @@ namespace NSerialProtocol
                                 (objectAccessor[member.Name] as Array).Length);
                     }
 
-                    // TODO: Needs unit tests
                     else if (member.Type.BaseType == typeof(SerialPacket))
                     {
                         int length = -1;
@@ -297,9 +296,15 @@ namespace NSerialProtocol
                         // TODO: Need to allow the programmer to specify how the length prefix will look
                         byte[] serialPacketBytes = new byte[length];
 
-                        Array.Copy(serializedFrame, (int)binaryReader.BaseStream.Position, serialPacketBytes, 0, serialPacketBytes.Length);
+                        Array.Copy(serializedFrame, (int)binaryReader.BaseStream.Position,
+                                   serialPacketBytes, 0,
+                                   serialPacketBytes.Length);
 
                         objectAccessor[member.Name] = DeserializePacket(member.Type, serialPacketBytes);
+
+                        // Advance the position of the binary reader's base stream
+                        // Because there's no call to binaryReader methods, we need to do this ourselves
+                        binaryReader.BaseStream.Position += length;
                     }
                 }
             }
