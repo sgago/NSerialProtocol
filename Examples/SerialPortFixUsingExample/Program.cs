@@ -27,7 +27,7 @@
             string results = "";
 
             // Instiate a serial port within the using keyword
-            using (ISerialPort serialPort = new SerialPortFix(PortName, BaudRate))
+            using (ISerialPortFix serialPort = new SerialPortFix(PortName, BaudRate))
             {
                 serialPort.Open();
 

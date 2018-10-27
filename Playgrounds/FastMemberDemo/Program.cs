@@ -25,6 +25,8 @@ namespace FastMemberDemo
             MyClass newMyClass = typeAccessor.CreateNew() as MyClass;
 
             MemberSet members = typeAccessor.GetMembers();
+
+            
         }
     }
 }

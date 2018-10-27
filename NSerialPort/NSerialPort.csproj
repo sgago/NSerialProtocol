@@ -56,7 +56,7 @@
   <ItemGroup>
     <Compile Include="EventArgs\NSerialLineReceivedEventArgs.cs" />
     <Compile Include="EventArgs\NSerialDataReceivedEventArgs.cs" />
-    <Compile Include="INSerialPort.cs" />
+    <Compile Include="ISerialPort.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="NSerialPort.cs" />
   </ItemGroup>

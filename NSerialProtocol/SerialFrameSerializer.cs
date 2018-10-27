@@ -1,17 +1,27 @@
-﻿using NSerialProtocol.Attributes;
+﻿using FastMember;
+using NSerialProtocol.Attributes;
 using ProtoBuf;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
+using System.Text;
 
 namespace NSerialProtocol
 {
-    using SerialFrameMemberKvp = KeyValuePair<FrameMemberAttribute, PropertyInfo>;
+    public interface ISerialFrameSerializer
+    {
+        object Deserialize(Type type, byte[] serializedFrame);
+        object Deserialize(Type type, string serializedFrame);
+        object Deserialize(Type type, string serializedFrame, Encoding encoding);
+        T Deserialize<T>(byte[] serializedFrame) where T : class, ISerialFrame;
+        T Deserialize<T>(string serializedFrame) where T : class, ISerialFrame;
+        T Deserialize<T>(string serializedFrame, Encoding encoding) where T : class, ISerialFrame;
+        void Prepare(Type type);
+        void Prepare<T>() where T : ISerialFrame;
+        byte[] Serialize(ISerialFrame frame);
+    }
 
-    // TODO: Need to create an ISerialize interface and this class needs to use it
-    // when serializing and deserializing data
     // TODO: This should work on properties and fields
     // TODO: This should have various string encodings
     // TODO: This should allow various length prefixes for strings
@@ -20,35 +30,36 @@ namespace NSerialProtocol
     // TODO: Maybe this should have an empty constructor
     // TODO: This monster could probably use various events during the serialization process
     // TODO: Async methods for serialization and deserialization?
-    // TODO: Convert this entire monster from reflection to fastmember type
+    // TODO: Need to extract an interface and use dependency inversion principle.
     /// <summary>
     /// Represents methods of serializing and deserializing SerialFramae instances.
     /// </summary>
-    public class SerialFrameSerializer
+    public class SerialFrameSerializer : ISerialFrameSerializer
     {
-        private List<SerialFrameMemberKvp> SerialFrameMembers { get; set; }
-            = new List<SerialFrameMemberKvp>();
+        private TypeAccessor TypeAccessor { get; set; }
 
-        public SerialFrameSerializer(SerialFrame serialFrame)
+        private List<Member> Members { get; set; }
+
+        public SerialFrameSerializer()
         {
-            // Get the properties on the SerialFrame instance
-            List<PropertyInfo> properties = serialFrame.GetType()
-                .GetProperties()
+            
+        }
+
+        public void Prepare(Type type)
+        {
+            TypeAccessor = TypeAccessor.Create(type);
+
+            Members = TypeAccessor
+                .GetMembers()
                 .Where(x => x.IsDefined(typeof(FrameMemberAttribute)))
+                .OrderBy(x => (x.GetAttribute(typeof(FrameMemberAttribute), true)
+                   as FrameMemberAttribute).Tag)
                 .ToList();
+        }
 
-            // For each property in frame...
-            foreach (PropertyInfo property in properties)
-            {
-                // FIXME: This line is painful to read
-                // Grab the SerialFrameAttribute connected to the property
-                SerialFrameMembers.Add(new SerialFrameMemberKvp
-                    ((FrameMemberAttribute)Attribute.GetCustomAttribute(property,
-                        typeof(FrameMemberAttribute)), property));
-            }
-
-            // Sort the KVPs by tag number
-            SerialFrameMembers = SerialFrameMembers.OrderBy(x => x.Key.Tag).ToList();
+        public void Prepare<T>() where T : ISerialFrame
+        {
+            Prepare(typeof(T));
         }
 
         /// <summary>
@@ -56,81 +67,80 @@ namespace NSerialProtocol
         /// </summary>
         /// <param name="frame">The SerialFrame to serialize.</param>
         /// <returns>The serialized frame as a byte array.</returns>
-        public byte[] Serialize(SerialFrame frame)
+        public byte[] Serialize(ISerialFrame frame)
         {
             byte[] serializedFrame = null;
             BinaryWriter binaryWriter;
 
-            using (MemoryStream stream = new MemoryStream())
+            if (TypeAccessor == null || Members == null)
             {
-                binaryWriter = new BinaryWriter(stream);
+                Prepare(frame.GetType());
+            }
 
-                foreach (SerialFrameMemberKvp member in SerialFrameMembers)
+            ObjectAccessor serialFrameAccessor = ObjectAccessor.Create(frame);
+
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                binaryWriter = new BinaryWriter(memoryStream);
+
+                foreach (Member member in Members)
                 {
-                    PropertyInfo property = member.Value;
-
-                    object value = property.GetValue(frame);
-
-                    // TODO: Use dynamic or long if block?
-                    // I hate the use of the dynamic keyword.
-                    // Trying to decide if I should a 5 million line long if-block
-                    // or just use stupid dynamic.  Here's stupid dynamic:
-                    //dynamic value = Convert.ChangeType(property.GetValue(frame), property.PropertyType);
-                    //binaryWriter.Write(value);
-
-                    if (property.PropertyType == typeof(byte))
+                    object value = TypeAccessor[frame, member.Name];
+                    TypeCode typeCode = Type.GetTypeCode(member.Type);
+                    
+                    if (member.Type == typeof(byte))
                     {
                         binaryWriter.Write((byte)value);
                     }
-                    else if (property.PropertyType == typeof(sbyte))
+                    else if (member.Type == typeof(sbyte))
                     {
                         binaryWriter.Write((sbyte)value);
                     }
-                    else if (property.PropertyType == typeof(char))
+                    else if (member.Type == typeof(char))
                     {
                         binaryWriter.Write((char)value);
                     }
-                    else if (property.PropertyType == typeof(bool))
+                    else if (member.Type == typeof(bool))
                     {
                         binaryWriter.Write((bool)value);
                     }
-                    else if (property.PropertyType == typeof(short))
+                    else if (member.Type == typeof(short))
                     {
                         binaryWriter.Write((short)value);
                     }
-                    else if (property.PropertyType == typeof(int))
+                    else if (member.Type == typeof(int))
                     {
                         binaryWriter.Write((int)value);
                     }
-                    else if (property.PropertyType == typeof(long))
+                    else if (member.Type == typeof(long))
                     {
                         binaryWriter.Write((long)value);
                     }
-                    else if (property.PropertyType == typeof(ushort))
+                    else if (member.Type == typeof(ushort))
                     {
                         binaryWriter.Write((ushort)value);
                     }
-                    else if (property.PropertyType == typeof(uint))
+                    else if (member.Type == typeof(uint))
                     {
                         binaryWriter.Write((uint)value);
                     }
-                    else if (property.PropertyType == typeof(ulong))
+                    else if (member.Type == typeof(ulong))
                     {
                         binaryWriter.Write((ulong)value);
                     }
-                    else if (property.PropertyType == typeof(float))
+                    else if (member.Type == typeof(float))
                     {
                         binaryWriter.Write((float)value);
                     }
-                    else if (property.PropertyType == typeof(double))
+                    else if (member.Type == typeof(double))
                     {
                         binaryWriter.Write((double)value);
                     }
-                    else if (property.PropertyType == typeof(decimal))
+                    else if (member.Type == typeof(decimal))
                     {
                         binaryWriter.Write((decimal)value);
                     }
-                    else if (property.PropertyType == typeof(string))
+                    else if (member.Type == typeof(string))
                     {
                         // TODO: Support for different string encodings?
                         // TODO: This saves the length of the string then the string value
@@ -142,140 +152,146 @@ namespace NSerialProtocol
                         //binaryWriter.Write(Encoding.Default.GetBytes((string)value));
                         binaryWriter.Write((string)value);
                     }
-                    else if (property.PropertyType == typeof(byte[]))
+                    else if (member.Type == typeof(byte[]))
                     {
                         binaryWriter.Write((byte[])value);
                     }
-                    else if (property.PropertyType == typeof(char[]))
+                    else if (member.Type == typeof(char[]))
                     {
                         binaryWriter.Write((char[])value);
                     }
 
                     // TODO: Needs unit tests
-                    else if (property.PropertyType.BaseType == typeof(SerialPacket))
+                    else if (member.Type.BaseType == typeof(SerialPacket))
                     {
-                        //binaryWriter.Write((value as ISerialize).Serialize());
-                        byte[] data;
+                        SerialPacketMemberAttribute attribute =
+                            member.GetAttribute(typeof(SerialPacketMemberAttribute), true)
+                            as SerialPacketMemberAttribute;
 
-                        using (var ms = new MemoryStream())
-                        {
-                            Serializer.Serialize(ms, value);
-
-                            data = ms.ToArray();
-                        }
-
-                        byte[] lengthPrefix = BitConverter.GetBytes(data.Length);
-                        byte[] packetBytes = new byte[lengthPrefix.Length + data.Length];
-                        Array.Copy(lengthPrefix, packetBytes, lengthPrefix.Length);
-                        Array.Copy(data, 0, packetBytes, lengthPrefix.Length, data.Length);
-
-                        binaryWriter.Write(packetBytes);
+                        binaryWriter.Write(SerializePacket(value as ISerialPacket));
                     }
                 }
 
-                serializedFrame = stream.ToArray();
+                serializedFrame = memoryStream.ToArray();
             }
 
             return serializedFrame;
         }
 
-        // TODO: Need the ability to deserialize frames that are different than the one that was transmitted!!!!
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="frameType"></param>
-        /// <param name="serializedFrame"></param>
-        /// <returns></returns>
-        public SerialFrame Deserialize(Type frameType, byte[] serializedFrame)
+        private byte[] SerializePacket(ISerialPacket serialPacket)
+        {
+            byte[] data;
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                Serializer.Serialize(ms, serialPacket);
+
+                data = ms.ToArray();
+            }
+
+            byte[] lengthPrefix = BitConverter.GetBytes(data.Length);
+
+            byte[] serializedPacket = new byte[lengthPrefix.Length + data.Length];
+
+            Array.Copy(lengthPrefix, serializedPacket, lengthPrefix.Length);
+
+            Array.Copy(data, 0, serializedPacket, lengthPrefix.Length, data.Length);
+
+            return serializedPacket;
+        }
+
+        public object Deserialize(Type type, byte[] serializedFrame)
         {
             BinaryReader binaryReader;
-            SerialFrame newSerialFrame = Activator.CreateInstance(frameType) as SerialFrame;
+
+            if (TypeAccessor == null || Members == null)
+            {
+                Prepare(type);
+            }
+
+            object newSerialFrame = TypeAccessor.CreateNew();
+            ObjectAccessor objectAccessor = ObjectAccessor.Create(newSerialFrame);
 
             using (MemoryStream stream = new MemoryStream(serializedFrame))
             {
                 binaryReader = new BinaryReader(stream);
 
-                foreach (SerialFrameMemberKvp member in SerialFrameMembers)
+                foreach (Member member in Members)
                 {
-                    PropertyInfo property = member.Value;
-
-                    if (property.PropertyType == typeof(byte))
+                    if (member.Type == typeof(byte))
                     {
-                        property.SetValue(newSerialFrame, binaryReader.ReadByte());
+                        objectAccessor[member.Name] = binaryReader.ReadByte();
                     }
-                    else if (property.PropertyType == typeof(sbyte))
+                    else if (member.Type == typeof(sbyte))
                     {
-                        property.SetValue(newSerialFrame, binaryReader.ReadSByte());
+                        objectAccessor[member.Name] = binaryReader.ReadSByte();
                     }
-                    else if (property.PropertyType == typeof(char))
+                    else if (member.Type == typeof(char))
                     {
-                        property.SetValue(newSerialFrame, binaryReader.ReadChar());
+                        objectAccessor[member.Name] = binaryReader.ReadChar();
                     }
-                    else if (property.PropertyType == typeof(bool))
+                    else if (member.Type == typeof(bool))
                     {
-                        property.SetValue(newSerialFrame, binaryReader.ReadBoolean());
+                        objectAccessor[member.Name] = binaryReader.ReadBoolean();
                     }
-                    else if (property.PropertyType == typeof(short))
+                    else if (member.Type == typeof(short))
                     {
-                        property.SetValue(newSerialFrame, binaryReader.ReadInt16());
+                        objectAccessor[member.Name] = binaryReader.ReadInt16();
                     }
-                    else if (property.PropertyType == typeof(int))
+                    else if (member.Type == typeof(int))
                     {
-                        property.SetValue(newSerialFrame, binaryReader.ReadInt32());
+                        objectAccessor[member.Name] = binaryReader.ReadInt32();
                     }
-                    else if (property.PropertyType == typeof(long))
+                    else if (member.Type == typeof(long))
                     {
-                        property.SetValue(newSerialFrame, binaryReader.ReadInt64());
+                        objectAccessor[member.Name] = binaryReader.ReadInt64();
                     }
-                    else if (property.PropertyType == typeof(ushort))
+                    else if (member.Type == typeof(ushort))
                     {
-                        property.SetValue(newSerialFrame, binaryReader.ReadUInt16());
+                        objectAccessor[member.Name] = binaryReader.ReadUInt16();
                     }
-                    else if (property.PropertyType == typeof(uint))
+                    else if (member.Type == typeof(uint))
                     {
-                        property.SetValue(newSerialFrame, binaryReader.ReadUInt32());
+                        objectAccessor[member.Name] = binaryReader.ReadUInt32();
                     }
-                    else if (property.PropertyType == typeof(ulong))
+                    else if (member.Type == typeof(ulong))
                     {
-                        property.SetValue(newSerialFrame, binaryReader.ReadUInt64());
+                        objectAccessor[member.Name] = binaryReader.ReadUInt64();
                     }
-                    else if (property.PropertyType == typeof(float))
+                    else if (member.Type == typeof(float))
                     {
-                        property.SetValue(newSerialFrame, binaryReader.ReadSingle());
+                        objectAccessor[member.Name] = binaryReader.ReadSingle();
                     }
-                    else if (property.PropertyType == typeof(double))
+                    else if (member.Type == typeof(double))
                     {
-                        property.SetValue(newSerialFrame, binaryReader.ReadDouble());
+                        objectAccessor[member.Name] = binaryReader.ReadDouble();
                     }
-                    else if (property.PropertyType == typeof(decimal))
+                    else if (member.Type == typeof(decimal))
                     {
-                        property.SetValue(newSerialFrame, binaryReader.ReadDecimal());
+                        objectAccessor[member.Name] = binaryReader.ReadDecimal();
                     }
-                    else if (property.PropertyType == typeof(string))
+                    else if (member.Type == typeof(string))
                     {
-                        // TODO: Support for different string encodings?
-                        property.SetValue(newSerialFrame, binaryReader.ReadString());
+                        // TODO: Support for different string encodings
+                        // TODO: Support for different string prefix and postfix serialization methods
+                        objectAccessor[member.Name] = binaryReader.ReadString();
                     }
-                    else if (property.PropertyType == typeof(byte[]))
+                    else if (member.Type == typeof(byte[]))
                     {
-                        property.SetValue(newSerialFrame, binaryReader.ReadBytes(
-                                (property.GetValue(newSerialFrame) as Array).Length
-                        ));
+                        objectAccessor[member.Name] = binaryReader.ReadBytes(
+                                (objectAccessor[member.Name] as Array).Length);
                     }
-                    else if (property.PropertyType == typeof(char[]))
+                    else if (member.Type == typeof(char[]))
                     {
-                        property.SetValue(newSerialFrame, binaryReader.ReadChars(
-                                (property.GetValue(newSerialFrame) as Array).Length
-                        ));
+                        objectAccessor[member.Name] = binaryReader.ReadChars(
+                                (objectAccessor[member.Name] as Array).Length);
                     }
 
                     // TODO: Needs unit tests
-                    else if (property.PropertyType.BaseType == typeof(SerialPacket))
+                    else if (member.Type.BaseType == typeof(SerialPacket))
                     {
-                        // FIXME: All this code needs to be cleaned up completely
-                        // This looks like a disaster
                         int length = -1;
-                        
+
                         Serializer.TryReadLengthPrefix(binaryReader.BaseStream, PrefixStyle.Fixed32, out length);
 
                         // TODO: Need to allow the programmer to specify how the length prefix will look
@@ -283,11 +299,7 @@ namespace NSerialProtocol
 
                         Array.Copy(serializedFrame, (int)binaryReader.BaseStream.Position, serialPacketBytes, 0, serialPacketBytes.Length);
 
-                        MemoryStream serialPacketStream = new MemoryStream(serialPacketBytes);
-
-                        object sp = Serializer.Deserialize(property.PropertyType, serialPacketStream);
-
-                        property.SetValue(newSerialFrame, sp);
+                        objectAccessor[member.Name] = DeserializePacket(member.Type, serialPacketBytes);
                     }
                 }
             }
@@ -295,19 +307,45 @@ namespace NSerialProtocol
             return newSerialFrame;
         }
 
-        // FIXME: This should probably go into a reflection extension class or similar
-        public IList<TAttribute> GetAttributesByType<TAttribute>() where TAttribute : Attribute
+        private object DeserializePacket(Type serialPacketType, byte[] bytes)
         {
-            return GetType().GetCustomAttributes<TAttribute>(true).ToList();
+            object serialPacket;
+
+            byte[] serialPacketBytes = new byte[bytes.Length - 4];
+
+            Array.Copy(bytes, 4, serialPacketBytes, 0, serialPacketBytes.Length);
+
+            using (MemoryStream memoryStream = new MemoryStream(bytes))
+            {
+                serialPacket = Serializer.Deserialize(serialPacketType, memoryStream);
+            }
+
+            return serialPacket;
         }
 
-        // FIXME: This should probably go into a reflection extension class or similar
-        public List<PropertyInfo> GetPropertiesByAttributeType<TAttribute>(SerialFrame serialFrame) where TAttribute : Attribute
+        public object Deserialize(Type type, string serializedFrame, Encoding encoding)
         {
-            return serialFrame.GetType().GetProperties()
-                .Where(x => x.IsDefined(typeof(TAttribute)))
-                .ToList();
+            return Deserialize(type, encoding.GetBytes(serializedFrame));
         }
 
+        public object Deserialize(Type type, string serializedFrame)
+        {
+            return Deserialize(type, serializedFrame, Encoding.Default);
+        }
+
+        public T Deserialize<T>(byte[] serializedFrame) where T : class, ISerialFrame
+        {
+            return Deserialize(typeof(T), serializedFrame) as T;
+        }
+
+        public T Deserialize<T>(string serializedFrame, Encoding encoding) where T : class, ISerialFrame
+        {
+            return Deserialize(typeof(T), serializedFrame, encoding) as T;
+        }
+
+        public T Deserialize<T>(string serializedFrame) where T : class, ISerialFrame
+        {
+            return Deserialize(typeof(T), serializedFrame, Encoding.Default) as T;
+        }
     }
 }

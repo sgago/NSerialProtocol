@@ -1,10 +1,10 @@
 ﻿namespace NSerialProtocol
 {
-    public class SerialPacketReceivedEventArgs<T>
+    public class SerialPacketReceivedEventArgs
     {
-        public T serialPacket;
+        public SerialPacket serialPacket;
 
-        public SerialPacketReceivedEventArgs(T serialPacket)
+        public SerialPacketReceivedEventArgs(SerialPacket serialPacket)
         {
             this.serialPacket = serialPacket;
         }

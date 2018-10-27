@@ -7,9 +7,9 @@
     using System.Text;
 
     /// <summary>
-    /// Represents a serial port resource.
+    /// Represents a SerialPortFix resource.
     /// </summary>
-    public interface ISerialPort : IDisposable
+    public interface ISerialPortFix : IDisposable
     {
         /// <summary>
         /// Gets the underlying Stream object for a SerialPort object.

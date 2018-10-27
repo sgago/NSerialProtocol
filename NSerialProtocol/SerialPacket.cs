@@ -8,8 +8,13 @@ using System.Threading.Tasks;
 
 namespace NSerialProtocol
 {
+    public interface ISerialPacket
+    {
+
+    }
+
     [ProtoContract]
-    public class SerialPacket
+    public class SerialPacket : ISerialPacket
     {
         public SerialPacket()
         {

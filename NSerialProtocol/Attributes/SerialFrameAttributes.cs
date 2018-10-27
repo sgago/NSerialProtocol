@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace NSerialProtocol.Attributes
 {
+    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
     public class FrameMemberAttribute : Attribute
     {
         public int Tag { get; }
@@ -20,10 +21,18 @@ namespace NSerialProtocol.Attributes
         }
     }
 
+    public class PayloadAttribute : FrameMemberAttribute
+    {
+        public PayloadAttribute(int tag)
+            : base(tag)
+        {
+        }
+    }
+
     public class StartFlagAttribute : FrameMemberAttribute
     {
         public StartFlagAttribute()
-            : base (int.MinValue)
+            : base(int.MinValue)
         {
         }
     }
@@ -31,9 +40,37 @@ namespace NSerialProtocol.Attributes
     public class EndFlagAttribute : FrameMemberAttribute
     {
         public EndFlagAttribute()
-            : base (int.MaxValue)
+            : base(int.MaxValue)
         {
 
         }
+    }
+
+    public enum StringSerializationOptions
+    {
+        LengthPrefix,
+        NullTerminated
+    }
+
+    public class StringMemberAttribute : FrameMemberAttribute
+    {
+        public StringMemberAttribute(int tag)
+            : base(tag)
+        {
+
+        }
+
+        public Encoding Encoding { get; set; } = Encoding.Default;
+    }
+
+    public class SerialPacketMemberAttribute : FrameMemberAttribute
+    {
+        public SerialPacketMemberAttribute(int tag)
+            : base(tag)
+        {
+
+        }
+
+        public Type LengthPrefixType { get; set; } = typeof(int);
     }
 }

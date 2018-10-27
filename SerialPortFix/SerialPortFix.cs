@@ -26,7 +26,7 @@
     /// </code>
     /// </example>
     [System.ComponentModel.DesignerCategory("Code")]
-    public sealed class SerialPortFix : SerialPort, ISerialPort
+    public sealed class SerialPortFix : SerialPort, ISerialPortFix
     {
         /// <summary>
         /// Number of attempts to try and get the Comm state of the serial port.

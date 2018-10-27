@@ -34,6 +34,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FastMember, Version=1.4.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\FastMember.1.4.1\lib\net461\FastMember.dll</HintPath>
+    </Reference>
     <Reference Include="protobuf-net, Version=2.4.0.0, Culture=neutral, PublicKeyToken=257b51d87d2e4d67, processorArchitecture=MSIL">
       <HintPath>..\packages\protobuf-net.2.4.0\lib\net40\protobuf-net.dll</HintPath>
     </Reference>
@@ -59,9 +62,8 @@
     <None Include="packages.config" />
     <Compile Include="EventArgs\SerialFrameParsedEventArgs.cs" />
     <Compile Include="SerialFrameParser.cs" />
-    <Compile Include="SerialFrameParsers\EndFlagParser.cs" />
     <Compile Include="SerialFrameParsers\FixedLengthParser.cs" />
-    <Compile Include="SerialFrameParsers\StartFlagParser.cs" />
+    <Compile Include="SerialFrameParsers\FlagParser.cs" />
     <Compile Include="EventArgs\SerialFrameReceivedEventArgs.cs" />
     <Compile Include="SerialFrameSerializer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

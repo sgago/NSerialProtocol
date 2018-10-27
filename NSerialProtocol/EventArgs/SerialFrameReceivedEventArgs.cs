@@ -2,9 +2,9 @@
 {
     public class SerialFrameReceivedEventArgs
     {
-        public readonly SerialFrame SerialFrame;
+        public readonly ISerialFrame SerialFrame;
 
-        public SerialFrameReceivedEventArgs(SerialFrame serialFrame)
+        public SerialFrameReceivedEventArgs(ISerialFrame serialFrame)
         {
             SerialFrame = serialFrame;
         }

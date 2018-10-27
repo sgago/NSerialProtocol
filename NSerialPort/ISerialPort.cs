@@ -1,5 +1,4 @@
 ﻿using NativeMethods;
-using SerialPortFix;
 using System;
 using System.IO;
 using System.IO.Ports;
@@ -11,9 +10,9 @@ using static NSerialPort.NSerialPort;
 namespace NSerialPort
 {
     /// <summary>
-    /// Represents a NSerialPort resource.
+    /// Represents a SerialPort resource with synchronous and asynchronous methods.
     /// </summary>
-    public interface INSerialPort : IDisposable
+    public interface ISerialPort : IDisposable
     {
         /// <summary>
         /// Gets the underlying Stream object for a SerialPort object.

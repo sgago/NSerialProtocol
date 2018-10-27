@@ -12,17 +12,15 @@
     using NativeMethods;
     using SerialPortFix;
 
-    // TODO: Consider a different name than INSerialPort
-    // TODO: Consider an asynchronous, synchronous, and async + sync interfaces for better separation
     /// <summary>
     /// Represents a NSerialPort resource.
     /// </summary>
-    public class NSerialPort : INSerialPort, INotifyPropertyChanged, IDisposable
+    public class NSerialPort : ISerialPort, INotifyPropertyChanged, IDisposable
     {
         /// <summary>
         /// Gets or sets the serial port object that is being wrapped.
         /// </summary>
-        private ISerialPort SerialPort { get; set; }
+        private ISerialPortFix SerialPort { get; set; }
 
         /// <summary>
         /// Gets or sets the input buffer to capture characters from
@@ -484,7 +482,7 @@
         /// <param name="parity">One of the Parity values.</param>
         /// <param name="dataBits">The data bits value.</param>
         /// <param name="stopBits">One of the StopBits values.</param>
-        internal NSerialPort(ISerialPort serialPort,
+        internal NSerialPort(ISerialPortFix serialPort,
                              string portName = "COM1",
                              int baudRate = 57600,
                              Parity parity = Parity.None,
