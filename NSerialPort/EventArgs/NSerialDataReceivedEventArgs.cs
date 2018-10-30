@@ -2,7 +2,12 @@
 
 namespace NSerialPort.EventArgs
 {
-    public class NSerialDataReceivedEventArgs : System.EventArgs
+    using System;
+
+    /// <summary>
+    /// Provides data for the NSerialPort DataReceived event.
+    /// </summary>
+    public class NSerialDataReceivedEventArgs : EventArgs
     {
         /// <summary>
         /// Gets the Event type.

@@ -1,12 +1,7 @@
 ﻿using NByteStuff;
 using NFec;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace NSerialProtocol.Attributes
 {
@@ -34,6 +29,7 @@ namespace NSerialProtocol.Attributes
         public StartFlagAttribute()
             : base(int.MinValue)
         {
+
         }
     }
 
@@ -71,6 +67,26 @@ namespace NSerialProtocol.Attributes
 
         }
 
-        public Type LengthPrefixType { get; set; } = typeof(int);
+        public Type LengthPrefixType { get; } = typeof(int);
+    }
+
+    public class FecAttribute : Attribute
+    {
+        //public  Fec { get; }
+
+        //public FecAttribute( fec)
+        //{
+        //    Fec = fec;
+        //}
+    }
+
+    public class ByteStuffAttribute : Attribute
+    {
+        //public  ByteStuff { get; }
+
+        //public ByteStuffAttribute()
+        //{
+        //    ByteStuff = byteStuff;
+        //}
     }
 }

@@ -93,6 +93,7 @@
         {
             this.decodedNumberBase = decodedNumberBase;
             this.encodedNumberBase = encodedNumberBase;
+
             this.inputEncoding = inputEncoding;
         }
 

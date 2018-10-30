@@ -1,10 +1,10 @@
-﻿namespace NativeMethods
-{
-    using Microsoft.Win32.SafeHandles;
-    using System;
-    using System.Runtime.InteropServices;
-    using System.Text;
+﻿using Microsoft.Win32.SafeHandles;
+using System;
+using System.Runtime.InteropServices;
+using System.Text;
 
+namespace NativeMethods
+{
     /// <summary>
     /// File type of the specified file.
     /// </summary>

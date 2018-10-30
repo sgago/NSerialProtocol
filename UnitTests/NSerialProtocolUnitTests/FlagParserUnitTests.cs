@@ -122,7 +122,7 @@ namespace NSerialProtocolUnitTests
         [TestCaseSource(nameof(GetFlagParserTestCaseData))]
         public string[] FlagParser_Test(string startFlag, string  endFlag, string data)
         {
-            IParser startFlagParser = new FlagParser(endFlag, startFlag);
+            IFrameParser startFlagParser = new FlagParser(endFlag, startFlag);
 
             return startFlagParser.Parse(data).ToArray();
         }

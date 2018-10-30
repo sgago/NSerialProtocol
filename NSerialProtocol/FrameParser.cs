@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace NSerialProtocol
 {
@@ -13,9 +9,9 @@ namespace NSerialProtocol
         
     }
 
-    public abstract class SerialFrameParser : IParser
+    public abstract class FrameParser : IFrameParser
     {
-        private IParser Successor { get; set; }
+        private IFrameParser Successor { get; set; }
 
         public abstract IList<string> Parse(IList<string> values);
 
@@ -24,7 +20,7 @@ namespace NSerialProtocol
             return Parse(new List<string>() { value });
         }
 
-        public void SetSuccessor(IParser nextParser)
+        public void SetSuccessor(IFrameParser nextParser)
         {
             Successor = nextParser;
         }

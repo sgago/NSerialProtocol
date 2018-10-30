@@ -44,7 +44,7 @@ namespace NSerialProtocolUnitTests
             List<string> framesReceived = new List<string>();
             
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialFrameSerializer serializer = Substitute.For<ISerialFrameSerializer>();
+            IFrameSerializer serializer = Substitute.For<IFrameSerializer>();
             NSerialProtocol protocol = new NSerialProtocol(serialPortSub, serializer);
 
             NSerialDataReceivedEventArgs args = new NSerialDataReceivedEventArgs(
@@ -95,7 +95,7 @@ namespace NSerialProtocolUnitTests
             List<string> framesReceived = new List<string>();
 
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            ISerialFrameSerializer serializerSub = Substitute.For<ISerialFrameSerializer>();
+            IFrameSerializer serializerSub = Substitute.For<IFrameSerializer>();
             NSerialProtocol protocol = new NSerialProtocol(serialPortSub, serializerSub);
 
             NSerialDataReceivedEventArgs args = new NSerialDataReceivedEventArgs(

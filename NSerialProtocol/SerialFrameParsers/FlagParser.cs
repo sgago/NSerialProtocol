@@ -4,15 +4,14 @@ using System.Text.RegularExpressions;
 
 namespace NSerialProtocol.SerialFrameParsers
 {
-    public class FlagParser : SerialFrameParser, IParser
+    public class FlagParser : FrameParser, IFrameParser
     {
         private const string BadFlagErrorMessage = "Flag cannot be null or the empty string.";
 
         private const RegexOptions Options =
             RegexOptions.Multiline |
             RegexOptions.CultureInvariant;
-            
-
+          
         private readonly string StartFlag = "";
 
         private readonly string EndFlag = "";

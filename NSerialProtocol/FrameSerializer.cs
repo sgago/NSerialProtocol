@@ -9,17 +9,17 @@ using System.Text;
 
 namespace NSerialProtocol
 {
-    public interface ISerialFrameSerializer
+    public interface IFrameSerializer
     {
+        void Prepare(Type type);
+        void Prepare<T>() where T : ISerialFrame;
+        byte[] Serialize(ISerialFrame frame);
         object Deserialize(Type type, byte[] serializedFrame);
         object Deserialize(Type type, string serializedFrame);
         object Deserialize(Type type, string serializedFrame, Encoding encoding);
         T Deserialize<T>(byte[] serializedFrame) where T : class, ISerialFrame;
         T Deserialize<T>(string serializedFrame) where T : class, ISerialFrame;
         T Deserialize<T>(string serializedFrame, Encoding encoding) where T : class, ISerialFrame;
-        void Prepare(Type type);
-        void Prepare<T>() where T : ISerialFrame;
-        byte[] Serialize(ISerialFrame frame);
     }
 
     // TODO: This should work on properties and fields
@@ -34,13 +34,13 @@ namespace NSerialProtocol
     /// <summary>
     /// Represents methods of serializing and deserializing SerialFramae instances.
     /// </summary>
-    public class SerialFrameSerializer : ISerialFrameSerializer
+    public class FrameSerializer : IFrameSerializer
     {
         private TypeAccessor TypeAccessor { get; set; }
 
         private List<Member> Members { get; set; }
 
-        public SerialFrameSerializer()
+        public FrameSerializer()
         {
             
         }
@@ -181,17 +181,21 @@ namespace NSerialProtocol
         private byte[] SerializePacket(ISerialPacket serialPacket)
         {
             byte[] data;
+            byte[] lengthPrefix;
+            byte[] serializedPacket;
 
             using (MemoryStream ms = new MemoryStream())
             {
+                // Serialize the serial packet using Protobuf-Net
                 Serializer.Serialize(ms, serialPacket);
 
+                // Grab the results
                 data = ms.ToArray();
             }
 
-            byte[] lengthPrefix = BitConverter.GetBytes(data.Length);
+            lengthPrefix = BitConverter.GetBytes(data.Length);
 
-            byte[] serializedPacket = new byte[lengthPrefix.Length + data.Length];
+            serializedPacket = new byte[lengthPrefix.Length + data.Length];
 
             Array.Copy(lengthPrefix, serializedPacket, lengthPrefix.Length);
 

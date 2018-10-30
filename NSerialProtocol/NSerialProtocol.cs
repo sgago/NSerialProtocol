@@ -10,17 +10,23 @@ using System.Collections.Generic;
 using System.IO.Ports;
 using System.Linq;
 using System.Text;
-
+using System.Threading;
 
 namespace NSerialProtocol
 {
+    using FastMember;
+    using NByteStuff.Algorithms;
+    using NFec.Algorithms;
     using NSerialPort;
+
 
     public interface ISerialProtocol
     {
 
     }
 
+    [Fec()]
+    [ByteStuff()]
     public class DefaultSerialFrame : SerialFrame
     {
         [StartFlag]
@@ -69,9 +75,9 @@ namespace NSerialProtocol
 
         private ISerialFrame PrototypeFrame { get; set; } = new DefaultSerialFrame();
 
-        private ISerialFrameSerializer SerialFrameSerializer { get; set; }
+        private IFrameSerializer SerialFrameSerializer { get; set; }
 
-        private List<Tuple<int, IParser>> Parsers { get; set; } = new List<Tuple<int, IParser>>();
+        private List<Tuple<int, IFrameParser>> Parsers { get; set; } = new List<Tuple<int, IFrameParser>>();
 
         /// <summary>
         /// Represents the method that will handle the MessageReceived event of a NSerialPort
@@ -91,10 +97,8 @@ namespace NSerialProtocol
         public event SerialFrameErrorEventHandler SerialFrameError;
         public event SerialFrameReceivedEventHandler SerialFrameReceived;
         //public event SerialPacketReceivedEventHandler SerialPacketReceived;
-
-
         
-        internal NSerialProtocol(ISerialPort serialPort, ISerialFrameSerializer serializer)
+        internal NSerialProtocol(ISerialPort serialPort, IFrameSerializer serializer)
         {
             SerialPort = serialPort;
             SerialFrameSerializer = serializer;
@@ -109,51 +113,57 @@ namespace NSerialProtocol
                                int dataBits = 8,
                                StopBits stopBits = StopBits.One)
             : this(new NSerialPort(portName, baudRate, parity, dataBits, stopBits),
-                   new SerialFrameSerializer())
+                   new FrameSerializer())
         {
             // Yes, this violates SOLID.  However, this simplifies the instantiation
             // for users.
         }
 
-
-
-        public NSerialProtocol SetFlags(byte[] endFlag, byte[] startFlag = null)
-        {
-            throw new NotImplementedException();
-        }
+        //public NSerialProtocol SetFlags(byte[] endFlag, byte[] startFlag = null)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         public NSerialProtocol SetFlags(string endFlag, string startFlag = "")
         {
-            Parsers.Add(new Tuple<int, IParser>(FlagParserOrder, new FlagParser(endFlag, startFlag)));
+            Parsers.Add(new Tuple<int, IFrameParser>(FlagParserOrder, new FlagParser(endFlag, startFlag)));
 
             SetParserSuccessors();
 
             return this;
         }
 
-        public NSerialProtocol SetFec(IFec fec)
+        //public NSerialProtocol SetFec(IFec fec)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //public NSerialProtocol SetLengthField()
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //public NSerialProtocol SetByteStuff(IByteStuff byteStuff)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //public NSerialProtocol SetMaximumLength(int length)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        public void SetFramePrototype(Type type)
         {
+            TypeAccessor typeAccessor = TypeAccessor.Create(type);
+            ObjectAccessor objectAccessor = ObjectAccessor.Create(typeAccessor.CreateNew());
+
             throw new NotImplementedException();
         }
 
-        public NSerialProtocol SetLengthField()
+        public void SetFramePrototype<T>() where T : ISerialFrame
         {
-            throw new NotImplementedException();
-        }
-
-        public NSerialProtocol SetByteStuff(IByteStuff byteStuff)
-        {
-            throw new NotImplementedException();
-        }
-
-        public NSerialProtocol SetMaximumLength(int length)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SetPrototype<T>() where T : SerialFrame
-        {
-
+            SetFramePrototype(typeof(T));
         }
 
         private void RaiseSerialFrameParsedEvent(object sender, SerialFrameParsedEventArgs e)
@@ -185,6 +195,9 @@ namespace NSerialProtocol
             return results;
         }
 
+        /// <summary>
+        /// Sets the next parser in the parser chain.
+        /// </summary>
         private void SetParserSuccessors()
         {
             for (int i = 0; i < Parsers.Count - 1; i++)
@@ -258,7 +271,8 @@ namespace NSerialProtocol
 
         private void NSerialProtocol_SerialFrameParsed(object sender, SerialFrameParsedEventArgs e)
         {
-            ISerialFrame serialFrame = SerialFrameSerializer.Deserialize(PrototypeFrame.GetType(), e.Frame) as ISerialFrame;
+            ISerialFrame serialFrame =
+                SerialFrameSerializer.Deserialize(PrototypeFrame.GetType(), e.Frame) as ISerialFrame;
 
             RaiseSerialFrameReceived(this, new SerialFrameReceivedEventArgs(serialFrame));
         }
@@ -286,7 +300,7 @@ namespace NSerialProtocol
             }
         }
 
-        public void WriteFrame(SerialFrame serialFrame)
+        public void WriteFrame(ISerialFrame serialFrame)
         {
             throw new NotImplementedException();
         }
@@ -301,27 +315,27 @@ namespace NSerialProtocol
             throw new NotImplementedException();
         }
 
-        public SerialFrame TranceiveFrame(SerialFrame serialFrame, int timeout = 100, int retries = 0)
+        public SerialFrame TranceiveFrame(SerialFrame serialFrame, int timeout = Timeout.Infinite, int retries = 0)
         {
             throw new NotImplementedException();
         }
 
-        public SerialFrame TranceiveFrame(string payload, int timeout = 100, int retries = 0)
+        public SerialFrame TranceiveFrame(string payload, int timeout = Timeout.Infinite, int retries = 0)
         {
             throw new NotImplementedException();
         }
 
-        public void WritePacket(SerialPacket serialPacket)
+        public void WritePacket(ISerialPacket serialPacket)
         {
             throw new NotImplementedException();
         }
 
-        public SerialPacket ReadPacket()
+        public ISerialPacket ReadPacket()
         {
             throw new NotImplementedException();
         }
 
-        public SerialPacket TranceivePacket(SerialPacket serialPacket, int timeout = 100, int retries = 0)
+        public ISerialPacket TranceivePacket(SerialPacket serialPacket, int timeout = Timeout.Infinite, int retries = 0)
         {
             throw new NotImplementedException();
         }

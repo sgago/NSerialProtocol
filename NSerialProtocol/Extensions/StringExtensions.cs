@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NSerialProtocol.Extensions
 {
@@ -17,14 +13,18 @@ namespace NSerialProtocol.Extensions
         /// <param name="startIndex"></param>
         /// <param name="stringComparison"></param>
         /// <returns></returns>
-        internal static string RemoveTo(this string str, string value, int startIndex = 0, StringComparison stringComparison = StringComparison.CurrentCulture)
+        internal static string RemoveTo(this string str, string value, int startIndex = 0,
+            StringComparison stringComparison = StringComparison.CurrentCulture)
         {
             int removeLength = str.IndexOf(value, startIndex, stringComparison);
+
             string result = (removeLength < 0) ? str : str.Remove(startIndex, removeLength);
+
             return result;
         }
 
-        internal static string RemoveToLast(this string str, string value, int startIndex = 0, StringComparison stringComparison = StringComparison.CurrentCulture)
+        internal static string RemoveToLast(this string str, string value, int startIndex = 0,
+            StringComparison stringComparison = StringComparison.CurrentCulture)
         {
             int removeLength = str.LastIndexOf(value, startIndex, stringComparison);
             string result = (removeLength < 0) ? str : str.Remove(startIndex, removeLength);
@@ -39,14 +39,16 @@ namespace NSerialProtocol.Extensions
         /// <param name="startIndex"></param>
         /// <param name="stringComparison"></param>
         /// <returns></returns>
-        internal static string RemoveThrough(this string str, string value, int startIndex = 0, StringComparison stringComparison = StringComparison.CurrentCulture)
+        internal static string RemoveThrough(this string str, string value,
+            int startIndex = 0, StringComparison stringComparison = StringComparison.CurrentCulture)
         {
             int removeLength = str.IndexOf(value, startIndex, stringComparison) + value.Length;
             string result = (removeLength < 0) ? str : str.Remove(startIndex, removeLength);
             return result;
         }
 
-        internal static string RemoveThroughLast(this string str, string value, int startIndex = 0, StringComparison stringComparison = StringComparison.CurrentCulture)
+        internal static string RemoveThroughLast(this string str, string value,
+            int startIndex = 0, StringComparison stringComparison = StringComparison.CurrentCulture)
         {
             int removeLength = str.LastIndexOf(value, startIndex, stringComparison) + value.Length;
             string result = (removeLength < 0) ? str : str.Remove(startIndex, removeLength);
@@ -61,7 +63,8 @@ namespace NSerialProtocol.Extensions
         /// <param name="startIndex"></param>
         /// <param name="stringComparison"></param>
         /// <returns></returns>
-        internal static string RemoveFirstOccurenceOf(this string str, string value, int startIndex = 0, StringComparison stringComparison = StringComparison.CurrentCulture)
+        internal static string RemoveFirstOccurenceOf(this string str, string value,
+            int startIndex = 0, StringComparison stringComparison = StringComparison.CurrentCulture)
         {
             int startIndexOfOccurence = str.IndexOf(value, startIndex);
             int lengthOfOccurence = value.Length;

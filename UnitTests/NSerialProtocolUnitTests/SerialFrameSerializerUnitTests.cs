@@ -324,7 +324,7 @@ namespace NSerialProtocolUnitTests
         [TestCaseSource(nameof(GetSerialFramePrimitivesTestCaseData))]
         public byte[] Serialize_PrimitiveType_Test(SerialFrame frame)
         {
-            SerialFrameSerializer serializer = new SerialFrameSerializer();
+            FrameSerializer serializer = new FrameSerializer();
 
             return serializer.Serialize(frame);
         }
@@ -396,7 +396,7 @@ namespace NSerialProtocolUnitTests
         [TestCaseSource(nameof(GetSerialFrameDeserializedTestCaseData))]
         public void Deserialize_SimpleTypes_Test(Type type, byte[] serializedFrame, SerialFrame expected)
         {
-            SerialFrameSerializer serializer = new SerialFrameSerializer();
+            FrameSerializer serializer = new FrameSerializer();
 
             SerialFrame actual = (SerialFrame)Activator.CreateInstance(type);
 
@@ -465,7 +465,7 @@ namespace NSerialProtocolUnitTests
 
             expected.InsertRange(0, BitConverter.GetBytes(expected.Count));
 
-            SerialFrameSerializer frameSerializer = new SerialFrameSerializer();
+            FrameSerializer frameSerializer = new FrameSerializer();
 
             PacketOnlyTestFrame testFrame = new PacketOnlyTestFrame
             {
@@ -507,7 +507,7 @@ namespace NSerialProtocolUnitTests
 
             bytes.InsertRange(0, BitConverter.GetBytes(bytes.Count));
 
-            SerialFrameSerializer frameSerializer = new SerialFrameSerializer();
+            FrameSerializer frameSerializer = new FrameSerializer();
 
             PacketOnlyTestFrame actual =
                 frameSerializer.Deserialize<PacketOnlyTestFrame>(bytes.ToArray());
@@ -549,7 +549,7 @@ namespace NSerialProtocolUnitTests
             // Adds the integer 123 to the expected results
             expected.AddRange(new byte[] { 123, 0, 0, 0 });
 
-            SerialFrameSerializer frameSerializer = new SerialFrameSerializer();
+            FrameSerializer frameSerializer = new FrameSerializer();
 
             PacketTestFrame testFrame = new PacketTestFrame
             {
@@ -608,7 +608,7 @@ namespace NSerialProtocolUnitTests
 
             bytes.AddRange(new byte[] { 123, 0, 0, 0 });
 
-            SerialFrameSerializer frameSerializer = new SerialFrameSerializer();
+            FrameSerializer frameSerializer = new FrameSerializer();
 
             PacketTestFrame actual =
                 frameSerializer.Deserialize<PacketTestFrame>(bytes.ToArray());

@@ -56,21 +56,21 @@
     <Compile Include="Attributes\SerialFrameAttributes.cs" />
     <Compile Include="EventArgs\SerialFrameErrorEventArgs.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
-    <Compile Include="IParser.cs" />
+    <Compile Include="FrameParserChain.cs" />
+    <Compile Include="IFrameParser.cs" />
     <Compile Include="ISerialize.cs" />
     <Compile Include="SerialFrame.cs" />
     <None Include="packages.config" />
     <Compile Include="EventArgs\SerialFrameParsedEventArgs.cs" />
-    <Compile Include="SerialFrameParser.cs" />
+    <Compile Include="FrameParser.cs" />
     <Compile Include="SerialFrameParsers\FixedLengthParser.cs" />
     <Compile Include="SerialFrameParsers\FlagParser.cs" />
     <Compile Include="EventArgs\SerialFrameReceivedEventArgs.cs" />
-    <Compile Include="SerialFrameSerializer.cs" />
+    <Compile Include="FrameSerializer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="NSerialProtocol.cs" />
     <Compile Include="SerialPacket.cs" />
     <Compile Include="EventArgs\SerialPacketReceivedEventArgs.cs" />
-    <Compile Include="SerialPacketParser.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NCobs\NByteStuff.csproj">
