@@ -44,7 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="SerialPortFix.cs" />
-    <Compile Include="ISerialPort.cs" />
+    <Compile Include="ISerialPortFix.cs" />
     <Compile Include="NativeMethods.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

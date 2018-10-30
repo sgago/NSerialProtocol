@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace NSerialProtocol.SerialFrameParsers
 {
-    public class FixedLengthParser : SerialFrameParser, IParser
+    public class FixedLengthParser : FrameParser, IFrameParser
     {
         private const string BadLengthErrorMessage = "Fixed frame length cannot be less than or equal to 0.";
 

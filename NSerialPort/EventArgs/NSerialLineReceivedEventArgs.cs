@@ -1,11 +1,13 @@
 ﻿using System.IO.Ports;
 
-namespace NSerialPort
+namespace NSerialPort.EventArgs
 {
+    using System;
+
     /// <summary>
-    /// Contains event data about a received line from the serial port.
+    /// Provides data for the NSerialPort LineReceived event.
     /// </summary>
-    public class NSerialLineReceivedEventArgs : System.EventArgs
+    public class NSerialLineReceivedEventArgs : EventArgs
     {
         /// <summary>
         /// Gets the event type.

@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("FrameParserPlayground")]
+[assembly: AssemblyTitle("SerialFrameExample")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("FrameParserPlayground")]
+[assembly: AssemblyProduct("SerialFrameExample")]
 [assembly: AssemblyCopyright("Copyright ©  2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("010b8d1e-6b9a-4600-9803-65ea2214be53")]
+[assembly: Guid("68a2d9ec-dddf-4fa1-8572-57543a095295")]
 
 // Version information for an assembly consists of the following four values:
 //

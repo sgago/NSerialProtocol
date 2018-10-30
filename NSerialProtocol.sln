@@ -28,8 +28,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NSerialProtocol", "NSerialP
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Playgrounds", "Playgrounds", "{C8F0F128-7044-4447-BB9D-B54DE7000882}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrameParserPlayground", "Playgrounds\FrameParserPlayground\FrameParserPlayground.csproj", "{010B8D1E-6B9A-4600-9803-65EA2214BE53}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SerialPortFixExamples", "SerialPortFixExamples", "{C4371EF6-3558-462D-97A4-3B6C77462496}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SerialPortFixFinalizerExample", "Examples\SerialPortFixFinalizerExample\SerialPortFixFinalizerExample.csproj", "{EEFB5A66-9D58-4E91-9DFB-AFD96C8EE204}"
@@ -49,6 +47,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NSerialPortTranceiveLineExample", "Examples\NSerialPortExamples\NSerialPortTranceiveLineExample\NSerialPortTranceiveLineExample.csproj", "{FEBA7EB8-4170-4A8C-8032-6C5DCB93A772}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParseDynamicLength", "Playgrounds\ParseDynamicLength\ParseDynamicLength.csproj", "{27DE31D6-F54B-403F-999C-57EB201FDAC3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NSerialProtocolExamples", "NSerialProtocolExamples", "{16D4A653-6ABE-49FC-B866-8C6E315BBFA0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SerialFrameExample", "Examples\NSerialProtocolExamples\SerialFrameExample\SerialFrameExample.csproj", "{68A2D9EC-DDDF-4FA1-8572-57543A095295}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -76,10 +78,6 @@ Global
 		{C62D822F-87D0-4629-9730-6EB3A89442A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C62D822F-87D0-4629-9730-6EB3A89442A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C62D822F-87D0-4629-9730-6EB3A89442A5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{010B8D1E-6B9A-4600-9803-65EA2214BE53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{010B8D1E-6B9A-4600-9803-65EA2214BE53}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{010B8D1E-6B9A-4600-9803-65EA2214BE53}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{010B8D1E-6B9A-4600-9803-65EA2214BE53}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EEFB5A66-9D58-4E91-9DFB-AFD96C8EE204}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EEFB5A66-9D58-4E91-9DFB-AFD96C8EE204}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EEFB5A66-9D58-4E91-9DFB-AFD96C8EE204}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -112,12 +110,15 @@ Global
 		{27DE31D6-F54B-403F-999C-57EB201FDAC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{27DE31D6-F54B-403F-999C-57EB201FDAC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{27DE31D6-F54B-403F-999C-57EB201FDAC3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{68A2D9EC-DDDF-4FA1-8572-57543A095295}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68A2D9EC-DDDF-4FA1-8572-57543A095295}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68A2D9EC-DDDF-4FA1-8572-57543A095295}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68A2D9EC-DDDF-4FA1-8572-57543A095295}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{010B8D1E-6B9A-4600-9803-65EA2214BE53} = {C8F0F128-7044-4447-BB9D-B54DE7000882}
 		{C4371EF6-3558-462D-97A4-3B6C77462496} = {6FAFE4C8-2EA0-4950-91F0-CE3399A3440C}
 		{EEFB5A66-9D58-4E91-9DFB-AFD96C8EE204} = {C4371EF6-3558-462D-97A4-3B6C77462496}
 		{D33A5D8C-78F0-4C58-B89D-2AC8196C97DF} = {C4371EF6-3558-462D-97A4-3B6C77462496}
@@ -128,6 +129,8 @@ Global
 		{DF615122-FF49-4700-93BF-41240AF823A2} = {2BAE0400-83CE-48E4-9BCD-250229DE2EE5}
 		{FEBA7EB8-4170-4A8C-8032-6C5DCB93A772} = {2BAE0400-83CE-48E4-9BCD-250229DE2EE5}
 		{27DE31D6-F54B-403F-999C-57EB201FDAC3} = {C8F0F128-7044-4447-BB9D-B54DE7000882}
+		{16D4A653-6ABE-49FC-B866-8C6E315BBFA0} = {6FAFE4C8-2EA0-4950-91F0-CE3399A3440C}
+		{68A2D9EC-DDDF-4FA1-8572-57543A095295} = {16D4A653-6ABE-49FC-B866-8C6E315BBFA0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {91871512-CA16-4108-BDBC-0645BAB249EE}

@@ -1,10 +1,11 @@
-﻿namespace SerialPortFix
+﻿using Microsoft.Win32.SafeHandles;
+using System;
+using System.IO.Ports;
+using System.Runtime.InteropServices;
+
+namespace SerialPortFix
 {
-    using Microsoft.Win32.SafeHandles;
     using NativeMethods;
-    using System;
-    using System.IO.Ports;
-    using System.Runtime.InteropServices;
 
     /// <summary>
     /// Represents a base serial port resource which clears the fAbortOnError flag.
@@ -26,12 +27,17 @@
     /// </code>
     /// </example>
     [System.ComponentModel.DesignerCategory("Code")]
-    public sealed class SerialPortFix : SerialPort, ISerialPort
+    public sealed class SerialPortFix : SerialPort, ISerialPortFix
     {
         /// <summary>
         /// Number of attempts to try and get the Comm state of the serial port.
         /// </summary>
         private const int CommStateRetries = 10;
+
+        /// <summary>
+        /// Bit location of the fAbortOnError flag.
+        /// </summary>
+        private const int AbortOnErrorFlag = 14;
 
         /// <summary>
         /// Gets or sets a SafeFileHandle to the serial port.
@@ -53,9 +59,8 @@
             {
                 SerialPortHandle = GetSerialPortHandle(value);
 
-                // FIXME: Magic number 14 is the fAbortOnError flag
                 // FIXME: Should be using a NativeMethods enum or similar
-                SetDcbFlag(14, false);
+                SetDcbFlag(AbortOnErrorFlag, false);
 
                 base.PortName = value;
             }
@@ -65,11 +70,13 @@
         /// Initializes a new instance of the SerialPort class using the specified
         /// port name, baud rate, parity bit, data bits, and stop bits.
         /// </summary>
-        /// <param name="portName">The port to use e.g., "COM1", "COM10", or "COM100".</param>
-        /// <param name="baudRate">The baud rate.</param>
-        /// <param name="parity">One of the Parity values.</param>
-        /// <param name="dataBits">The data bits value.</param>
-        /// <param name="stopBits">One of the StopBits values.</param>
+        /// <param name="portName">
+        /// The port to use e.g., "COM1", "COM10", or "COM100".  The default value is "COM1".
+        /// </param>
+        /// <param name="baudRate">The baud rate.  The default value is 57600.</param>
+        /// <param name="parity">One of the Parity values.  The default value is None.</param>
+        /// <param name="dataBits">The data bits value.  The default value is 8.</param>
+        /// <param name="stopBits">One of the StopBits values.  The default value is One.</param>
         public SerialPortFix(string portName = "COM1",
                              int baudRate = 57600,
                              Parity parity = Parity.None,
@@ -85,6 +92,7 @@
         public new void Dispose()
         {
             base.Dispose();
+
             SerialPortHandle?.Close();
             SerialPortHandle = null;
         }

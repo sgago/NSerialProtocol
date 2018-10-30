@@ -1,8 +1,12 @@
 ﻿using NSerialProtocol;
+using NSerialProtocol.Attributes;
 using NSerialProtocolUnitTests.Extensions;
 using NUnit.Framework;
+using ProtoBuf;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using FluentAssertions;
 
 namespace NSerialProtocolUnitTests
 {
@@ -13,7 +17,7 @@ namespace NSerialProtocolUnitTests
 
     class BoolTestSerialFrame : SerialFrame
     {
-        [SerialFrameMember(1)]
+        [FrameMember(1)]
         public bool Value { get; set; } = default(bool);
 
         public BoolTestSerialFrame()
@@ -29,7 +33,7 @@ namespace NSerialProtocolUnitTests
 
     class CharTestSerialFrame : SerialFrame
     {
-        [SerialFrameMember(1)]
+        [FrameMember(1)]
         public char Value { get; set; } = default(char);
 
         public CharTestSerialFrame()
@@ -45,7 +49,7 @@ namespace NSerialProtocolUnitTests
 
     class SByteTestSerialFrame : SerialFrame
     {
-        [SerialFrameMember(1)]
+        [FrameMember(1)]
         public sbyte Value { get; set; } = default(sbyte);
 
         public SByteTestSerialFrame()
@@ -61,7 +65,7 @@ namespace NSerialProtocolUnitTests
 
     class Int16TestSerialFrame : SerialFrame
     {
-        [SerialFrameMember(1)]
+        [FrameMember(1)]
         public short Value { get; set; } = default(short);
 
         public Int16TestSerialFrame()
@@ -77,7 +81,7 @@ namespace NSerialProtocolUnitTests
 
     class Int32TestSerialFrame : SerialFrame
     {
-        [SerialFrameMember(1)]
+        [FrameMember(1)]
         public int Value { get; set; } = default(int);
 
         public Int32TestSerialFrame()
@@ -93,7 +97,7 @@ namespace NSerialProtocolUnitTests
 
     class Int64TestSerialFrame : SerialFrame
     {
-        [SerialFrameMember(1)]
+        [FrameMember(1)]
         public long Value { get; set; } = default(long);
 
         public Int64TestSerialFrame()
@@ -109,7 +113,7 @@ namespace NSerialProtocolUnitTests
 
     class ByteTestSerialFrame : SerialFrame
     {
-        [SerialFrameMember(1)]
+        [FrameMember(1)]
         public byte Value { get; set; } = default(byte);
 
         public ByteTestSerialFrame()
@@ -125,7 +129,7 @@ namespace NSerialProtocolUnitTests
 
     class UInt16TestSerialFrame : SerialFrame
     {
-        [SerialFrameMember(1)]
+        [FrameMember(1)]
         public ushort Value { get; set; } = default(ushort);
 
         public UInt16TestSerialFrame()
@@ -141,7 +145,7 @@ namespace NSerialProtocolUnitTests
 
     class UInt32TestSerialFrame : SerialFrame
     {
-        [SerialFrameMember(1)]
+        [FrameMember(1)]
         public uint Value { get; set; } = default(uint);
 
         public UInt32TestSerialFrame()
@@ -157,7 +161,7 @@ namespace NSerialProtocolUnitTests
 
     class UInt64TestSerialFrame : SerialFrame
     {
-        [SerialFrameMember(1)]
+        [FrameMember(1)]
         public ulong Value { get; set; } = default(ulong);
 
         public UInt64TestSerialFrame()
@@ -173,7 +177,7 @@ namespace NSerialProtocolUnitTests
 
     class ByteArrayTestSerialFrame : SerialFrame
     {
-        [SerialFrameMember(1)]
+        [FrameMember(1)]
         public byte[] Value { get; set; } = new byte[3];
 
         public ByteArrayTestSerialFrame()
@@ -194,7 +198,7 @@ namespace NSerialProtocolUnitTests
 
     class CharArrayTestSerialFrame : SerialFrame
     {
-        [SerialFrameMember(1)]
+        [FrameMember(1)]
         public char[] Value { get; set; } = new char[3];
 
         public CharArrayTestSerialFrame()
@@ -215,7 +219,7 @@ namespace NSerialProtocolUnitTests
 
     class StringTestSerialFrame : SerialFrame
     {
-        [SerialFrameMember(1)]
+        [FrameMember(1)]
         public string Value { get; set; } = default(string);
 
         public StringTestSerialFrame()
@@ -229,103 +233,103 @@ namespace NSerialProtocolUnitTests
         }
     }
 
-    public class ManySimpleTypesTestFrame : SerialFrame
+    public class ManyPrimitiveTypesTestFrame : SerialFrame
     {
-        [SerialFrameMember(1)]
+        [FrameMember(1)]
         public byte Value1 { get; set; } = 1;
 
-        [SerialFrameMember(2)]
+        [FrameMember(2)]
         public int Value2 { get; set; } = 2;
 
-        [SerialFrameMember(3)]
+        [FrameMember(3)]
         public string Value3 { get; set; } = "abc";
     }
 
-    public class FieldOrderTestFrame : SerialFrame
+    public class MemberOrderTestFrame : SerialFrame
     {
-        [SerialFrameMember(3)]
+        [FrameMember(3)]
         public byte Value1 { get; set; } = 1;
 
-        [SerialFrameMember(2)]
+        [FrameMember(2)]
         public int Value2 { get; set; } = 2;
 
-        [SerialFrameMember(1)]
+        [FrameMember(1)]
         public string Value3 { get; set; } = "abc";
     }
+
+    // TODO: Start and End flag tests
+
 
     [TestFixture]
     public class SerialFrameSerializerUnitTests
     {
-        public static readonly IEnumerable<Tuple<SerialFrame, byte[]>> SimpleTypesSerializeTestCases
+        public static readonly IEnumerable<Tuple<SerialFrame, byte[]>> SerializerPrimitiveTypesTestCases
             = new List<Tuple<SerialFrame, byte[]>>
         {
-            new Tuple<SerialFrame, byte[]>(new EmptyTestSerialFrame(), new byte[0]),
+            new Tuple<SerialFrame, byte[]>(new EmptyTestSerialFrame(), new byte[]{  }),
 
-            new Tuple<SerialFrame, byte[]>(new BoolTestSerialFrame(false), new byte[1]{ 0 }),
+            new Tuple<SerialFrame, byte[]>(new BoolTestSerialFrame(false), new byte[]{ 0 }),
 
-            new Tuple<SerialFrame, byte[]>(new BoolTestSerialFrame(true), new byte[1]{ 1 }),
+            new Tuple<SerialFrame, byte[]>(new BoolTestSerialFrame(true), new byte[]{ 1 }),
 
-            new Tuple<SerialFrame, byte[]>(new CharTestSerialFrame('a'), new byte[1]{ 97 }),
+            new Tuple<SerialFrame, byte[]>(new CharTestSerialFrame('a'), new byte[]{ 97 }),
 
-            new Tuple<SerialFrame, byte[]>(new SByteTestSerialFrame(123), new byte[1]{ 123 }),
+            new Tuple<SerialFrame, byte[]>(new SByteTestSerialFrame(123), new byte[]{ 123 }),
 
-            new Tuple<SerialFrame, byte[]>(new Int16TestSerialFrame(123), new byte[2]{ 123, 0 }),
+            new Tuple<SerialFrame, byte[]>(new Int16TestSerialFrame(123), new byte[]{ 123, 0 }),
 
             new Tuple<SerialFrame, byte[]>(new Int32TestSerialFrame(123),
                 new byte[4]{ 123, 0, 0, 0 }),
 
             new Tuple<SerialFrame, byte[]>(new Int64TestSerialFrame(123),
-                new byte[8]{ 123, 0, 0, 0, 0, 0, 0, 0 }),
+                new byte[]{ 123, 0, 0, 0, 0, 0, 0, 0 }),
 
-            new Tuple<SerialFrame, byte[]>(new ByteTestSerialFrame(123), new byte[1]{ 123 }),
+            new Tuple<SerialFrame, byte[]>(new ByteTestSerialFrame(123), new byte[]{ 123 }),
 
             new Tuple<SerialFrame, byte[]>(new UInt16TestSerialFrame(123),
-                new byte[2]{ 123, 0 }),
+                new byte[]{ 123, 0 }),
 
             new Tuple<SerialFrame, byte[]>(new UInt32TestSerialFrame(123),
-                new byte[4]{ 123, 0, 0, 0 }),
+                new byte[]{ 123, 0, 0, 0 }),
 
             new Tuple<SerialFrame, byte[]>(new UInt64TestSerialFrame(123),
-                new byte[8]{ 123, 0, 0, 0, 0, 0, 0, 0 }),
+                new byte[]{ 123, 0, 0, 0, 0, 0, 0, 0 }),
 
             new Tuple<SerialFrame, byte[]>(new ByteArrayTestSerialFrame(new byte[3] { 1, 2, 3 }),
-                new byte[3]{ 1, 2, 3 }),
+                new byte[]{ 1, 2, 3 }),
 
             new Tuple<SerialFrame, byte[]>(new CharArrayTestSerialFrame(new char[3] { 'a', 'b', 'c' }),
-                new byte[3]{ 97, 98, 99 }),
+                new byte[]{ 97, 98, 99 }),
 
             new Tuple<SerialFrame, byte[]>(new StringTestSerialFrame("abc"),
-                new byte[4]{ 3, 97, 98, 99 }),
+                new byte[]{ 3, 97, 98, 99 }),
 
-            new Tuple<SerialFrame, byte[]>(new ManySimpleTypesTestFrame(),
-                new byte[9]{ 1, 2, 0, 0, 0, 3, 97, 98, 99 }),
+            new Tuple<SerialFrame, byte[]>(new ManyPrimitiveTypesTestFrame(),
+                new byte[]{ 1, 2, 0, 0, 0, 3, 97, 98, 99 }),
 
-            new Tuple<SerialFrame, byte[]>(new FieldOrderTestFrame(),
-                new byte[9]{ 3, 97, 98, 99, 2, 0, 0, 0, 1 }),
+            new Tuple<SerialFrame, byte[]>(new MemberOrderTestFrame(),
+                new byte[]{ 3, 97, 98, 99, 2, 0, 0, 0, 1 }),
+
         };
 
-        private static IEnumerable<TestCaseData> GetSerialFrameTestCaseData()
+        private static IEnumerable<TestCaseData> GetSerialFramePrimitivesTestCaseData()
         {
-            foreach (Tuple<SerialFrame, byte[]> data in SimpleTypesSerializeTestCases)
+            foreach (Tuple<SerialFrame, byte[]> data in SerializerPrimitiveTypesTestCases)
             {
                 yield return new TestCaseData(data.Item1).Returns(data.Item2);
             }
         }
 
         [Test]
-        [TestCaseSource(nameof(GetSerialFrameTestCaseData))]
-        public byte[] Serialize_SimpleTypes_Test(SerialFrame frame)
+        [TestCaseSource(nameof(GetSerialFramePrimitivesTestCaseData))]
+        public byte[] Serialize_PrimitiveType_Test(SerialFrame frame)
         {
-            SerialFrameSerializer serializer = new SerialFrameSerializer();
+            FrameSerializer serializer = new FrameSerializer();
 
             return serializer.Serialize(frame);
         }
 
-
-
-
-
-        public static readonly IEnumerable<Tuple<Type, byte[], SerialFrame>> SimpleTypesDeserializeTestFrames
+        public static readonly IEnumerable<Tuple<Type, byte[], SerialFrame>> PrimitiveTypesDeserializeTestFrames
             = new List<Tuple<Type, byte[], SerialFrame>>
         {
             new Tuple<Type, byte[], SerialFrame>(typeof(EmptyTestSerialFrame),
@@ -370,18 +374,19 @@ namespace NSerialProtocolUnitTests
             new Tuple<Type, byte[], SerialFrame>(typeof(CharArrayTestSerialFrame),
                 new byte[3]{ 120, 121, 122 }, new CharArrayTestSerialFrame(new char[3]{ 'x', 'y', 'z' })),
 
-            new Tuple<Type, byte[], SerialFrame>(typeof(ManySimpleTypesTestFrame),
+            new Tuple<Type, byte[], SerialFrame>(typeof(ManyPrimitiveTypesTestFrame),
                 new byte[9]{ 1, 2, 0, 0, 0, 3, 97, 98, 99 },
-                new ManySimpleTypesTestFrame()),
+                new ManyPrimitiveTypesTestFrame()),
 
-            new Tuple<Type, byte[], SerialFrame>(typeof(FieldOrderTestFrame),
+            new Tuple<Type, byte[], SerialFrame>(typeof(MemberOrderTestFrame),
                 new byte[9]{ 3, 97, 98, 99, 2, 0, 0, 0, 1 },
-                new FieldOrderTestFrame()),
+                new MemberOrderTestFrame()),
         };
+
 
         private static IEnumerable<TestCaseData> GetSerialFrameDeserializedTestCaseData()
         {
-            foreach (Tuple<Type, byte[], SerialFrame> data in SimpleTypesDeserializeTestFrames)
+            foreach (Tuple<Type, byte[], SerialFrame> data in PrimitiveTypesDeserializeTestFrames)
             {
                 yield return new TestCaseData(data.Item1, data.Item2, data.Item3);
             }
@@ -391,15 +396,224 @@ namespace NSerialProtocolUnitTests
         [TestCaseSource(nameof(GetSerialFrameDeserializedTestCaseData))]
         public void Deserialize_SimpleTypes_Test(Type type, byte[] serializedFrame, SerialFrame expected)
         {
-            SerialFrameSerializer serializer = new SerialFrameSerializer();
+            FrameSerializer serializer = new FrameSerializer();
 
             SerialFrame actual = (SerialFrame)Activator.CreateInstance(type);
 
-            actual = serializer.Deserialize(type, serializedFrame);
+            actual = (SerialFrame)serializer.Deserialize(type, serializedFrame);
 
             AssertExtensions.PropertyValuesAreEquals(actual, expected);
 
         }
 
+        [ProtoContract]
+        [ProtoInclude(1, typeof(SerialPacket))]
+        public class TestSerialPacket : SerialPacket
+        {
+            [ProtoMember(2)]
+            public int PacketInteger { get; set; }
+
+            [ProtoMember(3)]
+            public string PacketString { get; set; }
+
+            [ProtoMember(4)]
+            public byte PacketByte { get; set; }
+
+            public TestSerialPacket() : base()
+            {
+
+            }
+        }
+
+        public class PacketOnlyTestFrame : SerialFrame
+        {
+            [FrameMember(2)]
+            public TestSerialPacket SerialPacket { get; set; }
+        }
+
+        public class PacketTestFrame : SerialFrame
+        {
+            [FrameMember(1)]
+            public string FrameString { get; set; }
+
+            [FrameMember(2)]
+            public TestSerialPacket SerialPacket { get; set; }
+
+            [FrameMember(3)]
+            public int FrameInteger { get; set; }
+        }
+
+        [Test]
+        public void Serialize_SerialPacketOnly_Test()
+        {
+            List<byte> expected = new List<byte>();
+
+            TestSerialPacket packet = new TestSerialPacket
+            {
+                PacketInteger = 1,
+                PacketString = "abc",
+                PacketByte = 2,
+            };
+
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                Serializer.Serialize(memoryStream, packet);
+
+                // Add the serialized packet
+                expected.AddRange(memoryStream.ToArray());
+            }
+
+            expected.InsertRange(0, BitConverter.GetBytes(expected.Count));
+
+            FrameSerializer frameSerializer = new FrameSerializer();
+
+            PacketOnlyTestFrame testFrame = new PacketOnlyTestFrame
+            {
+                SerialPacket = new TestSerialPacket
+                {
+                    PacketInteger = 1,
+                    PacketString = "abc",
+                    PacketByte = 2,
+                }
+            };
+
+            byte[] actual = frameSerializer.Serialize(testFrame);
+
+            Assert.That(actual, Is.EquivalentTo(expected));
+        }
+
+        [Test]
+        public void Deserialize_SerialPacketOnly_Test()
+        {
+            List<byte> bytes = new List<byte>();
+
+            PacketOnlyTestFrame expected = new PacketOnlyTestFrame
+            {
+                SerialPacket = new TestSerialPacket
+                {
+                    PacketInteger = 1,
+                    PacketString = "abc",
+                    PacketByte = 2,
+                },
+            };
+
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                Serializer.Serialize(memoryStream, expected.SerialPacket);
+
+                // Add the serialized packet
+                bytes.AddRange(memoryStream.ToArray());
+            }
+
+            bytes.InsertRange(0, BitConverter.GetBytes(bytes.Count));
+
+            FrameSerializer frameSerializer = new FrameSerializer();
+
+            PacketOnlyTestFrame actual =
+                frameSerializer.Deserialize<PacketOnlyTestFrame>(bytes.ToArray());
+
+            actual.Should().BeEquivalentTo(expected);
+        }
+
+
+        [Test]
+        public void Serialize_SerialPacket_Test()
+        {
+            List<byte> serializedPacket = new List<byte>();
+
+            List<byte> expected = new List<byte>()
+            {
+                3, // Length of "abc"
+                97, 98, 99 // "abc" as bytes
+            };
+
+            TestSerialPacket packet = new TestSerialPacket
+            {
+                PacketInteger = 1,
+                PacketString = "abc",
+                PacketByte = 2,
+            };
+
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                Serializer.Serialize(memoryStream, packet);
+
+                // Add the serialized packet
+                serializedPacket.AddRange(memoryStream.ToArray());
+            }
+
+            expected.AddRange(BitConverter.GetBytes(serializedPacket.Count));
+
+            expected.AddRange(serializedPacket);
+
+            // Adds the integer 123 to the expected results
+            expected.AddRange(new byte[] { 123, 0, 0, 0 });
+
+            FrameSerializer frameSerializer = new FrameSerializer();
+
+            PacketTestFrame testFrame = new PacketTestFrame
+            {
+                FrameString = "abc",
+
+                SerialPacket = new TestSerialPacket
+                {
+                    PacketInteger = 1,
+                    PacketString = "abc",
+                    PacketByte = 2,
+                },
+
+                FrameInteger = 123,
+            };
+
+            byte[] actual = frameSerializer.Serialize(testFrame);
+
+            Assert.That(actual, Is.EquivalentTo(expected));
+        }
+
+
+        [Test]
+        public void Deserialize_SerialPacket_Test()
+        {
+            List<byte> bytes = new List<byte>();
+
+            PacketTestFrame expected = new PacketTestFrame
+            {
+                FrameString = "abc",
+
+                SerialPacket = new TestSerialPacket
+                {
+                    PacketInteger = 1,
+                    PacketString = "abc",
+                    PacketByte = 2,
+                },
+
+                FrameInteger = 123,
+            };
+
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                Serializer.Serialize(memoryStream, expected.SerialPacket);
+
+                // Add the serialized packet
+                bytes.AddRange(memoryStream.ToArray());
+            }
+
+            bytes.InsertRange(0, BitConverter.GetBytes(bytes.Count));
+
+            bytes.InsertRange(0, new byte[]
+            {
+                3,
+                97, 98, 99
+            });
+
+            bytes.AddRange(new byte[] { 123, 0, 0, 0 });
+
+            FrameSerializer frameSerializer = new FrameSerializer();
+
+            PacketTestFrame actual =
+                frameSerializer.Deserialize<PacketTestFrame>(bytes.ToArray());
+
+            actual.Should().BeEquivalentTo(expected);
+        }
     }
 }

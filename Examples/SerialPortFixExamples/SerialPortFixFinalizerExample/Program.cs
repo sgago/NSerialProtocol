@@ -15,7 +15,7 @@
         /// <summary>
         /// Hold onto our SerialPort reference with this property.
         /// </summary>
-        static ISerialPort SerialPort { get; set; }
+        static ISerialPortFix SerialPort { get; set; }
 
         public static void Main(string[] args)
         {

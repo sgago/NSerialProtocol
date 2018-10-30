@@ -1,5 +1,4 @@
 ﻿using NativeMethods;
-using SerialPortFix;
 using System;
 using System.IO;
 using System.IO.Ports;
@@ -11,9 +10,9 @@ using static NSerialPort.NSerialPort;
 namespace NSerialPort
 {
     /// <summary>
-    /// Represents a NSerialPort resource.
+    /// Represents a SerialPort resource with synchronous and asynchronous methods.
     /// </summary>
-    public interface INSerialPort : IDisposable
+    public interface ISerialPort : IDisposable
     {
         /// <summary>
         /// Gets the underlying Stream object for a SerialPort object.
@@ -279,8 +278,23 @@ namespace NSerialPort
         /// <param name="text">The string to write to the output buffer.</param>
         void WriteLine(string text);
 
-
-        string TranceiveLine(string text, int timeout = 100, int retries = 0);
+        /// <summary>
+        /// Writes the specified string and the NewLine value to the output buffer, and
+        /// returns a line received, if any.
+        /// </summary>
+        /// <param name="text">The string to write to the output buffer.</param>
+        /// <param name="timeout">
+        /// Amount of time to wait in milliseconds before retransmitting the message.
+        /// The default value is infinite (Timeout.Infinite or -1).
+        /// </param>
+        /// <param name="retries">
+        /// Number of retries to attempt.  The default value is 0.
+        /// </param>
+        /// <returns>The received line on the serial port; otherwise, null.</returns>
+        /// <example>
+        /// string result = TranceiveLine("text to transmit");
+        /// </example>
+        string TranceiveLine(string text, int timeout = Timeout.Infinite, int retries = 0);
 
 
         /// <summary>
@@ -327,8 +341,38 @@ namespace NSerialPort
         /// <param name="value">Value to set the DCB flag to.</param>
         void SetDcbFlag(int flag, bool value);
 
+        /// <summary>
+        /// Asynchronously reads a number of bytes from the SerialPort input buffer and writes those
+        /// bytes into a byte array at the specified offset.
+        /// </summary>
+        /// <param name="buffer">The byte array to write the input to.</param>
+        /// <param name="offset">The offset in buffer at which to write the bytes.</param>
+        /// <param name="count">The maximum number of bytes to read.  Fewer bytes are
+        /// read if count is greater than the number of bytes in the input buffer.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// The token to monitor for cancellation requests. The default value is None.
+        /// </param>
+        /// <returns>
+        /// A task that represents the asynchronous read operation.  The value of the TResult
+        /// parameter is contains the total number of bytes read.
+        /// </returns>
         Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken);
 
+        /// <summary>
+        /// Asyncronously reads a number of bytes from the SerialPort input buffer and writes those
+        /// bytes into a byte array at the specified offset.
+        /// </summary>
+        /// <param name="buffer">The byte array to write the input to.</param>
+        /// <param name="offset">The offset in buffer at which to write the bytes.</param>
+        /// <param name="count">
+        /// The maximum number of bytes to read.  Fewer bytes are
+        /// read if count is greater than the number of bytes in the input buffer.
+        /// </param>
+        /// <returns>
+        /// A task that represents the asynchronous read operation.  The value of the TResult
+        /// parameter is contains the total number of bytes read.
+        /// </returns>
         Task<int> ReadAsync(byte[] buffer, int offset, int count);
 
         Task<int> ReadAsync(char[] buffer, int offset, int count, CancellationToken cancellationToken);
@@ -355,25 +399,124 @@ namespace NSerialPort
 
         Task<string> ReadToAsync(string value);
 
+        /// <summary>
+        /// Asynchronously writes a specified number of characters to the serial port using data from a buffer.
+        /// </summary>
+        /// <param name="buffer">The byte array that contains the data to write to the port.</param>
+        /// <param name="offset">The zero-based byte offset in the buffer parameter at which
+        /// to begin copying bytes to the port.</param>
+        /// <param name="count">The number of characters to write.</param>
+        /// <param name="cancellationToken">
+        /// The token to monitor for cancellation requests. The default value is None.
+        /// </param>
+        /// <returns>A task that represents the asynchronous write operation.</returns>
         Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken);
 
+        /// <summary>
+        /// Asynchronously writes a specified number of characters to the serial port using data from a buffer.
+        /// </summary>
+        /// <param name="buffer">The byte array that contains the data to write to the port.</param>
+        /// <param name="offset">The zero-based byte offset in the buffer parameter at which
+        /// to begin copying bytes to the port.</param>
+        /// <param name="count">The number of characters to write.</param>
+        /// <returns>A task that represents the asynchronous write operation.</returns>
         Task WriteAsync(byte[] buffer, int offset, int count);
 
+        /// <summary>
+        /// Asynchronously writes a specified number of characters to the serial port using data from a buffer.
+        /// </summary>
+        /// <param name="buffer">The byte array that contains the data to write to the port.</param>
+        /// <param name="offset">The zero-based byte offset in the buffer parameter at which
+        /// to begin copying bytes to the port.</param>
+        /// <param name="count">The number of characters to write.</param>
+        /// <param name="cancellationToken">
+        /// The token to monitor for cancellation requests. The default value is None.
+        /// </param>
+        /// <returns>A task that represents the asynchronous write operation.</returns>
         Task WriteAsync(char[] buffer, int offset, int count, CancellationToken cancellationToken);
 
+        /// <summary>
+        /// Asynchronously writes a specified number of characters to the serial port using data from a buffer.
+        /// </summary>
+        /// <param name="buffer">The byte array that contains the data to write to the port.</param>
+        /// <param name="offset">The zero-based byte offset in the buffer parameter at which
+        /// to begin copying bytes to the port.</param>
+        /// <param name="count">The number of characters to write.</param>
+        /// <returns>A task that represents the asynchronous write operation.</returns>
         Task WriteAsync(char[] buffer, int offset, int count);
 
+        /// <summary>
+        /// Asynchronously writes the specified string to the serial port.
+        /// </summary>
+        /// <param name="text">The string to write to the output buffer.</param>
+        /// <param name="cancellationToken">
+        /// The token to monitor for cancellation requests. The default value is None.
+        /// </param>
+        /// <returns>A task that represents the asynchronous write operation.</returns>
         Task WriteAsync(string text, CancellationToken cancellationToken);
 
+        /// <summary>
+        /// Asynchronously writes the specified string to the serial port.
+        /// </summary>
+        /// <param name="text">The string to write to the output buffer.</param>
+        /// <returns>A task that represents the asynchronous write operation.</returns>
         Task WriteAsync(string text);
 
+        /// <summary>
+        /// Asynchronously writes the specified string and the NewLine value to the output buffer.
+        /// </summary>
+        /// <param name="cancellationToken">
+        /// The token to monitor for cancellation requests. The default value is None.
+        /// </param>
+        /// <param name="text">The string to write to the output buffer.</param>
+        /// <returns>A task that represents the asynchronous write operation.</returns>
         Task WriteLineAsync(string text, CancellationToken cancellationToken);
 
+        /// <summary>
+        /// Asynchronously writes the specified string and the NewLine value to the output buffer.
+        /// </summary>
+        /// <param name="text">The string to write to the output buffer.</param>
+        /// <returns>A task that represents the asynchronous write operation.</returns>
         Task WriteLineAsync(string text);
 
+        /// <summary>
+        /// Asynchronously writes the specified string and the NewLine value to the output buffer, and
+        /// returns a line received, if any.
+        /// </summary>
+        /// <param name="text">The string to write to the output buffer.</param>
+        /// <param name="cancellationToken">
+        /// The token to monitor for cancellation requests. The default value is None.
+        /// </param>
+        /// <param name="timeout">
+        /// Amount of time to wait in milliseconds before retransmitting the message.
+        /// The default value is infinite (Timeout.Infinite or -1).
+        /// </param>
+        /// <param name="retries">
+        /// Number of retries to attempt.  The default value is 0.
+        /// </param>
+        /// <returns>
+        /// An asynchronous task representing the write and read operations.
+        /// The value of TResult is a string containing the received line on the serial port; otherwise, null.
+        /// </returns>
         Task<string> TranceiveLineAsync(string text, CancellationToken cancellationToken,
             int timeout = Timeout.Infinite, int retries = 0);
 
+        /// <summary>
+        /// Asynchronously writes the specified string and the NewLine value to the output buffer, and
+        /// returns a line received, if any.
+        /// </summary>
+        /// <param name="text">The string to write to the output buffer.</param>
+        /// <param name="timeout">
+        /// Amount of time to wait in milliseconds before retransmitting the message.
+        /// The default value is infinite (Timeout.Infinite or -1).
+        /// </param>
+        /// <param name="retries">
+        /// Number of retries to attempt.  The default value is 0.
+        /// </param>
+        /// <returns>
+        /// An asynchronous task representing the write and read operations.
+        /// The value of TResult is a string containing the received line on the serial port; otherwise, null.
+        /// </returns>
         Task<string> TranceiveLineAsync(string text, int timeout = Timeout.Infinite, int retries = 0);
     }
 }

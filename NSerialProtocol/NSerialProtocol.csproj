@@ -34,6 +34,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FastMember, Version=1.4.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\FastMember.1.4.1\lib\net461\FastMember.dll</HintPath>
+    </Reference>
     <Reference Include="protobuf-net, Version=2.4.0.0, Culture=neutral, PublicKeyToken=257b51d87d2e4d67, processorArchitecture=MSIL">
       <HintPath>..\packages\protobuf-net.2.4.0\lib\net40\protobuf-net.dll</HintPath>
     </Reference>
@@ -51,25 +54,23 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\SerialFrameAttributes.cs" />
-    <Compile Include="EventArgs\FrameErrorReceivedEventArgs.cs" />
+    <Compile Include="EventArgs\SerialFrameErrorEventArgs.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
-    <Compile Include="IParser.cs" />
+    <Compile Include="FrameParserChain.cs" />
+    <Compile Include="IFrameParser.cs" />
+    <Compile Include="ISerialize.cs" />
     <Compile Include="SerialFrame.cs" />
     <None Include="packages.config" />
-    <None Include="SerialFrame.bak" />
-    <Compile Include="EventArgs\SerialFrameReceivedEventArgs.cs" />
-    <Compile Include="SerialFrameParser.cs" />
-    <Compile Include="SerialFrameParsers\EndFlagParser.cs" />
+    <Compile Include="EventArgs\SerialFrameParsedEventArgs.cs" />
+    <Compile Include="FrameParser.cs" />
     <Compile Include="SerialFrameParsers\FixedLengthParser.cs" />
-    <Compile Include="SerialFrameParsers\StartFlagParser.cs" />
-    <Compile Include="SerialFrameSerializer.cs" />
-    <Compile Include="SerialPacketParsers\EndFlagPacketParser.cs" />
+    <Compile Include="SerialFrameParsers\FlagParser.cs" />
+    <Compile Include="EventArgs\SerialFrameReceivedEventArgs.cs" />
+    <Compile Include="FrameSerializer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="NSerialProtocol.cs" />
     <Compile Include="SerialPacket.cs" />
-    <None Include="SerialFrameParser.bak" />
     <Compile Include="EventArgs\SerialPacketReceivedEventArgs.cs" />
-    <Compile Include="SerialPacketParser.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NCobs\NByteStuff.csproj">

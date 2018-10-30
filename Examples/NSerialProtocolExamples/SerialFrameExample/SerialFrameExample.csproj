@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{010B8D1E-6B9A-4600-9803-65EA2214BE53}</ProjectGuid>
+    <ProjectGuid>{68A2D9EC-DDDF-4FA1-8572-57543A095295}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>FrameParserPlayground</RootNamespace>
-    <AssemblyName>FrameParserPlayground</AssemblyName>
+    <RootNamespace>SerialFrameExample</RootNamespace>
+    <AssemblyName>SerialFrameExample</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -33,14 +33,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="protobuf-net, Version=2.4.0.0, Culture=neutral, PublicKeyToken=257b51d87d2e4d67, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\protobuf-net.2.4.0\lib\net40\protobuf-net.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -54,18 +48,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\NCobs\NByteStuff.csproj">
-      <Project>{A4C4F6F3-B97F-4A05-B13B-FC2B0D6DC930}</Project>
-      <Name>NByteStuff</Name>
+    <ProjectReference Include="..\..\..\NSerialPort\NSerialPort.csproj">
+      <Project>{E877E876-42E5-4A10-8228-6C6B6E412EC5}</Project>
+      <Name>NSerialPort</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\NFec\NFec.csproj">
-      <Project>{3CE276A5-65EE-4B05-96D8-2F034997455C}</Project>
-      <Name>NFec</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\NSerialProtocol\NSerialProtocol.csproj">
+    <ProjectReference Include="..\..\..\NSerialProtocol\NSerialProtocol.csproj">
       <Project>{C62D822F-87D0-4629-9730-6EB3A89442A5}</Project>
       <Name>NSerialProtocol</Name>
     </ProjectReference>

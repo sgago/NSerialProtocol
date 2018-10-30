@@ -1,28 +1,26 @@
-﻿namespace NSerialPort
-{
-    using System;
-    using System.ComponentModel;
-    using System.IO;
-    using System.IO.Ports;
-    using System.Text;
-    using System.Text.RegularExpressions;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using global::NSerialPort.EventArgs;
-    using NativeMethods;
-    using SerialPortFix;
+﻿using global::NSerialPort.EventArgs;
+using NativeMethods;
+using SerialPortFix;
+using System;
+using System.ComponentModel;
+using System.IO;
+using System.IO.Ports;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
 
-    // TODO: Consider a different name than INSerialPort
-    // TODO: Consider an asynchronous, synchronous, and async + sync interfaces for better separation
+namespace NSerialPort
+{
     /// <summary>
     /// Represents a NSerialPort resource.
     /// </summary>
-    public class NSerialPort : INSerialPort, INotifyPropertyChanged, IDisposable
+    public class NSerialPort : ISerialPort, INotifyPropertyChanged, IDisposable
     {
         /// <summary>
         /// Gets or sets the serial port object that is being wrapped.
         /// </summary>
-        private ISerialPort SerialPort { get; set; }
+        private ISerialPortFix SerialPort { get; set; }
 
         /// <summary>
         /// Gets or sets the input buffer to capture characters from
@@ -478,13 +476,14 @@
         /// Initializes a new instance of the SerialPort class using the specified
         /// port name, baud rate, parity bit, data bits, and stop bits.
         /// </summary>
-        /// <param name="serialPort">The BaseSerialPort object dependency.</param>
-        /// <param name="portName">The port to use e.g., "COM1", "COM10", or "COM100".</param>
-        /// <param name="baudRate">The baud rate.</param>
-        /// <param name="parity">One of the Parity values.</param>
-        /// <param name="dataBits">The data bits value.</param>
-        /// <param name="stopBits">One of the StopBits values.</param>
-        internal NSerialPort(ISerialPort serialPort,
+        /// <param name="portName">
+        /// The port to use e.g., "COM1", "COM10", or "COM100".  The default value is "COM1".
+        /// </param>
+        /// <param name="baudRate">The baud rate.  The default value is 57600.</param>
+        /// <param name="parity">One of the Parity values.  The default value is None.</param>
+        /// <param name="dataBits">The data bits value.  The default value is 8.</param>
+        /// <param name="stopBits">One of the StopBits values.  The default value is One.</param>
+        internal NSerialPort(ISerialPortFix serialPort,
                              string portName = "COM1",
                              int baudRate = 57600,
                              Parity parity = Parity.None,
@@ -511,11 +510,14 @@
         /// Initializes a new instance of the SerialPort class using the specified
         /// port name, baud rate, parity bit, data bits, and stop bits.
         /// </summary>
-        /// <param name="portName">The port to use e.g., "COM1", "COM10", or "COM100".</param>
-        /// <param name="baudRate">The baud rate.</param>
-        /// <param name="parity">One of the Parity values.</param>
-        /// <param name="dataBits">The data bits value.</param>
-        /// <param name="stopBits">One of the StopBits values.</param>
+        /// <param name="portName">
+        /// The port to use e.g., "COM1", "COM10", or "COM100".
+        /// The default value is "COM1".
+        /// </param>
+        /// <param name="baudRate">The baud rate.  The default value is 57600.</param>
+        /// <param name="parity">One of the Parity values.  The default value is None.</param>
+        /// <param name="dataBits">The data bits value.  The default value is 8.</param>
+        /// <param name="stopBits">One of the StopBits values.  The default value is One.</param>
         public NSerialPort(string portName = "COM1",
                            int baudRate = 57600,
                            Parity parity = Parity.None,
@@ -698,8 +700,10 @@
         /// </summary>
         /// <param name="buffer">The byte array to write the input to.</param>
         /// <param name="offset">The offset in buffer at which to write the bytes.</param>
-        /// <param name="count">The maximum number of bytes to read.  Fewer bytes are
-        /// read if count is greater than the number of bytes in the input buffer.</param>
+        /// <param name="count">
+        /// The maximum number of bytes to read.  Fewer bytes are
+        /// read if count is greater than the number of bytes in the input buffer.
+        /// </param>
         /// <returns>The number of bytes read.</returns>
         public int Read(byte[] buffer, int offset, int count)
         {
@@ -712,8 +716,10 @@
         /// </summary>
         /// <param name="buffer">The character array to write the input to.</param>
         /// <param name="offset">The offset in buffer at which to write the characters</param>
-        /// <param name="count">The maximum number of bytes to read.  Fewer bytes are
-        /// read if count is greater than the number of bytes in the input buffer.</param>
+        /// <param name="count">
+        /// The maximum number of bytes to read.  Fewer bytes are
+        /// read if count is greater than the number of bytes in the input buffer.
+        /// </param>
         /// <returns>The number of bytes read.</returns>
         public int Read(char[] buffer, int offset, int count)
         {
@@ -723,8 +729,7 @@
         /// <summary>
         /// Synchronously reads one byte from the SerialPort input buffer.
         /// </summary>
-        /// <returns>The byte, cast to an Int32 or -1 if the end of the stream has been
-        /// read.</returns>
+        /// <returns>The byte, cast to an Int32 or -1 if the end of the stream has been read.</returns>
         public int ReadByte()
         {
             return SerialPort.ReadByte();
@@ -752,8 +757,10 @@
         /// <summary>
         /// Reads up to the NewLine value in the input buffer.
         /// </summary>
-        /// <returns>The contents of the input buffer up to the first occurrence of a
-        /// NewLine value.</returns>
+        /// <returns>
+        /// The contents of the input buffer up to the first occurrence of a
+        /// NewLine value.
+        /// </returns>
         public string ReadLine()
         {
             return SerialPort.ReadLine();
@@ -762,7 +769,7 @@
         /// <summary>
         /// Reads a string up to the specified value in the input buffer.
         /// </summary>
-        /// <param name="value">A value that indicates where the read operation stops</param>
+        /// <param name="value">A value that indicates where the read operation stops.</param>
         /// <returns>The contents of the input buffer up to the specified value.</returns>
         public string ReadTo(string value)
         {
@@ -845,24 +852,23 @@
             }
         }
 
-        // TODO: Debating whether this method would be useful to other programmers
-        // I think it would, but the users would need to specify the read function
-        // for NSerialPort.  Otherwise, how is NSerialPort supposed to know what to
-        // read?
-        public string Tranceive(string text, Func<string> readFunction, int timeout = 100, int retries = 0)
-        {
-            throw new NotImplementedException();
-        }
-
         /// <summary>
         /// Writes the specified string and the NewLine value to the output buffer, and
         /// returns a line received, if any.
         /// </summary>
         /// <param name="text">The string to write to the output buffer.</param>
-        /// <param name="timeout">Amount of time to wait in milliseconds before retransmitting the message.</param>
-        /// <param name="retries">Number of retries to attempt.</param>
+        /// <param name="timeout">
+        /// Amount of time to wait in milliseconds before retransmitting the message.
+        /// The default value is infinite (Timeout.Infinite or -1).
+        /// </param>
+        /// <param name="retries">
+        /// Number of retries to attempt.  The default value is 0.
+        /// </param>
         /// <returns>The received line on the serial port; otherwise, null.</returns>
-        public string TranceiveLine(string text, int timeout = 100, int retries = 0)
+        /// <example>
+        /// string result = TranceiveLine("text to transmit");
+        /// </example>
+        public string TranceiveLine(string text, int timeout = Timeout.Infinite, int retries = 0)
         {
             bool gotPacket = false;
             string result = null;
@@ -894,51 +900,118 @@
             return result;
         }
 
-
-
-
+        /// <summary>
+        /// Asynchronously reads a number of bytes from the SerialPort input buffer and writes those
+        /// bytes into a byte array at the specified offset.
+        /// </summary>
+        /// <param name="buffer">The byte array to write the input to.</param>
+        /// <param name="offset">The offset in buffer at which to write the bytes.</param>
+        /// <param name="count">The maximum number of bytes to read.  Fewer bytes are
+        /// read if count is greater than the number of bytes in the input buffer.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// The token to monitor for cancellation requests. The default value is None.
+        /// </param>
+        /// <returns>
+        /// A task that represents the asynchronous read operation.  The value of the TResult
+        /// parameter is contains the total number of bytes read.
+        /// </returns>
         public async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
         {
             return await Task.Run(() => Read(buffer, offset, count), cancellationToken);
         }
 
+        /// <summary>
+        /// Asyncronously reads a number of bytes from the SerialPort input buffer and writes those
+        /// bytes into a byte array at the specified offset.
+        /// </summary>
+        /// <param name="buffer">The byte array to write the input to.</param>
+        /// <param name="offset">The offset in buffer at which to write the bytes.</param>
+        /// <param name="count">
+        /// The maximum number of bytes to read.  Fewer bytes are
+        /// read if count is greater than the number of bytes in the input buffer.
+        /// </param>
+        /// <returns>
+        /// A task that represents the asynchronous read operation.  The value of the TResult
+        /// parameter is contains the total number of bytes read.
+        /// </returns>
         public async Task<int> ReadAsync(byte[] buffer, int offset, int count)
         {
             return await ReadAsync(buffer, offset, count, CancellationToken.None);
         }
 
-
+        /// <summary>
+        /// Asychronously reads a number of characters from the SerialPort input buffer and writes them into
+        /// an array of characters at a given offset.
+        /// </summary>
+        /// <param name="buffer">The character array to write the input to.</param>
+        /// <param name="offset">The offset in buffer at which to write the characters</param>
+        /// <param name="count">
+        /// The maximum number of bytes to read.  Fewer bytes are
+        /// read if count is greater than the number of bytes in the input buffer.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// The token to monitor for cancellation requests. The default value is None.
+        /// </param>
+        /// <returns>The number of bytes read.</returns>
         public async Task<int> ReadAsync(char[] buffer, int offset, int count, CancellationToken cancellationToken)
         {
             return await Task.Run(() => Read(buffer, offset, count), cancellationToken);
         }
 
+        /// <summary>
+        /// Asychronously reads a number of characters from the SerialPort input buffer and writes them into
+        /// an array of characters at a given offset.
+        /// </summary>
+        /// <param name="buffer">The character array to write the input to.</param>
+        /// <param name="offset">The offset in buffer at which to write the characters</param>
+        /// <param name="count">
+        /// The maximum number of bytes to read.  Fewer bytes are
+        /// read if count is greater than the number of bytes in the input buffer.
+        /// </param>
+        /// <returns>The number of bytes read.</returns>
         public async Task<int> ReadAsync(char[] buffer, int offset, int count)
         {
             return await ReadAsync(buffer, offset, count, CancellationToken.None);
         }
 
-
-
+        /// <summary>
+        /// Asynchronously reads one byte from the SerialPort input buffer.
+        /// </summary>
+        /// <param name="cancellationToken">
+        /// The token to monitor for cancellation requests. The default value is None.
+        /// </param>
+        /// <returns>The byte, cast to an Int32 or -1 if the end of the stream has been read.</returns>
         public async Task<int> ReadByteAsync(CancellationToken cancellationToken)
         {
             return await Task.Run(() => ReadByte(), cancellationToken);
         }
 
+        /// <summary>
+        /// Asynchronously reads one byte from the SerialPort input buffer.
+        /// </summary>
+        /// <returns>The byte, cast to an Int32 or -1 if the end of the stream has been read.</returns>
         public async Task<int> ReadByteAsync()
         {
             return await Task.Run(() => ReadByte(), CancellationToken.None);
         }
 
         /// <summary>
-        /// Synchronously reads one character from the SerialPort input buffer.
+        /// Asynchronously reads one character from the SerialPort input buffer.
         /// </summary>
+        /// <param name="cancellationToken">
+        /// The token to monitor for cancellation requests. The default value is None.
+        /// </param>
         /// <returns>The character that was read.</returns>
         public async Task<int> ReadCharAsync(CancellationToken cancellationToken)
         {
             return await Task.Run(() => ReadChar(), cancellationToken);
         }
 
+        /// <summary>
+        /// Asynchronously reads one character from the SerialPort input buffer.
+        /// </summary>
+        /// <returns>The character that was read.</returns>
         public async Task<int> ReadCharAsync()
         {
             return await Task.Run(() => ReadChar(), CancellationToken.None);
@@ -946,15 +1019,23 @@
 
 
         /// <summary>
-        /// Reads all immediately available bytes, based on the encoding, in both the stream
+        /// Asynchronoously reads all immediately available bytes, based on the encoding, in both the stream
         /// and the input buffer of the SerialPOrt object.
         /// </summary>
+        /// <param name="cancellationToken">
+        /// The token to monitor for cancellation requests. The default value is None.
+        /// </param>
         /// <returns>The contents of the stream and the input buffer of the SerialPort object.</returns>
         public async Task<string> ReadExistingAsync(CancellationToken cancellationToken)
         {
             return await Task.Run(() => ReadExisting(), cancellationToken);
         }
 
+        /// <summary>
+        /// Asynchronously reads all immediately available bytes, based on the encoding, in both the stream
+        /// and the input buffer of the SerialPOrt object.
+        /// </summary>
+        /// <returns>The contents of the stream and the input buffer of the SerialPort object.</returns>
         public async Task<string> ReadExistingAsync()
         {
             return await Task.Run(() => ReadExisting(), CancellationToken.None);
@@ -962,116 +1043,200 @@
 
 
         /// <summary>
-        /// Reads up to the NewLine value in the input buffer.
+        /// Asynchronously reads up to the NewLine value in the input buffer.
         /// </summary>
-        /// <returns>The contents of the input buffer up to the first occurrence of a
-        /// NewLine value.</returns>
+        /// <param name="cancellationToken">
+        /// The token to monitor for cancellation requests. The default value is None.
+        /// </param>
+        /// <returns>
+        /// The contents of the input buffer up to the first occurrence of a
+        /// NewLine value.
+        /// </returns>
         public async Task<string> ReadLineAsync(CancellationToken cancellationToken)
         {
             return await Task.Run(() => ReadLine(), cancellationToken);
         }
 
+        /// <summary>
+        /// Asynchronously reads up to the NewLine value in the input buffer.
+        /// </summary>
+        /// <returns>
+        /// The contents of the input buffer up to the first occurrence of a
+        /// NewLine value.
+        /// </returns>
         public async Task<string> ReadLineAsync()
         {
             return await Task.Run(() => ReadLine(), CancellationToken.None);
         }
 
         /// <summary>
-        /// Reads a string up to the specified value in the input buffer.
+        /// Asynchronously reads a string up to the specified value in the input buffer.
         /// </summary>
         /// <param name="value">A value that indicates where the read operation stops</param>
+        /// <param name="cancellationToken">
+        /// The token to monitor for cancellation requests. The default value is None.
+        /// </param>
         /// <returns>The contents of the input buffer up to the specified value.</returns>
         public async Task<string> ReadToAsync(string value, CancellationToken cancellationToken)
         {
             return await Task.Run(() => ReadTo(value), cancellationToken);
         }
 
+        /// <summary>
+        /// Asynchronously reads a string up to the specified value in the input buffer.
+        /// </summary>
+        /// <param name="value">A value that indicates where the read operation stops</param>
+        /// <returns>The contents of the input buffer up to the specified value.</returns>
         public async Task<string> ReadToAsync(string value)
         {
             return await Task.Run(() => ReadTo(value), CancellationToken.None);
         }
 
         /// <summary>
-        /// Writes a specified number of bytes to the serial port using data from a buffer.
+        /// Asynchronously writes a specified number of bytes to the serial port using data from a buffer.
         /// </summary>
         /// <param name="buffer">The byte array that contains the data to write to the port.</param>
         /// <param name="offset">The zero-based byte offset in the buffer parameter at which
         /// to begin copying bytes to the port.</param>
         /// <param name="count">The number of bytes to write.</param>
+        /// <param name="cancellationToken">
+        /// The token to monitor for cancellation requests. The default value is None.
+        /// </param>
+        /// <returns>A task that represents the asynchronous write operation.</returns>
         public async Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
         {
             await Task.Run(() => Write(buffer, offset, count), cancellationToken);
         }
 
+        /// <summary>
+        /// Asynchronously writes a specified number of bytes to the serial port using data from a buffer.
+        /// </summary>
+        /// <param name="buffer">The byte array that contains the data to write to the port.</param>
+        /// <param name="offset">The zero-based byte offset in the buffer parameter at which
+        /// to begin copying bytes to the port.</param>
+        /// <param name="count">The number of bytes to write.</param>
+        /// <returns>A task that represents the asynchronous write operation.</returns>
         public async Task WriteAsync(byte[] buffer, int offset, int count)
         {
             await Task.Run(() => Write(buffer, offset, count), CancellationToken.None);
         }
 
         /// <summary>
-        /// Writes a specified number of characters to the serial port using data from a buffer.
+        /// Asynchronously writes a specified number of characters to the serial port using data from a buffer.
         /// </summary>
         /// <param name="buffer">The byte array that contains the data to write to the port.</param>
         /// <param name="offset">The zero-based byte offset in the buffer parameter at which
         /// to begin copying bytes to the port.</param>
         /// <param name="count">The number of characters to write.</param>
+        /// <param name="cancellationToken">
+        /// The token to monitor for cancellation requests. The default value is None.
+        /// </param>
+        /// <returns>A task that represents the asynchronous write operation.</returns>
         public async Task WriteAsync(char[] buffer, int offset, int count, CancellationToken cancellationToken)
         {
             await Task.Run(() => Write(buffer, offset, count), cancellationToken);
         }
 
+        /// <summary>
+        /// Asynchronously writes a specified number of characters to the serial port using data from a buffer.
+        /// </summary>
+        /// <param name="buffer">The byte array that contains the data to write to the port.</param>
+        /// <param name="offset">The zero-based byte offset in the buffer parameter at which
+        /// to begin copying bytes to the port.</param>
+        /// <param name="count">The number of characters to write.</param>
+        /// <returns>A task that represents the asynchronous write operation.</returns>
         public async Task WriteAsync(char[] buffer, int offset, int count)
         {
             await Task.Run(() => Write(buffer, offset, count), CancellationToken.None);
         }
 
         /// <summary>
-        /// Writes the specified string to the serial port.
+        /// Asynchronously writes the specified string to the serial port.
         /// </summary>
         /// <param name="text">The string to write to the output buffer.</param>
+        /// <param name="cancellationToken">
+        /// The token to monitor for cancellation requests. The default value is None.
+        /// </param>
+        /// <returns>A task that represents the asynchronous write operation.</returns>
         public async Task WriteAsync(string text, CancellationToken cancellationToken)
         {
             await Task.Run(() => Write(text), cancellationToken);
         }
 
+        /// <summary>
+        /// Asynchronously writes the specified string to the serial port.
+        /// </summary>
+        /// <param name="text">The string to write to the output buffer.</param>
+        /// <returns>A task that represents the asynchronous write operation.</returns>
         public async Task WriteAsync(string text)
         {
             await Task.Run(() => Write(text), CancellationToken.None);
         }
 
         /// <summary>
-        /// Writes the specified string and the NewLine value to the output buffer.
+        /// Asynchronously writes the specified string and the NewLine value to the output buffer.
         /// </summary>
+        /// <param name="cancellationToken">
+        /// The token to monitor for cancellation requests. The default value is None.
+        /// </param>
         /// <param name="text">The string to write to the output buffer.</param>
+        /// <returns>A task that represents the asynchronous write operation.</returns>
         public async Task WriteLineAsync(string text, CancellationToken cancellationToken)
         {
             await Task.Run(() => WriteLine(text), cancellationToken);
         }
 
+        /// <summary>
+        /// Asynchronously writes the specified string and the NewLine value to the output buffer.
+        /// </summary>
+        /// <param name="text">The string to write to the output buffer.</param>
+        /// <returns>A task that represents the asynchronous write operation.</returns>
         public async Task WriteLineAsync(string text)
         {
             await Task.Run(() => WriteLine(text), CancellationToken.None);
         }
 
-        // See: Comments about synchronous Tranceive method
-        //public async Task<string> TranceiveAsync(string text, Func<string> readFunction, CancellationToken cancellationToken,
-        //    int timeout = Timeout.Infinite, int retries = 0)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        // See: Comments about synchronous Tranceive method
-        //public async Task<string> TranceiveAsync(string text, Func<string> readFunction, int timeout = Timeout.Infinite, int retries = 0)
-        //{
-        //    return await CallFunc(() => Tranceive(text, readFunction, timeout, retries), CancellationToken.None);
-        //}
-
+        /// <summary>
+        /// Asynchronously writes the specified string and the NewLine value to the output buffer, and
+        /// returns a line received, if any.
+        /// </summary>
+        /// <param name="text">The string to write to the output buffer.</param>
+        /// <param name="cancellationToken">
+        /// The token to monitor for cancellation requests. The default value is None.
+        /// </param>
+        /// <param name="timeout">
+        /// Amount of time to wait in milliseconds before retransmitting the message.
+        /// The default value is infinite (Timeout.Infinite or -1).
+        /// </param>
+        /// <param name="retries">
+        /// Number of retries to attempt.  The default value is 0.
+        /// </param>
+        /// <returns>
+        /// An asynchronous task representing the write and read operations.
+        /// The value of TResult is a string containing the received line on the serial port; otherwise, null.
+        /// </returns>
         public async Task<string> TranceiveLineAsync(string text, CancellationToken cancellationToken,
             int timeout = Timeout.Infinite, int retries = 0)
         {
             return await Task.Run(() => TranceiveLine(text, timeout, retries), cancellationToken);
         }
 
+        /// <summary>
+        /// Asynchronously writes the specified string and the NewLine value to the output buffer, and
+        /// returns a line received, if any.
+        /// </summary>
+        /// <param name="text">The string to write to the output buffer.</param>
+        /// <param name="timeout">
+        /// Amount of time to wait in milliseconds before retransmitting the message.
+        /// The default value is infinite (Timeout.Infinite or -1).
+        /// </param>
+        /// <param name="retries">
+        /// Number of retries to attempt.  The default value is 0.
+        /// </param>
+        /// <returns>
+        /// An asynchronous task representing the write and read operations.
+        /// The value of TResult is a string containing the received line on the serial port; otherwise, null.
+        /// </returns>
         public async Task<string> TranceiveLineAsync(string text, int timeout = Timeout.Infinite, int retries = 0)
         {
             return await Task.Run(() => TranceiveLine(text, timeout, retries), CancellationToken.None);
