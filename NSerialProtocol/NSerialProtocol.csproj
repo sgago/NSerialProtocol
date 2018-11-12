@@ -63,12 +63,13 @@
     <None Include="packages.config" />
     <Compile Include="EventArgs\SerialFrameParsedEventArgs.cs" />
     <Compile Include="FrameParser.cs" />
-    <Compile Include="SerialFrameParsers\FixedLengthParser.cs" />
-    <Compile Include="SerialFrameParsers\FlagParser.cs" />
+    <Compile Include="FrameParsers\FixedLengthParser.cs" />
+    <Compile Include="FrameParsers\FlagParser.cs" />
     <Compile Include="EventArgs\SerialFrameReceivedEventArgs.cs" />
     <Compile Include="FrameSerializer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="NSerialProtocol.cs" />
+    <Compile Include="FrameParsers\VariableLengthParser.cs" />
     <Compile Include="SerialPacket.cs" />
     <Compile Include="EventArgs\SerialPacketReceivedEventArgs.cs" />
   </ItemGroup>

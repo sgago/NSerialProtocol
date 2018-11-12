@@ -1927,7 +1927,7 @@ namespace NSerialPortUnitTests
         /// to transmit data.
         /// </summary>
         [TestCase]
-        [Timeout(ReadTimeout)]
+        //[Timeout(ReadTimeout)]
         public void TranceiveLine_WriteLine_IsCalled()
         {
             bool actual = false;
@@ -1958,7 +1958,7 @@ namespace NSerialPortUnitTests
                     actual = true;
                 });
 
-            nSerialPort.TranceiveLine(output);
+            nSerialPort.TranceiveLine(output, 10);
 
             Assert.That(actual, Is.EqualTo(expected));
         }

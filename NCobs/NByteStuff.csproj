@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Algorithms\BabsZe.cs" />
     <Compile Include="Algorithms\Cobs.cs" />
     <Compile Include="Algorithms\Babs.cs" />
     <Compile Include="Algorithms\CobsR.cs" />

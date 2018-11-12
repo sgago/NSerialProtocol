@@ -296,7 +296,6 @@ namespace NSerialPort
         /// </example>
         string TranceiveLine(string text, int timeout = Timeout.Infinite, int retries = 0);
 
-
         /// <summary>
         /// Gets the ComStat structure for the communications device.
         /// </summary>

@@ -67,6 +67,7 @@ namespace NSerialProtocol.Extensions
             int startIndex = 0, StringComparison stringComparison = StringComparison.CurrentCulture)
         {
             int startIndexOfOccurence = str.IndexOf(value, startIndex);
+
             int lengthOfOccurence = value.Length;
 
             string result = (startIndexOfOccurence < 0) ? str : str.Remove(startIndexOfOccurence, lengthOfOccurence);

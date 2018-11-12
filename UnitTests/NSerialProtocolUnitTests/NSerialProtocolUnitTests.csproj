@@ -69,6 +69,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions\AssertExtensions.cs" />
+    <Compile Include="VariableLengthParserUnitTests.cs" />
     <Compile Include="FlagParserUnitTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="NSerialProtocolUnitTests.cs" />

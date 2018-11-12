@@ -52,6 +52,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NSerialProtocolExamples", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SerialFrameExample", "Examples\NSerialProtocolExamples\SerialFrameExample\SerialFrameExample.csproj", "{68A2D9EC-DDDF-4FA1-8572-57543A095295}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpTree", "Playgrounds\ExpTree\ExpTree.csproj", "{118F1460-E565-49C4-BA0D-1A599C84B7D8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "Playgrounds\ConsoleApp1\ConsoleApp1.csproj", "{68BF6247-CB5E-4FD7-A9D8-6F3E71F96A1C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -114,6 +118,14 @@ Global
 		{68A2D9EC-DDDF-4FA1-8572-57543A095295}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{68A2D9EC-DDDF-4FA1-8572-57543A095295}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{68A2D9EC-DDDF-4FA1-8572-57543A095295}.Release|Any CPU.Build.0 = Release|Any CPU
+		{118F1460-E565-49C4-BA0D-1A599C84B7D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{118F1460-E565-49C4-BA0D-1A599C84B7D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{118F1460-E565-49C4-BA0D-1A599C84B7D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{118F1460-E565-49C4-BA0D-1A599C84B7D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{68BF6247-CB5E-4FD7-A9D8-6F3E71F96A1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68BF6247-CB5E-4FD7-A9D8-6F3E71F96A1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68BF6247-CB5E-4FD7-A9D8-6F3E71F96A1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68BF6247-CB5E-4FD7-A9D8-6F3E71F96A1C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -131,6 +143,8 @@ Global
 		{27DE31D6-F54B-403F-999C-57EB201FDAC3} = {C8F0F128-7044-4447-BB9D-B54DE7000882}
 		{16D4A653-6ABE-49FC-B866-8C6E315BBFA0} = {6FAFE4C8-2EA0-4950-91F0-CE3399A3440C}
 		{68A2D9EC-DDDF-4FA1-8572-57543A095295} = {16D4A653-6ABE-49FC-B866-8C6E315BBFA0}
+		{118F1460-E565-49C4-BA0D-1A599C84B7D8} = {C8F0F128-7044-4447-BB9D-B54DE7000882}
+		{68BF6247-CB5E-4FD7-A9D8-6F3E71F96A1C} = {C8F0F128-7044-4447-BB9D-B54DE7000882}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {91871512-CA16-4108-BDBC-0645BAB249EE}

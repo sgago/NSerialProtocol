@@ -1,5 +1,5 @@
 ﻿using NSerialProtocol;
-using NSerialProtocol.SerialFrameParsers;
+using NSerialProtocol.FrameParsers;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;

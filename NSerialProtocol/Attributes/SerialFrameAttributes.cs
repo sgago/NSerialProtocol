@@ -70,6 +70,7 @@ namespace NSerialProtocol.Attributes
         public Type LengthPrefixType { get; } = typeof(int);
     }
 
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
     public class FecAttribute : Attribute
     {
         //public  Fec { get; }
@@ -80,6 +81,7 @@ namespace NSerialProtocol.Attributes
         //}
     }
 
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
     public class ByteStuffAttribute : Attribute
     {
         //public  ByteStuff { get; }
