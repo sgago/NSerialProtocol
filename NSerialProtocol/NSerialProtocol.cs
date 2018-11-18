@@ -339,5 +339,7 @@ namespace NSerialProtocol
         {
             throw new NotImplementedException();
         }
+
+        
     }
 }

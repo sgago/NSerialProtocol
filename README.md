@@ -88,7 +88,7 @@ Planned tests include
 - Performance tests and optimatizations
 
 ## License
-MIT (C) Steven Gago
+MIT (C) Steven Gago 2018
 
 This project is under the MIT License for open-source software.  You are free to
 use this software for personal or commercial purposes.  Please take special note of

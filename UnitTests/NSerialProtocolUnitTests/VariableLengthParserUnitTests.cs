@@ -4,6 +4,8 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
 
 namespace NSerialProtocolUnitTests
 {
@@ -64,9 +66,6 @@ namespace NSerialProtocolUnitTests
                 new string[] { "data\u0008\u0000\u0000\u0000" }),
             new ParserTestCaseTuple(4, typeof(int), "data\u0008\u0000\u0000\u0000garbage",
                 new string[] { "data\u0008\u0000\u0000\u0000" }),
-
-
-
         };
 
         private static IEnumerable<TestCaseData> GetVariableLengthParserTestCaseData()
@@ -78,6 +77,7 @@ namespace NSerialProtocolUnitTests
             }
         }
 
+
         [Test]
         [TestCaseSource(nameof(GetVariableLengthParserTestCaseData))]
         public string[] VariableLengthParser_Test(int bytePosition, Type lengthType, string data)
@@ -85,6 +85,126 @@ namespace NSerialProtocolUnitTests
             IFrameParser variableLengthParser = new VariableLengthParser(bytePosition, lengthType);
 
             return variableLengthParser.Parse(data).ToArray();
+        }
+
+
+        //private const int ExtendedAsciiCodePage = 437;
+        //private static readonly Encoding ExtendedAsciiEncoding = Encoding.GetEncoding(ExtendedAsciiCodePage);
+
+        //[Test]
+        //public void VariableLengthParser_ParseByteType_Test()
+        //{
+        //    string expected = ExtendedAsciiEncoding.GetString(
+        //        new byte[] { 4, 97, 98, 99 }
+        //    );
+
+        //    IFrameParser variableLengthParser = new VariableLengthParser(0, typeof(byte));
+
+        //    string[] actual = variableLengthParser.Parse(
+        //        new string[] { expected + expected, expected + expected }
+        //    ).ToArray();
+
+        //    Assert.That(actual.All(x => string.Equals(x, expected)), Is.True);
+        //}
+
+        //[Test]
+        //public void VariableLengthParser_ParseInt32Type_Test()
+        //{
+        //    string expected = ExtendedAsciiEncoding.GetString(
+        //        new byte[] { 4, 0, 0, 0, 97, 98, 99 }
+        //    );
+
+        //    IFrameParser variableLengthParser = new VariableLengthParser(0, typeof(int));
+
+        //    string[] actual = variableLengthParser.Parse(
+        //        new string[] { expected + expected, expected + expected }
+        //    ).ToArray();
+
+        //    Assert.That(actual.All(x => string.Equals(x, expected)), Is.True);
+        //}
+
+        private const int ExtendAsciiCodePage = 437;
+        private const int LengthBytePosition = 0;
+
+        private static IEnumerable<TestCaseData> GetVariableLengthParser_Types_TestCaseData()
+        {
+            // Can't use "\u0004" or similar with NUnit and NUnit Test Runner
+            // Using a byte array instead, see NUnitBug project for more information
+
+            // 1 byte
+            yield return new TestCaseData(typeof(sbyte), new byte[] { 4, 97, 98, 99 });
+            yield return new TestCaseData(typeof(byte), new byte[] { 4, 97, 98, 99 });
+            yield return new TestCaseData(typeof(char), new byte[] { 4, 97, 98, 99 });
+
+            // 2 bytes
+            yield return new TestCaseData(typeof(short), new byte[] { 5, 0, 97, 98, 99 });
+            yield return new TestCaseData(typeof(ushort), new byte[] { 5, 0, 97, 98, 99 });
+
+            // 4 bytes
+            yield return new TestCaseData(typeof(int), new byte[] { 7, 0, 0, 0, 97, 98, 99 });
+            yield return new TestCaseData(typeof(uint), new byte[] { 7, 0, 0, 0, 97, 98, 99 });
+
+            // 8 bytes
+            yield return new TestCaseData(typeof(long),
+                new byte[] { 12, 0, 0, 0, 0, 0, 0, 0, 0, 97, 98, 99 });
+            yield return new TestCaseData(typeof(ulong),
+                new byte[] { 12, 0, 0, 0, 0, 0, 0, 0, 0, 97, 98, 99 });
+        }
+
+        [Test]
+        [TestCaseSource(nameof(GetVariableLengthParser_Types_TestCaseData))]
+        public void VariableLengthParser_Types_Test(Type lengthType, byte[] bytes)
+        {
+            string frame = Encoding.GetEncoding(ExtendAsciiCodePage).GetString(bytes);
+
+            // Make a convoluted test string to parse
+            string[] testString = new string[]
+            {
+                null, "", frame, null, "",
+                frame + frame, null, "", frame, null, "",
+                frame + frame + frame, null, ""
+            };
+
+            IFrameParser variableLengthParser =
+                new VariableLengthParser(LengthBytePosition, lengthType);
+
+            string[] actual = variableLengthParser.Parse(testString).ToArray();
+
+            Assert.Multiple(() =>
+            {
+                // There are 7 "frame" in the test string
+                Assert.That(actual.Count(), Is.EqualTo(7));
+
+                // Assert that all 7 are the same thing
+                Assert.That(actual.All(x => string.Equals(x, frame)), Is.True);
+            });
+            
+        }
+
+        /// <summary>
+        /// Tests that invalid frame lengths less than or equal to zero
+        /// ??????????????? what should happen?
+        /// </summary>
+        [Test]
+        public void VariableLengthParse_InvalidLengths_Test()
+        {
+            IFrameParser variableLengthParser =
+                new VariableLengthParser(0, typeof(byte));
+
+            variableLengthParser.Parse("\0");
+        }
+
+        /// <summary>
+        /// Tests that invalid frame lengths less than or equal to zero
+        /// ??????????????? what should happen?
+        /// </summary>
+        [Test]
+        public void VariableLengthParse__Test()
+        {
+            IFrameParser variableLengthParser =
+                new VariableLengthParser(0, typeof(byte));
+
+            variableLengthParser.Parse("\0");
         }
     }
 }

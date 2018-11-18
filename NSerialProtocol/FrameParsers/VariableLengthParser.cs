@@ -14,7 +14,7 @@ namespace NSerialProtocol.FrameParsers
 
         private readonly Encoding ExtendedAsciiEncoding = Encoding.GetEncoding(ExtendedAsciiCodepage);
 
-        private int LengthBytePosition { get; set; } = 0;
+        private int LengthIndex { get; set; } = 0;
 
         private Type LengthType { get; set; } = typeof(int);
 
@@ -24,13 +24,13 @@ namespace NSerialProtocol.FrameParsers
         {
             get
             {
-                return LengthByteCount + LengthBytePosition;
+                return LengthByteCount + LengthIndex;
             }
         }
 
-        public VariableLengthParser(int lengthBytePosition, Type lengthType)
+        public VariableLengthParser(int lengthIndex, Type lengthType)
         {
-            LengthBytePosition = lengthBytePosition;
+            LengthIndex = lengthIndex;
             LengthType = lengthType;
             LengthByteCount = Marshal.SizeOf(lengthType);
         }
@@ -54,7 +54,9 @@ namespace NSerialProtocol.FrameParsers
                         // TODO: It is inefficient to reconvert value to bytes again and again
                         valueBytes = ExtendedAsciiEncoding.GetBytes(values[i]);
 
-                        length = GetLength(values[i], LengthBytePosition, LengthType, ExtendedAsciiEncoding);
+                        length = GetLength(values[i], LengthIndex, LengthType, ExtendedAsciiEncoding);
+
+                        // TODO: What is the length is 0 or negative!!!!!
 
                         // First, is length greater than zero?  Otherwise, not enough bytes
                         // Second, do we have all the bytes in for the frame?
@@ -87,6 +89,15 @@ namespace NSerialProtocol.FrameParsers
 
         private int GetLength(string frame, int index, Type lengthType, Encoding encoding)
         {
+            // FIXME: This should probably be a ulong
+            // for stupidly, stupidly monsterous frame lengths that nobody
+            // in their right mind should ever use.
+            // ulong would would be ~16384 petabytes of frame
+            // long would be ~8000 petabytes of frame
+            // uint would be about ~4 gigabytes of frame
+            // int would be ~2 gigabytes of frame
+            // ushort would be ~64 kilobytes of frame
+            // short would be ~32 kilobytes of frame
             int length = -1;
 
             byte[] bytes = encoding.GetBytes(frame);
@@ -98,71 +109,43 @@ namespace NSerialProtocol.FrameParsers
                 {
                     length = bytes[index];
                 }
-                //else if (property.PropertyType == typeof(sbyte))
-                //{
-                //    property.SetValue(serialFrame, binaryReader.ReadSByte());
-                //}
+                else if (lengthType == typeof(sbyte))
+                {
+                    length = bytes[index];
+                }
                 else if (lengthType == typeof(char))
                 {
-                    length = BitConverter.ToChar(bytes, index);
+                    length = frame[0];
                 }
-                //else if (property.PropertyType == typeof(bool))
-                //{
-                //    property.SetValue(serialFrame, binaryReader.ReadBoolean());
-                //}
-                //else if (property.PropertyType == typeof(short))
-                //{
-                //    property.SetValue(serialFrame, binaryReader.ReadInt16());
-                //}
+                else if (lengthType == typeof(short))
+                {
+                    length = BitConverter.ToInt16(bytes, index);
+                }
+                else if (lengthType == typeof(ushort))
+                {
+                    length = BitConverter.ToUInt16(bytes, index);
+                }
                 else if (lengthType == typeof(int))
                 {
                     length = BitConverter.ToInt32(bytes, index);
                 }
-                //else if (property.PropertyType == typeof(long))
-                //{
-                //    property.SetValue(serialFrame, binaryReader.ReadInt64());
-                //}
-                //else if (property.PropertyType == typeof(ushort))
-                //{
-                //    property.SetValue(serialFrame, binaryReader.ReadUInt16());
-                //}
-                //else if (property.PropertyType == typeof(uint))
-                //{
-                //    property.SetValue(serialFrame, binaryReader.ReadUInt32());
-                //}
-                //else if (property.PropertyType == typeof(ulong))
-                //{
-                //    property.SetValue(serialFrame, binaryReader.ReadUInt64());
-                //}
-                //else if (property.PropertyType == typeof(float))
-                //{
-                //    property.SetValue(serialFrame, binaryReader.ReadSingle());
-                //}
-                //else if (property.PropertyType == typeof(double))
-                //{
-                //    property.SetValue(serialFrame, binaryReader.ReadDouble());
-                //}
-                //else if (property.PropertyType == typeof(decimal))
-                //{
-                //    property.SetValue(serialFrame, binaryReader.ReadDecimal());
-                //}
-                //else if (property.PropertyType == typeof(string))
-                //{
-                //    // TODO: Support for different string encodings?
-                //    property.SetValue(serialFrame, binaryReader.ReadString());
-                //}
-                //else if (property.PropertyType == typeof(byte[]))
-                //{
-                //    property.SetValue(serialFrame, binaryReader.ReadBytes(
-                //            (property.GetValue(serialFrame) as Array).Length
-                //    ));
-                //}
-                //else if (property.PropertyType == typeof(char[]))
-                //{
-                //    property.SetValue(serialFrame, binaryReader.ReadChars(
-                //            (property.GetValue(serialFrame) as Array).Length
-                //    ));
-                //}
+                else if (lengthType == typeof(uint))
+                {
+                    length = (int)BitConverter.ToUInt32(bytes, index);
+                }
+                else if (lengthType == typeof(long))
+                {
+                    length = BitConverter.ToInt32(bytes, index);
+                }
+                else if (lengthType == typeof(ulong))
+                {
+                    length = (int)BitConverter.ToUInt32(bytes, index);
+                }
+                else
+                {
+                    throw new NotSupportedException(
+                        "The type " + lengthType.Name + " is not a supported length type.");
+                }
             }
 
             return length;
