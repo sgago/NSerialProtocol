@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace NSerialProtocol.SerialFrameParsers
+namespace NSerialProtocol.FrameParsers
 {
     public class FlagParser : FrameParser, IFrameParser
     {

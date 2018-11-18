@@ -870,7 +870,7 @@ namespace NSerialPort
         /// </example>
         public string TranceiveLine(string text, int timeout = Timeout.Infinite, int retries = 0)
         {
-            bool gotPacket = false;
+            bool gotLine = false;
             string result = null;
 
             // TODO: Can this be made more efficient on the CPU?
@@ -889,9 +889,9 @@ namespace NSerialPort
                 WriteLine(text);
 
                 // Block until we get a message or timeout
-                gotPacket = LineReceivedAutoResetEvent.WaitOne(timeout);
+                gotLine = LineReceivedAutoResetEvent.WaitOne(timeout);
             }
-            while (!gotPacket && --retries > 0);  // Transmit until we get a message back or run out of retries
+            while (!gotLine && --retries > 0);  // Transmit until we get a message back or run out of retries
 
             // Unsubscribe (save RAM, removes possible event problems
             // for delegates with similar signature, etc.)

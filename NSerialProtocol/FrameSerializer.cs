@@ -62,6 +62,10 @@ namespace NSerialProtocol
             Prepare(typeof(T));
         }
 
+
+        // FIXME: Use a list of byte[]
+        // while making the frame.  Otherwise, it's going to
+        // get annoying to implement byte stuffing and what not.
         /// <summary>
         /// Serializes a SerialFrame instance into a byte array.
         /// </summary>

@@ -1,7 +1,7 @@
 ﻿using global::NSerialProtocol.Attributes;
 using global::NSerialProtocol.EventArgs;
 using global::NSerialProtocol.Extensions;
-using global::NSerialProtocol.SerialFrameParsers;
+using global::NSerialProtocol.FrameParsers;
 using NByteStuff;
 using NFec;
 using NSerialPort.EventArgs;
@@ -339,5 +339,7 @@ namespace NSerialProtocol
         {
             throw new NotImplementedException();
         }
+
+        
     }
 }

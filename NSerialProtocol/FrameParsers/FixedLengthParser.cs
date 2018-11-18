@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace NSerialProtocol.SerialFrameParsers
+namespace NSerialProtocol.FrameParsers
 {
     public class FixedLengthParser : FrameParser, IFrameParser
     {

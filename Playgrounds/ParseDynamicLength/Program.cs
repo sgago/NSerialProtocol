@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NSerialProtocol.FrameParsers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -47,6 +48,14 @@ namespace ParseDynamicLength
             List<string> subStrings1 = SplitByLength(data1, dynamicLength1, encoding);
             List<string> subStrings2 = SplitByLength(data2, dynamicLength2, encoding);
             List<string> subStrings3 = SplitByLength(data3, dynamicLength3, encoding);
+
+
+            VariableLengthParser variableLengthParser = new VariableLengthParser(0, typeof(byte));
+
+            IList<string> subStringsParsed1 = variableLengthParser.Parse(new List<string>{ data1 });
+            IList<string> subStringsParsed2 = variableLengthParser.Parse(new List<string>{ data1, data3 });
+
+
         }
 
         static int GetLength(string data, int index, Type type, Encoding encoding)

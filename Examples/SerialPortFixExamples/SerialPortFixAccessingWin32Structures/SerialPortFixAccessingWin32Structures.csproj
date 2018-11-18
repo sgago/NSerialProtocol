@@ -50,7 +50,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\SerialPortFix\SerialPortFix.csproj">
+    <ProjectReference Include="..\..\..\SerialPortFix\SerialPortFix.csproj">
       <Project>{1AA928C0-EDC0-41E4-8D9F-F4C45018B52C}</Project>
       <Name>SerialPortFix</Name>
     </ProjectReference>

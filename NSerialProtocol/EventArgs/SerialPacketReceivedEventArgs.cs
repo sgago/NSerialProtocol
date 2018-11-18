@@ -1,4 +1,4 @@
-﻿namespace NSerialProtocol
+﻿namespace NSerialProtocol.EventArgs
 {
     public class SerialPacketReceivedEventArgs
     {
