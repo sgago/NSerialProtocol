@@ -24,6 +24,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -32,6 +33,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="FastMember, Version=1.4.1.0, Culture=neutral, processorArchitecture=MSIL">
@@ -55,6 +57,8 @@
   <ItemGroup>
     <Compile Include="Attributes\SerialFrameAttributes.cs" />
     <Compile Include="EventArgs\SerialFrameErrorEventArgs.cs" />
+    <Compile Include="EventRouter.cs" />
+    <Compile Include="Extensions\ProtocolExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="FrameParserChain.cs" />
     <Compile Include="IFrameParser.cs" />
@@ -62,7 +66,7 @@
     <Compile Include="SerialFrame.cs" />
     <None Include="packages.config" />
     <Compile Include="EventArgs\SerialFrameParsedEventArgs.cs" />
-    <Compile Include="FrameParser.cs" />
+    <Compile Include="FrameParsers\FrameParser.cs" />
     <Compile Include="FrameParsers\FixedLengthParser.cs" />
     <Compile Include="FrameParsers\FlagParser.cs" />
     <Compile Include="EventArgs\SerialFrameReceivedEventArgs.cs" />

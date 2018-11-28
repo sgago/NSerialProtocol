@@ -3,6 +3,7 @@ using NSubstitute;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace NSerialProtocolUnitTests
 {
@@ -10,6 +11,7 @@ namespace NSerialProtocolUnitTests
     using NSerialProtocol;
     using NSerialProtocol.Attributes;
     using ProtoBuf;
+    using System.Windows;
     using static NSerialPort.NSerialPort;
 
     [TestFixture]
@@ -114,6 +116,49 @@ namespace NSerialProtocolUnitTests
             return framesReceived.ToArray();
         }
 
+        [Test]
+        public void Nsp_Test()
+        {
+            string data = "|\u0004data\n";
+            List<string> framesReceived = new List<string>();
+
+            ISerialPort serialPortSub = Substitute.For<ISerialPort>();
+            IFrameSerializer serializer = new FrameSerializer();
+            NSerialProtocol protocol = new NSerialProtocol(serialPortSub, serializer);
+
+            NSerialDataReceivedEventArgs args = new NSerialDataReceivedEventArgs(
+                System.IO.Ports.SerialData.Eof, data);
+
+            protocol.SetFlags("\n", "|");
+
+            protocol.OnFrameReceived<DefaultSerialFrame>()
+                .Do((sf) =>
+                    {
+                        DefaultSerialFrame receivedFrame = sf as DefaultSerialFrame;
+
+                        MessageBox.Show(receivedFrame.Payload);
+
+                        protocol.WriteFrame("herro");
+                    }
+                )
+                .If
+                (
+                    // If Predicate
+                    (sf) =>
+                    {
+                        return (sf as DefaultSerialFrame).EndFlag == '\n';
+                    },
+                    // Then Do Action
+                    (sf) =>
+                    {
+                        MessageBox.Show("If is working!");
+                    }
+                )
+                .WriteFrame(new SerialFrame());
+
+            serialPortSub.DataReceived +=
+                Raise.Event<NSerialDataReceivedEventHandler>(args);
+        }
 
         //[Test]
         //public void SerialFrame_Deserialized_Test()

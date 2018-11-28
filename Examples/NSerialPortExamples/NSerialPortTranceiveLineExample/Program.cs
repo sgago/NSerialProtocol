@@ -23,7 +23,7 @@ namespace NSerialPortTranceiveLineExample
 
         static void Main(string[] args)
         {
-            string result = "";
+           // string result = "";
 
             // Create an NSerialPort instance within the using keyword for automatic
             // disposal of unmanaged resources
@@ -36,7 +36,7 @@ namespace NSerialPortTranceiveLineExample
 
             //    Console.Write("Result = " + result);
             //}
-            SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
+            //SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
 
         }
 
