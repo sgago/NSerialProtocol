@@ -18,11 +18,27 @@ namespace NSerialProtocol
     using NByteStuff.Algorithms;
     using NFec.Algorithms;
     using NSerialPort;
-
+    using System.Linq.Expressions;
 
     public interface ISerialProtocol
     {
+        event SerialProtocol.FrameErrorEventHandler OnFrameError;
+        event SerialProtocol.FrameParsedEventHandler OnFrameParsed;
+        event SerialProtocol.FrameReceivedEventHandler OnFrameReceived;
+        event SerialProtocol.PacketReceivedEventHandler OnPacketReceived;
 
+        SerialFrame ReadFrame();
+        T ReadFrame<T>();
+        ISerialPacket ReadPacket();
+        SerialProtocol SetFlags(string endFlag, string startFlag = "");
+        void SetFramePrototype(Type type);
+        void SetFramePrototype<T>() where T : ISerialFrame;
+        SerialFrame TranceiveFrame(SerialFrame serialFrame, int timeout = -1, int retries = 0);
+        SerialFrame TranceiveFrame(string payload, int timeout = -1, int retries = 0);
+        ISerialPacket TranceivePacket(SerialPacket serialPacket, int timeout = -1, int retries = 0);
+        void WriteFrame(ISerialFrame serialFrame);
+        void WriteFrame(string payload);
+        void WritePacket(ISerialPacket serialPacket);
     }
 
     [Fec()]
@@ -46,10 +62,10 @@ namespace NSerialProtocol
     //    public string Data;
     //}
 
-    public class NSerialProtocol : ISerialProtocol
+    public class SerialProtocol : ISerialProtocol
     {
         /*
-        * NSerialProtocol will handle OUTSIDE OF PROTOBUF
+        * SerialProtocol will handle OUTSIDE OF PROTOBUF
         * - StartFlag OUTSIDE PROTOBUF
         * - EndFlag OUTSIDE PROTOBUF
         * - Length OUTSIDE PROTOBUF
@@ -64,11 +80,11 @@ namespace NSerialProtocol
         * 5. Prepend start flag
         * 6. Append end flag
         */
-        private const int ExtendedAsciiCodepage = 437;
-        private readonly Encoding ExtendedAsciiEncoding = Encoding.GetEncoding(ExtendedAsciiCodepage);
-
         private const int FlagParserOrder = 0;
         private const int FixedLengthParserOrder = 30;
+        private const int ExtendedAsciiCodepage = 437;
+
+        private readonly Encoding ExtendedAsciiEncoding = Encoding.GetEncoding(ExtendedAsciiCodepage);
 
         private ISerialPort SerialPort { get; set; }
         private string InputBuffer { get; set; }
@@ -79,6 +95,8 @@ namespace NSerialProtocol
 
         private List<Tuple<int, IFrameParser>> Parsers { get; set; } = new List<Tuple<int, IFrameParser>>();
 
+        internal EventRouter FrameReceivedEventRouter;
+
         /// <summary>
         /// Represents the method that will handle the MessageReceived event of a NSerialPort
         /// object.
@@ -86,28 +104,29 @@ namespace NSerialProtocol
         /// <param name="sender">The sender of the event, which is the NSerialPort object.</param>
         /// <param name="e">A SerialMessageReceivedEventArgs object that contains the event
         /// data.</param>
-        //public delegate void SerialPacketReceivedEventHandler(object sender, SerialPacketReceivedEventArgs e);
+        public delegate void FrameParsedEventHandler(object sender, SerialFrameParsedEventArgs e);
+        public delegate void FrameReceivedEventHandler(object sender, SerialFrameReceivedEventArgs e);
+        public delegate void FrameErrorEventHandler(object sender, SerialFrameErrorEventArgs e);
 
-        public delegate void SerialFrameParsedEventHandler(object sender, SerialFrameParsedEventArgs e);
-        public delegate void SerialFrameErrorEventHandler(object sender, SerialFrameErrorEventArgs e);
-        public delegate void SerialFrameReceivedEventHandler(object sender, SerialFrameReceivedEventArgs e);
-        //public delegate void SerialPacketReceivedEventHandler(object sender, SerialPacketReceivedEventArgs e);
+        public delegate void PacketReceivedEventHandler(object sender, SerialPacketReceivedEventArgs e);
 
-        public event SerialFrameParsedEventHandler SerialFrameParsed;
-        public event SerialFrameErrorEventHandler SerialFrameError;
-        public event SerialFrameReceivedEventHandler SerialFrameReceived;
-        //public event SerialPacketReceivedEventHandler SerialPacketReceived;
+        public event FrameParsedEventHandler OnFrameParsed;
+        public event FrameReceivedEventHandler OnFrameReceived;
+        public event FrameErrorEventHandler OnFrameError;
+        public event PacketReceivedEventHandler OnPacketReceived;
         
-        internal NSerialProtocol(ISerialPort serialPort, IFrameSerializer serializer)
+        internal SerialProtocol(ISerialPort serialPort, IFrameSerializer serializer)
         {
             SerialPort = serialPort;
             SerialFrameSerializer = serializer;
 
             SerialPort.DataReceived += SerialPort_DataReceived;
-            SerialFrameParsed += NSerialProtocol_SerialFrameParsed;
+            OnFrameParsed += NSerialProtocol_SerialFrameParsed;
+
+            FrameReceivedEventRouter = new FrameReceivedEventRouter(this);
         }
 
-        public NSerialProtocol(string portName = "COM1",
+        public SerialProtocol(string portName = "COM1",
                                int baudRate = 57600,
                                Parity parity = Parity.None,
                                int dataBits = 8,
@@ -119,12 +138,12 @@ namespace NSerialProtocol
             // for users.
         }
 
-        //public NSerialProtocol SetFlags(byte[] endFlag, byte[] startFlag = null)
+        //public SerialProtocol SetFlags(byte[] endFlag, byte[] startFlag = null)
         //{
         //    throw new NotImplementedException();
         //}
 
-        public NSerialProtocol SetFlags(string endFlag, string startFlag = "")
+        public SerialProtocol SetFlags(string endFlag, string startFlag = "")
         {
             Parsers.Add(new Tuple<int, IFrameParser>(FlagParserOrder, new FlagParser(endFlag, startFlag)));
 
@@ -133,22 +152,22 @@ namespace NSerialProtocol
             return this;
         }
 
-        //public NSerialProtocol SetFec(IFec fec)
+        //public SerialProtocol SetFec(IFec fec)
         //{
         //    throw new NotImplementedException();
         //}
 
-        //public NSerialProtocol SetLengthField()
+        //public SerialProtocol SetLengthField()
         //{
         //    throw new NotImplementedException();
         //}
 
-        //public NSerialProtocol SetByteStuff(IByteStuff byteStuff)
+        //public SerialProtocol SetByteStuff(IByteStuff byteStuff)
         //{
         //    throw new NotImplementedException();
         //}
 
-        //public NSerialProtocol SetMaximumLength(int length)
+        //public SerialProtocol SetMaximumLength(int length)
         //{
         //    throw new NotImplementedException();
         //}
@@ -168,22 +187,22 @@ namespace NSerialProtocol
 
         private void RaiseSerialFrameParsedEvent(object sender, SerialFrameParsedEventArgs e)
         {
-            SerialFrameParsed?.Invoke(sender, e);
+            OnFrameParsed?.Invoke(sender, e);
+        }
+
+        private void RaiseSerialFrameReceivedEvent(object sender, SerialFrameReceivedEventArgs e)
+        {
+            OnFrameReceived?.Invoke(sender, e);
         }
 
         private void RaiseSerialFrameErrorEvent(object sender, SerialFrameErrorEventArgs e)
         {
-            SerialFrameError?.Invoke(sender, e);
-        }
-
-        private void RaiseSerialFrameReceived(object sender, SerialFrameReceivedEventArgs e)
-        {
-            SerialFrameReceived?.Invoke(sender, e);
+            OnFrameError?.Invoke(sender, e);
         }
 
         private void RaiseSerialPacketReceivedEvent(object sender, SerialPacketReceivedEventArgs e)
         {
-            //SerialPacketReceived?.Invoke(sender, e);
+            OnPacketReceived?.Invoke(sender, e);
         }
 
         private IList<string> Parse(string data)
@@ -250,7 +269,6 @@ namespace NSerialProtocol
             // they were received.
             values = values.OrderBy(x => x.Item1).ToList();
 
-
             foreach (Tuple<int, bool, string> value in values)
             {
                 if (value.Item2)
@@ -271,10 +289,10 @@ namespace NSerialProtocol
 
         private void NSerialProtocol_SerialFrameParsed(object sender, SerialFrameParsedEventArgs e)
         {
-            ISerialFrame serialFrame =
-                SerialFrameSerializer.Deserialize(PrototypeFrame.GetType(), e.Frame) as ISerialFrame;
+            object receivedFrame =
+                SerialFrameSerializer.Deserialize(PrototypeFrame.GetType(), e.Frame);
 
-            RaiseSerialFrameReceived(this, new SerialFrameReceivedEventArgs(serialFrame));
+            RaiseSerialFrameReceivedEvent(this, new SerialFrameReceivedEventArgs(receivedFrame));
         }
 
         private IList<string> GetErrors(string inputBuffer, IList<string> frames)
@@ -310,7 +328,13 @@ namespace NSerialProtocol
             throw new NotImplementedException();
         }
 
+        // FIXME: Use ReadFrame in the TranceiveFrame method
         public SerialFrame ReadFrame()
+        {
+            throw new NotImplementedException();
+        }
+
+        public T ReadFrame<T>()
         {
             throw new NotImplementedException();
         }
@@ -324,6 +348,8 @@ namespace NSerialProtocol
         {
             throw new NotImplementedException();
         }
+
+
 
         public void WritePacket(ISerialPacket serialPacket)
         {
@@ -339,7 +365,5 @@ namespace NSerialProtocol
         {
             throw new NotImplementedException();
         }
-
-        
     }
 }

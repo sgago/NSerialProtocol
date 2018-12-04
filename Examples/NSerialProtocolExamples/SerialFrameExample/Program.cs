@@ -22,7 +22,7 @@ namespace SerialFrameExample
     {
         static void Main(string[] args)
         {
-            NSerialProtocol protocol = new NSerialProtocol();
+            SerialProtocol protocol = new SerialProtocol();
 
             MySerialFrame frame = new MySerialFrame();
 

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
-namespace NSerialProtocol
+namespace NSerialProtocol.FrameParsers
 {
     public enum ParsingError
     {

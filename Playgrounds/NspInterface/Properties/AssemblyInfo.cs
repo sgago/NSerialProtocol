@@ -1,15 +1,15 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("SerialProtocol")]
+[assembly: AssemblyTitle("NspInterface")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("SerialProtocol")]
+[assembly: AssemblyProduct("NspInterface")]
 [assembly: AssemblyCopyright("Copyright ©  2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("c62d822f-87d0-4629-9730-6eb3a89442a5")]
+[assembly: Guid("38a66b14-96f6-4502-b535-484ef77a8b4f")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -34,9 +34,3 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
-
-// Exposes internal methods and classes the the NSerialProtocolUnitTests "friend" assembly
-// for testing for debug only.
-#if DEBUG
-[assembly: InternalsVisibleTo("NSerialProtocolUnitTests")]
-#endif
