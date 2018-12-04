@@ -47,14 +47,14 @@ namespace NSerialProtocolUnitTests
             
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
             IFrameSerializer serializer = Substitute.For<IFrameSerializer>();
-            NSerialProtocol protocol = new NSerialProtocol(serialPortSub, serializer);
+            SerialProtocol protocol = new SerialProtocol(serialPortSub, serializer);
 
             NSerialDataReceivedEventArgs args = new NSerialDataReceivedEventArgs(
                 System.IO.Ports.SerialData.Eof, data);
 
             protocol.SetFlags("", startFlag);
 
-            protocol.SerialFrameParsed += (sender, e) =>
+            protocol.OnFrameParsed += (sender, e) =>
             {
                 framesReceived.Add(e.Frame);
             };
@@ -98,14 +98,14 @@ namespace NSerialProtocolUnitTests
 
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
             IFrameSerializer serializerSub = Substitute.For<IFrameSerializer>();
-            NSerialProtocol protocol = new NSerialProtocol(serialPortSub, serializerSub);
+            SerialProtocol protocol = new SerialProtocol(serialPortSub, serializerSub);
 
             NSerialDataReceivedEventArgs args = new NSerialDataReceivedEventArgs(
                 System.IO.Ports.SerialData.Eof, data);
 
             protocol.SetFlags(endFlag);
 
-            protocol.SerialFrameParsed += (sender, e) =>
+            protocol.OnFrameParsed += (sender, e) =>
             {
                 framesReceived.Add(e.Frame);
             };
@@ -124,7 +124,7 @@ namespace NSerialProtocolUnitTests
 
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
             IFrameSerializer serializer = new FrameSerializer();
-            NSerialProtocol protocol = new NSerialProtocol(serialPortSub, serializer);
+            SerialProtocol protocol = new SerialProtocol(serialPortSub, serializer);
 
             NSerialDataReceivedEventArgs args = new NSerialDataReceivedEventArgs(
                 System.IO.Ports.SerialData.Eof, data);
@@ -137,8 +137,6 @@ namespace NSerialProtocolUnitTests
                         DefaultSerialFrame receivedFrame = sf as DefaultSerialFrame;
 
                         MessageBox.Show(receivedFrame.Payload);
-
-                        protocol.WriteFrame("herro");
                     }
                 )
                 .If
@@ -153,8 +151,7 @@ namespace NSerialProtocolUnitTests
                     {
                         MessageBox.Show("If is working!");
                     }
-                )
-                .WriteFrame(new SerialFrame());
+                );
 
             serialPortSub.DataReceived +=
                 Raise.Event<NSerialDataReceivedEventHandler>(args);
@@ -170,7 +167,7 @@ namespace NSerialProtocolUnitTests
 
         //    ISerialPort serialPortSub = Substitute.For<ISerialPort>();
         //    ISerialFrameSerializer serializerSub = Substitute.For<ISerialFrameSerializer>();
-        //    NSerialProtocol protocol = new NSerialProtocol(serialPortSub, serializerSub);
+        //    SerialProtocol protocol = new SerialProtocol(serialPortSub, serializerSub);
 
         //    NSerialDataReceivedEventArgs args = new NSerialDataReceivedEventArgs(
         //        System.IO.Ports.SerialData.Eof, data);
@@ -259,7 +256,7 @@ namespace NSerialProtocolUnitTests
 
         //    ISerialPort serialPortSub = Substitute.For<ISerialPort>();
         //    ISerialFrameSerializer serializerSub = Substitute.For<ISerialFrameSerializer>();
-        //    NSerialProtocol protocol = new NSerialProtocol(serialPortSub, serializerSub);
+        //    SerialProtocol protocol = new SerialProtocol(serialPortSub, serializerSub);
 
         //    NSerialDataReceivedEventArgs args = new NSerialDataReceivedEventArgs(
         //        System.IO.Ports.SerialData.Eof, data);

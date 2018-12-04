@@ -1,39 +1,51 @@
-﻿using System;
+﻿using NSerialProtocol.EventArgs;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+
 
 namespace NSerialProtocol
 {
-    using FrameActionKvp = KeyValuePair<Type, Action<ISerialFrame>>;
-
-    public class EventRouter
+    public interface IEventRouter
     {
-        public NSerialProtocol Protocol { get; set; }
-        public List<FrameActionKvp> Actions { get; set; } = new List<FrameActionKvp>();
+        //IList<IRoute> Routes { get; set; }
 
-        public EventRouter(NSerialProtocol protocol)
-        {
-            Protocol = protocol;
-            protocol.SerialFrameReceived += Protocol_SerialFrameReceived;
-        }
+        IRoute Add(Type type);
+    }
 
-        private void Protocol_SerialFrameReceived(object sender, EventArgs.SerialFrameReceivedEventArgs e)
-        {
-            foreach (FrameActionKvp frameActionKvp in Actions)
-            {
-                if (e.SerialFrame.GetType() == frameActionKvp.Key)
-                {
-                    frameActionKvp.Value?.Invoke((ISerialFrame)e.SerialFrame);
-                }
-            }
-        }
+    public abstract class EventRouter : IEventRouter
+    {
+        protected IList<IRoute> Routes { get; set; } = new List<IRoute>();
 
-        public Action<ISerialFrame> Add(Type type)
+        public IRoute Add(Type frameType)
         {
             Action<ISerialFrame> newAction = new Action<ISerialFrame>((sf) => { });
 
-            Actions.Add(new FrameActionKvp(type, newAction));
+            Routes.Add(new Route(frameType));
 
-            return Actions[Actions.Count - 1].Value;
+            return Routes.Last();
         }
     }
+
+    public class FrameReceivedEventRouter : EventRouter
+    {
+        public FrameReceivedEventRouter(ISerialProtocol protocol)
+        {
+            protocol.OnFrameReceived += Protocol_SerialFrameReceived;
+        }
+
+        private void Protocol_SerialFrameReceived(object sender, SerialFrameReceivedEventArgs e)
+        {
+            foreach (IRoute route in Routes)
+            {
+                if (e.SerialFrame.GetType() == route.FrameType)
+                {
+                    route.Action?.Invoke((ISerialFrame)e.SerialFrame);
+                }
+            }
+        }
+    }
+
+
+
 }

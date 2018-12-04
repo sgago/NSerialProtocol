@@ -5,26 +5,17 @@ namespace NSerialProtocol
 {
     public static class ProtocolExtensions
     {
-        public static EventRouter OnFrameReceived(this NSerialProtocol protocol, Type type)
+        public static EventRouter OnFrameReceived(this SerialProtocol protocol, Type frameType)
         {
-            protocol.FrameReceivedEventRouter.Add(type);
+            protocol.FrameReceivedEventRouter.AddRoute(frameType);
 
             return protocol.FrameReceivedEventRouter;
         }
 
-        public static EventRouter OnFrameReceived<TFrame>(this NSerialProtocol protocol) where TFrame : ISerialFrame
+        public static EventRouter OnFrameReceived<TFrame>(this SerialProtocol protocol) where TFrame : ISerialFrame
         {
             return OnFrameReceived(protocol, typeof(TFrame));
         }
-
-        //public static Action<ISerialFrame> Do(this Action<ISerialFrame> prevAction, Action<ISerialFrame> action)
-        //{
-        //    prevAction += action;
-
-        //    prevAction = prevAction + action;
-
-        //    return prevAction;
-        //}
 
         public static EventRouter Do(this EventRouter router, Action<ISerialFrame> action)
         {
@@ -32,30 +23,16 @@ namespace NSerialProtocol
             //router.Actions.Last().Value += action;
 
             // TOOO: Until then, I'm doing this ugly, ugly thing:
-            router.Actions[router.Actions.Count - 1] = new System.Collections.Generic.KeyValuePair<Type, Action<ISerialFrame>>
-                (
-                    router.Actions[router.Actions.Count - 1].Key,
-                    router.Actions[router.Actions.Count - 1].Value + action
-                );
+            //router.Routes[router.Routes.Count - 1] = new System.Collections.Generic.KeyValuePair<Type, Action<ISerialFrame>>
+            //    (
+            //        router.Routes[router.Routes.Count - 1].Key,
+            //        router.Routes[router.Routes.Count - 1].Value + action
+            //    );
+
+            router.Routes.Last().RouteAction += action;
 
             return router;
         }
-
-        //public static Action<ISerialFrame> If(this Action<ISerialFrame> prevAction,
-        //    Predicate<ISerialFrame> ifPredicate,
-        //    Action<ISerialFrame> doAction)
-        //{
-        //    prevAction +=
-        //        new Action<ISerialFrame>((sf) =>
-        //        {
-        //            if (ifPredicate(sf))
-        //            {
-        //                doAction(sf);
-        //            }
-        //        });
-
-        //    return prevAction;
-        //}
 
         public static EventRouter If(this EventRouter router,
             Predicate<ISerialFrame> ifPredicate,
@@ -70,12 +47,28 @@ namespace NSerialProtocol
                     }
                 });
 
-            router.Actions[router.Actions.Count - 1] = new System.Collections.Generic.KeyValuePair<Type, Action<ISerialFrame>>
-                (
-                    router.Actions[router.Actions.Count - 1].Key,
-                    router.Actions[router.Actions.Count - 1].Value + ifThenAction
-                );
+            router.Routes.Last().RouteAction += ifThenAction;
+
             return router;
+        }
+
+        public static Action<ISerialFrame> IfElse(this Action<ISerialFrame> prevAction,
+            Predicate<ISerialFrame> ifPredicate,
+            Action<ISerialFrame> doAction,
+            Action<ISerialFrame> elseAction)
+        {
+            return prevAction +=
+                new Action<ISerialFrame>((sf) =>
+                {
+                    if (ifPredicate(sf))
+                    {
+                        doAction(sf);
+                    }
+                    else
+                    {
+                        elseAction(sf);
+                    }
+                });
         }
 
         public static EventRouter WriteFrame(this EventRouter router, SerialFrame serialFrame)
@@ -84,24 +77,5 @@ namespace NSerialProtocol
 
             return router;
         }
-
-        //public static Action<ISerialFrame> IfElse(this Action<ISerialFrame> prevAction,
-        //    Predicate<ISerialFrame> ifPredicate,
-        //    Action<ISerialFrame> doAction,
-        //    Action<ISerialFrame> elseAction)
-        //{
-        //    return prevAction +=
-        //        new Action<ISerialFrame>((sf) =>
-        //        {
-        //            if (ifPredicate(sf))
-        //            {
-        //                doAction(sf);
-        //            }
-        //            else
-        //            {
-        //                elseAction(sf);
-        //            }
-        //        });
-        //}
     }
 }
