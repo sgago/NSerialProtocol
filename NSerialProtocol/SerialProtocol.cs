@@ -20,27 +20,6 @@ namespace NSerialProtocol
     using NSerialPort;
     using System.Linq.Expressions;
 
-    public interface ISerialProtocol
-    {
-        event SerialProtocol.FrameErrorEventHandler OnFrameError;
-        event SerialProtocol.FrameParsedEventHandler OnFrameParsed;
-        event SerialProtocol.FrameReceivedEventHandler OnFrameReceived;
-        event SerialProtocol.PacketReceivedEventHandler OnPacketReceived;
-
-        SerialFrame ReadFrame();
-        T ReadFrame<T>();
-        ISerialPacket ReadPacket();
-        SerialProtocol SetFlags(string endFlag, string startFlag = "");
-        void SetFramePrototype(Type type);
-        void SetFramePrototype<T>() where T : ISerialFrame;
-        SerialFrame TranceiveFrame(SerialFrame serialFrame, int timeout = -1, int retries = 0);
-        SerialFrame TranceiveFrame(string payload, int timeout = -1, int retries = 0);
-        ISerialPacket TranceivePacket(SerialPacket serialPacket, int timeout = -1, int retries = 0);
-        void WriteFrame(ISerialFrame serialFrame);
-        void WriteFrame(string payload);
-        void WritePacket(ISerialPacket serialPacket);
-    }
-
     [Fec()]
     [ByteStuff()]
     public class DefaultSerialFrame : SerialFrame
@@ -48,19 +27,12 @@ namespace NSerialProtocol
         [StartFlag]
         public char StartFlag { get; set; } = '|';
 
-        [FrameMember(1)]
+        [Payload(1)]
         public string Payload { get; set; }
 
         [EndFlag]
         public char EndFlag { get; set; } = '\n';
     }
-
-    //[ProtoContract]
-    //public class DefaultSerialPacket : SerialPacket
-    //{
-    //    [ProtoMember(0)]
-    //    public string Data;
-    //}
 
     public class SerialProtocol : ISerialProtocol
     {
@@ -84,18 +56,29 @@ namespace NSerialProtocol
         private const int FixedLengthParserOrder = 30;
         private const int ExtendedAsciiCodepage = 437;
 
-        private readonly Encoding ExtendedAsciiEncoding = Encoding.GetEncoding(ExtendedAsciiCodepage);
+        private readonly Encoding ExtendedAsciiEncoding
+            = Encoding.GetEncoding(ExtendedAsciiCodepage);
 
         private ISerialPort SerialPort { get; set; }
         private string InputBuffer { get; set; }
 
-        private ISerialFrame PrototypeFrame { get; set; } = new DefaultSerialFrame();
+        private readonly AutoResetEvent FrameReceivedAutoResetEvent
+            = new AutoResetEvent(false);
 
-        private IFrameSerializer SerialFrameSerializer { get; set; }
+        private object PrototypeFrame { get; set; }
+            = new DefaultSerialFrame();
 
-        private List<Tuple<int, IFrameParser>> Parsers { get; set; } = new List<Tuple<int, IFrameParser>>();
+        private IFrameSerializer FrameSerializer { get; set; }
+
+        private List<Tuple<int, IFrameParser>> Parsers { get; set; }
+            = new List<Tuple<int, IFrameParser>>();
 
         internal EventRouter FrameReceivedEventRouter;
+
+        private TypeAccessor PrototypeFrameTypeAccessor { get; set; }
+        private ObjectAccessor PrototypeFrameObjectAccessor { get; set; }
+        private string PrototypeFramePayloadMemberName { get; set; }
+
 
         /// <summary>
         /// Represents the method that will handle the MessageReceived event of a NSerialPort
@@ -118,12 +101,14 @@ namespace NSerialProtocol
         internal SerialProtocol(ISerialPort serialPort, IFrameSerializer serializer)
         {
             SerialPort = serialPort;
-            SerialFrameSerializer = serializer;
+            FrameSerializer = serializer;
 
             SerialPort.DataReceived += SerialPort_DataReceived;
             OnFrameParsed += NSerialProtocol_SerialFrameParsed;
 
             FrameReceivedEventRouter = new FrameReceivedEventRouter(this);
+
+            SetFramePrototype<DefaultSerialFrame>();
         }
 
         public SerialProtocol(string portName = "COM1",
@@ -143,7 +128,7 @@ namespace NSerialProtocol
         //    throw new NotImplementedException();
         //}
 
-        public SerialProtocol SetFlags(string endFlag, string startFlag = "")
+        public ISerialProtocol SetFlags(string endFlag, string startFlag = "")
         {
             Parsers.Add(new Tuple<int, IFrameParser>(FlagParserOrder, new FlagParser(endFlag, startFlag)));
 
@@ -172,17 +157,28 @@ namespace NSerialProtocol
         //    throw new NotImplementedException();
         //}
 
-        public void SetFramePrototype(Type type)
+        public ISerialProtocol SetFramePrototype(Type type)
         {
-            TypeAccessor typeAccessor = TypeAccessor.Create(type);
-            ObjectAccessor objectAccessor = ObjectAccessor.Create(typeAccessor.CreateNew());
+            PrototypeFrameTypeAccessor = TypeAccessor.Create(type);
 
-            throw new NotImplementedException();
+            PrototypeFrame = PrototypeFrameTypeAccessor.CreateNew();
+
+            PrototypeFrameObjectAccessor = ObjectAccessor.Create(PrototypeFrame);
+
+            PrototypeFramePayloadMemberName = PrototypeFrameTypeAccessor
+                .GetMembers()
+                .Where(x => x.IsDefined(typeof(PayloadAttribute)))
+                .FirstOrDefault()
+                .Name;
+
+            return this;
         }
 
-        public void SetFramePrototype<T>() where T : ISerialFrame
+        public ISerialProtocol SetFramePrototype<TFrame>() where TFrame : ISerialFrame
         {
-            SetFramePrototype(typeof(T));
+            SetFramePrototype(typeof(TFrame));
+
+            return this;
         }
 
         private void RaiseSerialFrameParsedEvent(object sender, SerialFrameParsedEventArgs e)
@@ -290,7 +286,7 @@ namespace NSerialProtocol
         private void NSerialProtocol_SerialFrameParsed(object sender, SerialFrameParsedEventArgs e)
         {
             object receivedFrame =
-                SerialFrameSerializer.Deserialize(PrototypeFrame.GetType(), e.Frame);
+                FrameSerializer.Deserialize(PrototypeFrame.GetType(), e.Frame);
 
             RaiseSerialFrameReceivedEvent(this, new SerialFrameReceivedEventArgs(receivedFrame));
         }
@@ -318,38 +314,97 @@ namespace NSerialProtocol
             }
         }
 
+        /// <summary>
+        /// Serializes a frame and writes the bytes to the serial port.
+        /// </summary>
+        /// <param name="serialFrame">The serial frame to serialize and write to the port.</param>
         public void WriteFrame(ISerialFrame serialFrame)
         {
-            throw new NotImplementedException();
-        }
+            byte[] serializedFrame = FrameSerializer.Serialize(serialFrame);
 
-        public void WriteFrame(string payload)
-        {
-            throw new NotImplementedException();
+            SerialPort.Write(serializedFrame, 0, serializedFrame.Count());
         }
 
         // FIXME: Use ReadFrame in the TranceiveFrame method
-        public SerialFrame ReadFrame()
+        public object ReadFrame(int timeout = Timeout.Infinite)
         {
-            throw new NotImplementedException();
+            object result = null;
+
+            // TODO: Can this be made more efficient on the CPU?
+            // Define a temporary LineReceived event handler to capture a serial message
+            void frameReceivedHandler(object sender, SerialFrameReceivedEventArgs frameReceivedEventArgs)
+            {
+                result = frameReceivedEventArgs.SerialFrame; // Grab received message from event args
+                FrameReceivedAutoResetEvent.Set();  // Unblock thread
+            }
+
+            // Subscribe to message received event we just created to get messages
+            OnFrameReceived += frameReceivedHandler;
+
+            // Block until we get a message or timeout
+            FrameReceivedAutoResetEvent.WaitOne(timeout);
+
+            // Unsubscribe (save RAM, removes possible event problems
+            // for delegates with similar signature, etc.)
+            OnFrameReceived -= frameReceivedHandler;
+
+            return result;
         }
 
-        public T ReadFrame<T>()
+        public object ReadFrame(TimeSpan timeout)
         {
-            throw new NotImplementedException();
+            return ReadFrame(timeout.Milliseconds);
         }
 
-        public SerialFrame TranceiveFrame(SerialFrame serialFrame, int timeout = Timeout.Infinite, int retries = 0)
+        public TFrame ReadFrame<TFrame>(int timeout = Timeout.Infinite) where TFrame : ISerialFrame
         {
-            throw new NotImplementedException();
+            return (TFrame)ReadFrame(timeout);
         }
 
-        public SerialFrame TranceiveFrame(string payload, int timeout = Timeout.Infinite, int retries = 0)
+        public TFrame ReadFrame<TFrame>(TimeSpan timeout) where TFrame : ISerialFrame
         {
-            throw new NotImplementedException();
+            return (TFrame)ReadFrame(timeout);
         }
 
+        public object TranceiveFrame(ISerialFrame serialFrame, int timeout = Timeout.Infinite, int retries = 0)
+        {
+            object receivedFrame = false;
 
+            do
+            {
+                WriteFrame(serialFrame);
+
+                // Block until we get a message or timeout
+                receivedFrame = ReadFrame(timeout);
+            }
+            while (receivedFrame == null && --retries > 0);  // Transmit until we get a message back or run out of retries
+
+            return receivedFrame;
+        }
+
+        public object TranceiveFrame(ISerialFrame serialFrame, TimeSpan timeout, int retries = 0)
+        {
+            return TranceiveFrame(serialFrame, timeout.Milliseconds, retries);
+        }
+
+        public TFrame TranceiveFrame<TFrame>(ISerialFrame serialFrame, int timeout = Timeout.Infinite, int retries = 0)
+            where TFrame : ISerialFrame
+        {
+            return (TFrame)TranceiveFrame(serialFrame, timeout, retries);
+        }
+
+        public TFrame TranceiveFrame<TFrame>(ISerialFrame serialFrame, TimeSpan timeout, int retries = 0)
+            where TFrame : ISerialFrame
+        {
+            return (TFrame)TranceiveFrame(serialFrame, timeout, retries);
+        }
+
+        public void WriteFrame<TPayload>(TPayload payload)
+        {
+            PrototypeFrameObjectAccessor[PrototypeFramePayloadMemberName] = payload;
+
+            WriteFrame(PrototypeFrame as ISerialFrame);
+        }
 
         public void WritePacket(ISerialPacket serialPacket)
         {

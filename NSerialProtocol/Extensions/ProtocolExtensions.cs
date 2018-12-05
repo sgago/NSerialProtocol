@@ -29,7 +29,7 @@ namespace NSerialProtocol
             //        router.Routes[router.Routes.Count - 1].Value + action
             //    );
 
-            router.Routes.Last().RouteAction += action;
+            router.Routes.Last().Action += action;
 
             return router;
         }
@@ -47,7 +47,7 @@ namespace NSerialProtocol
                     }
                 });
 
-            router.Routes.Last().RouteAction += ifThenAction;
+            router.Routes.Last().Action += ifThenAction;
 
             return router;
         }

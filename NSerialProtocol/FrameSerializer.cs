@@ -13,10 +13,13 @@ namespace NSerialProtocol
     {
         void Prepare(Type type);
         void Prepare<T>() where T : ISerialFrame;
+
         byte[] Serialize(ISerialFrame frame);
+
         object Deserialize(Type type, byte[] serializedFrame);
         object Deserialize(Type type, string serializedFrame);
         object Deserialize(Type type, string serializedFrame, Encoding encoding);
+
         T Deserialize<T>(byte[] serializedFrame) where T : class, ISerialFrame;
         T Deserialize<T>(string serializedFrame) where T : class, ISerialFrame;
         T Deserialize<T>(string serializedFrame, Encoding encoding) where T : class, ISerialFrame;
