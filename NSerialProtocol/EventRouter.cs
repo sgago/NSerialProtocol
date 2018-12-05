@@ -8,16 +8,22 @@ namespace NSerialProtocol
 {
     public interface IEventRouter
     {
-        //IList<IRoute> Routes { get; set; }
+        IList<IRoute> Routes { get; set; }
 
-        IRoute Add(Type type);
+        IRoute AddRoute(Type frameType);
     }
 
     public abstract class EventRouter : IEventRouter
     {
-        protected IList<IRoute> Routes { get; set; } = new List<IRoute>();
+        public ISerialProtocol Protocol { get; set; }
+        public IList<IRoute> Routes { get; set; } = new List<IRoute>();
 
-        public IRoute Add(Type frameType)
+        public EventRouter(ISerialProtocol protocol)
+        {
+            Protocol = protocol;
+        }
+
+        public IRoute AddRoute(Type frameType)
         {
             Action<ISerialFrame> newAction = new Action<ISerialFrame>((sf) => { });
 
@@ -30,6 +36,7 @@ namespace NSerialProtocol
     public class FrameReceivedEventRouter : EventRouter
     {
         public FrameReceivedEventRouter(ISerialProtocol protocol)
+            : base(protocol)
         {
             protocol.OnFrameReceived += Protocol_SerialFrameReceived;
         }

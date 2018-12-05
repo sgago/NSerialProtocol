@@ -4,15 +4,16 @@
 #### | [Home](Home) | [SerialPortFix](SerialPortFix) | [NSerialPort](NSerialPort) | [NSerialProtocol](NSerialProtocol) |
 
 ## About
-The NSerialProtocol project are a series of libraries that aim to simplify use of serial port communications in .NET
+The NSerialProtocol project are a series of libraries that aim to simplify
+use of serial port communications in .NET.
 
 ## Features
-The NSerialProtocol project is broken down into three main projects: SerialPortFix, NSerialPort,
-and NSerialProtocol.
+The NSerialProtocol project is broken down into three main projects: SerialPortFix,
+NSerialPort, and NSerialProtocol.
 
 ### Features for SerialPortFix
 This project aims to fix the phantom IOExceptions from the vanilla .NET SerialPort
-class not clearing the fAbortOnError flag.  Use this project if you want a quick
+class not clearing the fAbortOnError Win32 flag.  Use this project if you want a quick
 fix to that bug, an ISerialPort interface, or access to the Win32 structs.  Specificaly,
 SerialPortFix provides:
 - [X] Clearing the fAbortOnError Win32 DCB flag to mitigate IOException errors
@@ -73,7 +74,7 @@ it themselves
 ## Tech Used
 ### Project Dependencies
 - Protobuf-Net for object serialization for NSerialProtocol (https://github.com/mgravell/protobuf-net)
-- FastMember for access to object members without reflection, expression trees, or IL (https://github.com/mgravell/fast-member)
+- FastMember for access to object members without reflection (https://github.com/mgravell/fast-member)
 
 ### Unit-Testing Depedencies
 - NUnit for unit testing (http://nunit.org/)
