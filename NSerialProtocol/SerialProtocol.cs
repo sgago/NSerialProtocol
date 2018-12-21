@@ -34,33 +34,6 @@ namespace NSerialProtocol
         public char EndFlag { get; set; } = '\n';
     }
 
-    public interface ISerialProtocol
-    {
-        event SerialProtocol.FrameErrorEventHandler OnFrameError;
-        event SerialProtocol.FrameParsedEventHandler OnFrameParsed;
-        event SerialProtocol.FrameReceivedEventHandler OnFrameReceived;
-        event SerialProtocol.PacketReceivedEventHandler OnPacketReceived;
-
-        object ReadFrame(int timeout = -1);
-        object ReadFrame(TimeSpan timeout);
-        TFrame ReadFrame<TFrame>(int timeout = -1) where TFrame : ISerialFrame;
-        TFrame ReadFrame<TFrame>(TimeSpan timeout) where TFrame : ISerialFrame;
-        object ReadPacket(int timeout = Timeout.Infinite);
-        TPacket ReadPacket<TPacket>() where TPacket : ISerialPacket;
-        ISerialProtocol SetFlags(string endFlag, string startFlag = "");
-        ISerialProtocol SetFramePrototype(Type type);
-        ISerialProtocol SetFramePrototype<TFrame>() where TFrame : ISerialFrame;
-        object TranceiveFrame(ISerialFrame serialFrame, int timeout = -1, int retries = 0);
-        object TranceiveFrame(ISerialFrame serialFrame, TimeSpan timeout, int retries = 0);
-        TFrame TranceiveFrame<TFrame>(ISerialFrame serialFrame, int timeout = -1, int retries = 0) where TFrame : ISerialFrame;
-        TFrame TranceiveFrame<TFrame>(ISerialFrame serialFrame, TimeSpan timeout, int retries = 0) where TFrame : ISerialFrame;
-        object TranceivePacket(ISerialPacket serialPacket, int timeout = -1, int retries = 0);
-        TPacket TranceivePacket<TPacket>(ISerialPacket serialPacket, int timeout = -1, int retries = 0) where TPacket : ISerialPacket;
-        void WriteFrame(ISerialFrame serialFrame);
-        void WriteFrame<TPayload>(TPayload payload);
-        void WritePacket(ISerialPacket serialPacket);
-    }
-
     public class SerialProtocol : ISerialProtocol
     {
         /*
@@ -101,6 +74,7 @@ namespace NSerialProtocol
             = new List<Tuple<int, IFrameParser>>();
 
         internal EventRouter FrameReceivedEventRouter;
+        
 
         private TypeAccessor PrototypeFrameTypeAccessor { get; set; }
         private ObjectAccessor PrototypeFrameObjectAccessor { get; set; }
@@ -229,7 +203,16 @@ namespace NSerialProtocol
         {
             IList<string> results;
 
-            results = Parsers.First().Item2.Parse(data);
+            // TODO: Not sure I like this if statement
+            // Is there a better way?
+            if (Parsers.Count > 0)
+            {
+                results = Parsers.First().Item2.Parse(data);
+            }
+            else
+            {
+                results = new List<string> { data };
+            }
 
             return results;
         }
@@ -317,11 +300,14 @@ namespace NSerialProtocol
 
         private void SerialProtocol_OnFrameReceived(object sender, SerialFrameReceivedEventArgs e)
         {
-            object serialFrame = e.SerialFrame;
+            object serialPacket;
 
-            object serialPacket = ObjectAccessor.Create(serialFrame)[PrototypeFramePayloadMemberName];
+            if (e.SerialFrame != null)
+            {
+                serialPacket = ObjectAccessor.Create(e.SerialFrame)[PrototypeFramePayloadMemberName];
 
-            RaiseSerialPacketReceivedEvent(this, new SerialPacketReceivedEventArgs(serialPacket));
+                RaiseSerialPacketReceivedEvent(this, new SerialPacketReceivedEventArgs(serialPacket));
+            }
         }
 
         private IList<string> GetErrors(string inputBuffer, IList<string> frames)
@@ -446,16 +432,30 @@ namespace NSerialProtocol
 
         public object ReadPacket(int timeout = Timeout.Infinite)
         {
-            //object serialFrame = ReadFrame(timeout);
+            object packet = null;
+            object frame = ReadFrame(timeout);
 
-            //return ObjectAccessor.Create(serialFrame)[PrototypeFramePayloadMemberName];
+            if (frame != null)
+            {
+                packet = ObjectAccessor.Create(frame)[PrototypeFramePayloadMemberName];
+            }
 
-            throw new NotImplementedException();
+            return packet;
         }
 
-        public TPacket ReadPacket<TPacket>() where TPacket : ISerialPacket
+        public object ReadPacket(TimeSpan timeout)
         {
-            return (TPacket)ReadPacket();
+            return ReadPacket(timeout.Milliseconds);
+        }
+
+        public TPacket ReadPacket<TPacket>(int timeout = Timeout.Infinite) where TPacket : ISerialPacket
+        {
+            return (TPacket)ReadPacket(timeout);
+        }
+
+        public TPacket ReadPacket<TPacket>(TimeSpan timeout) where TPacket : ISerialPacket
+        {
+            return (TPacket)ReadPacket(timeout.Milliseconds);
         }
 
         public object TranceivePacket(ISerialPacket serialPacket, int timeout = Timeout.Infinite, int retries = 0)

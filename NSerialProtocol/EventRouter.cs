@@ -16,6 +16,7 @@ namespace NSerialProtocol
     public abstract class EventRouter : IEventRouter
     {
         public ISerialProtocol Protocol { get; set; }
+
         public IList<IRoute> Routes { get; set; } = new List<IRoute>();
 
         public EventRouter(ISerialProtocol protocol)
@@ -30,6 +31,11 @@ namespace NSerialProtocol
             Routes.Add(new Route(frameType));
 
             return Routes.Last();
+        }
+
+        public IRoute AddRoute<TFrame>()
+        {
+            return AddRoute(typeof(TFrame));
         }
     }
 

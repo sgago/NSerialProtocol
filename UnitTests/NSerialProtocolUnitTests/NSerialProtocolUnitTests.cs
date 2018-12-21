@@ -11,6 +11,7 @@ namespace NSerialProtocolUnitTests
     using NSerialProtocol;
     using NSerialProtocol.Attributes;
     using ProtoBuf;
+    using System.Threading.Tasks;
     using System.Windows;
     using static NSerialPort.NSerialPort;
 
@@ -116,45 +117,86 @@ namespace NSerialProtocolUnitTests
             return framesReceived.ToArray();
         }
 
-        [Test]
-        public void Nsp_Test()
+        //[Test]
+        //public void Nsp_Test()
+        //{
+        //    string data = "|\u0004data\n";
+        //    List<string> framesReceived = new List<string>();
+
+        //    ISerialPort serialPortSub = Substitute.For<ISerialPort>();
+        //    IFrameSerializer serializer = new FrameSerializer();
+        //    SerialProtocol protocol = new SerialProtocol(serialPortSub, serializer);
+
+        //    NSerialDataReceivedEventArgs args = new NSerialDataReceivedEventArgs(
+        //        System.IO.Ports.SerialData.Eof, data);
+
+        //    protocol.SetFlags("\n", "|");
+
+        //    protocol.OnFrameReceived<DefaultSerialFrame>()
+        //        .Do((sf) =>
+        //            {
+        //                DefaultSerialFrame receivedFrame = sf as DefaultSerialFrame;
+
+        //                MessageBox.Show(receivedFrame.Payload);
+        //            }
+        //        )
+        //        .If
+        //        (
+        //            // If Predicate
+        //            (sf) =>
+        //            {
+        //                return (sf as DefaultSerialFrame).EndFlag == '\n';
+        //            },
+        //            // Then Do Action
+        //            (sf) =>
+        //            {
+        //                MessageBox.Show("If is working!");
+        //            }
+        //        );
+
+        //    serialPortSub.DataReceived +=
+        //        Raise.Event<NSerialDataReceivedEventHandler>(args);
+        //}
+
+        private class TestFrame : SerialFrame
         {
-            string data = "|\u0004data\n";
+            [SerialPacket(1)]
+            public string Payload { get; set; }
+
+            [EndFlag]
+            public char EndFlag { get; set; }
+        }
+
+        [Test]
+        public void NSerialProtocol_ReadPacket_Test()
+        {
+            string data = "data\n";
+
             List<string> framesReceived = new List<string>();
 
             ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-            IFrameSerializer serializer = new FrameSerializer();
-            SerialProtocol protocol = new SerialProtocol(serialPortSub, serializer);
+            IFrameSerializer serializerSub = Substitute.For<IFrameSerializer>();
+            SerialProtocol protocol = new SerialProtocol(serialPortSub, serializerSub);
+
+            serializerSub.Deserialize(typeof(TestFrame), "").ReturnsForAnyArgs(new TestFrame
+            {
+                Payload = "data",
+                EndFlag = '\n'
+            });
 
             NSerialDataReceivedEventArgs args = new NSerialDataReceivedEventArgs(
                 System.IO.Ports.SerialData.Eof, data);
 
-            protocol.SetFlags("\n", "|");
+            protocol.SetFramePrototype(typeof(TestFrame));
 
-            protocol.OnFrameReceived<DefaultSerialFrame>()
-                .Do((sf) =>
-                    {
-                        DefaultSerialFrame receivedFrame = sf as DefaultSerialFrame;
-
-                        MessageBox.Show(receivedFrame.Payload);
-                    }
-                )
-                .If
-                (
-                    // If Predicate
-                    (sf) =>
-                    {
-                        return (sf as DefaultSerialFrame).EndFlag == '\n';
-                    },
-                    // Then Do Action
-                    (sf) =>
-                    {
-                        MessageBox.Show("If is working!");
-                    }
-                );
+            Task<object> readPacketTask = Task.Run(() => protocol.ReadPacket());
 
             serialPortSub.DataReceived +=
                 Raise.Event<NSerialDataReceivedEventHandler>(args);
+
+            object packet = readPacketTask.Result;
+
+            // TODO: Finish this test, with an Assert!
         }
 
         //[Test]

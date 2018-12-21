@@ -71,6 +71,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EventRouterUnitTests.cs" />
     <Compile Include="Extensions\AssertExtensions.cs" />
     <Compile Include="RouteUnitTests.cs" />
     <Compile Include="VariableLengthParserUnitTests.cs" />
