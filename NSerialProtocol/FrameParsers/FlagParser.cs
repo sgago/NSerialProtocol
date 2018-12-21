@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace NSerialProtocol.FrameParsers
@@ -70,6 +71,42 @@ namespace NSerialProtocol.FrameParsers
             }
             
             FlagRegex = new Regex(GetRegexPattern(StartFlag, EndFlag), Options);
+        }
+
+        public FlagParser(char endFlag, char startFlag)
+            : this(endFlag.ToString(), startFlag.ToString())
+        {
+            
+        }
+
+        public FlagParser(byte endFlag, byte startFlag)
+            : this((char)endFlag, (char)startFlag)
+        {
+
+        }
+
+        public FlagParser(int endFlag, int startFlag)
+            : this((char)endFlag, (char)startFlag)
+        {
+
+        }
+
+        public FlagParser(byte[] endFlag, byte[] startFlag, Encoding encoding)
+            : this(encoding.GetString(endFlag), encoding.GetString(startFlag))
+        {
+
+        }
+
+        public FlagParser(byte[] endFlag, byte[] startFlag)
+            : this(endFlag, startFlag, Encoding.Default)
+        {
+
+        }
+
+        public FlagParser(char[] endFlag, char[] startFlag)
+            : this(new string(endFlag), new string(startFlag))
+        {
+
         }
 
         private string GetRegexPattern(string startFlag, string endFlag)

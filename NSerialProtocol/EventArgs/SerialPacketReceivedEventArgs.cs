@@ -2,11 +2,11 @@
 {
     public class SerialPacketReceivedEventArgs
     {
-        public SerialPacket serialPacket;
+        public object SerialPacket { get; }
 
-        public SerialPacketReceivedEventArgs(SerialPacket serialPacket)
+        public SerialPacketReceivedEventArgs(object serialPacket)
         {
-            this.serialPacket = serialPacket;
+            SerialPacket = serialPacket;
         }
     }
 }

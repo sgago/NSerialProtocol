@@ -24,6 +24,14 @@ namespace NSerialProtocol.Attributes
         }
     }
 
+    public class SerialPacketAttribute : PayloadAttribute
+    {
+        public SerialPacketAttribute(int tag)
+            : base(tag)
+        {
+        }
+    }
+
     public class StartFlagAttribute : FrameMemberAttribute
     {
         public StartFlagAttribute()

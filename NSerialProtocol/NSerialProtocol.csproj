@@ -63,7 +63,6 @@
     <Compile Include="FrameParserChain.cs" />
     <Compile Include="FrameParsers\IFrameParser.cs" />
     <Compile Include="ISerialize.cs" />
-    <Compile Include="ISerialProtocol.cs" />
     <Compile Include="Route.cs" />
     <Compile Include="SerialFrame.cs" />
     <None Include="packages.config" />

@@ -19,16 +19,6 @@ namespace NSerialProtocol
 
         public static EventRouter Do(this EventRouter router, Action<ISerialFrame> action)
         {
-            // TODO: Create my own KVP class so I can do this:
-            //router.Actions.Last().Value += action;
-
-            // TOOO: Until then, I'm doing this ugly, ugly thing:
-            //router.Routes[router.Routes.Count - 1] = new System.Collections.Generic.KeyValuePair<Type, Action<ISerialFrame>>
-            //    (
-            //        router.Routes[router.Routes.Count - 1].Key,
-            //        router.Routes[router.Routes.Count - 1].Value + action
-            //    );
-
             router.Routes.Last().Action += action;
 
             return router;
