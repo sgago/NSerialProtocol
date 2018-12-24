@@ -5,30 +5,32 @@ namespace NSerialProtocol
 {
     public static class ProtocolExtensions
     {
-        public static EventRouter OnFrameReceived(this SerialProtocol protocol, Type frameType)
-        {
-            protocol.FrameReceivedEventRouter.AddRoute(frameType);
+        // TODO: OnFrameReceived should probably return a route instead
+        // TODO: OnFrameReceived should probably accept a predicate - an easy check for the coder
 
-            return protocol.FrameReceivedEventRouter;
+        public static IRoute OnFrameReceived(this ISerialProtocol protocol, Type frameType)
+        {
+            return protocol.FrameReceivedEventRouter.AddRoute(protocol, frameType);
         }
 
-        public static EventRouter OnFrameReceived<TFrame>(this SerialProtocol protocol) where TFrame : ISerialFrame
+        public static IRoute OnFrameReceived<TFrame>(this ISerialProtocol protocol)
+            where TFrame : ISerialFrame
         {
             return OnFrameReceived(protocol, typeof(TFrame));
         }
 
-        public static EventRouter Do(this EventRouter router, Action<ISerialFrame> action)
+        public static IRoute Do(this IRoute route, Action<ISerialFrame> action)
         {
-            router.Routes.Last().Action += action;
+            route.Action += action;
 
-            return router;
+            return route;
         }
 
-        public static EventRouter If(this EventRouter router,
+        public static IRoute If(this IRoute route,
             Predicate<ISerialFrame> ifPredicate,
             Action<ISerialFrame> doAction)
         {
-            Action<ISerialFrame> ifThenAction =
+            route.Action +=
                 new Action<ISerialFrame>((sf) =>
                 {
                     if (ifPredicate(sf))
@@ -37,17 +39,16 @@ namespace NSerialProtocol
                     }
                 });
 
-            router.Routes.Last().Action += ifThenAction;
-
-            return router;
+            return route;
         }
 
-        public static Action<ISerialFrame> IfElse(this Action<ISerialFrame> prevAction,
+        public static IRoute IfElse(
+            this IRoute route,
             Predicate<ISerialFrame> ifPredicate,
             Action<ISerialFrame> doAction,
             Action<ISerialFrame> elseAction)
         {
-            return prevAction +=
+            route.Action +=
                 new Action<ISerialFrame>((sf) =>
                 {
                     if (ifPredicate(sf))
@@ -59,13 +60,15 @@ namespace NSerialProtocol
                         elseAction(sf);
                     }
                 });
+
+            return route;
         }
 
-        public static EventRouter WriteFrame(this EventRouter router, SerialFrame serialFrame)
+        public static IRoute WriteFrame(this IRoute route, ISerialFrame serialFrame)
         {
-            router.Protocol.WriteFrame(serialFrame);
+            route.SerialProtocol.WriteFrame(serialFrame);
 
-            return router;
+            return route;
         }
     }
 }

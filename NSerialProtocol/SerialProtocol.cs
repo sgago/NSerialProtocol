@@ -73,7 +73,7 @@ namespace NSerialProtocol
         private List<Tuple<int, IFrameParser>> Parsers { get; set; }
             = new List<Tuple<int, IFrameParser>>();
 
-        internal EventRouter FrameReceivedEventRouter;
+        public EventRouter FrameReceivedEventRouter { get; set; }
         
 
         private TypeAccessor PrototypeFrameTypeAccessor { get; set; }

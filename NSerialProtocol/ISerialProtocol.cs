@@ -4,6 +4,8 @@ namespace NSerialProtocol
 {
     public interface ISerialProtocol
     {
+        EventRouter FrameReceivedEventRouter { get; }
+
         event SerialProtocol.FrameErrorEventHandler OnFrameError;
         event SerialProtocol.FrameParsedEventHandler OnFrameParsed;
         event SerialProtocol.FrameReceivedEventHandler OnFrameReceived;

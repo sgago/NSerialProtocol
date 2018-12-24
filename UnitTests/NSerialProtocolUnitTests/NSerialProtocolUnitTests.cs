@@ -117,46 +117,46 @@ namespace NSerialProtocolUnitTests
             return framesReceived.ToArray();
         }
 
-        //[Test]
-        //public void Nsp_Test()
-        //{
-        //    string data = "|\u0004data\n";
-        //    List<string> framesReceived = new List<string>();
+        [Test]
+        public void Nsp_Test()
+        {
+            string data = "|\u0004data\n";
+            List<string> framesReceived = new List<string>();
 
-        //    ISerialPort serialPortSub = Substitute.For<ISerialPort>();
-        //    IFrameSerializer serializer = new FrameSerializer();
-        //    SerialProtocol protocol = new SerialProtocol(serialPortSub, serializer);
+            ISerialPort serialPortSub = Substitute.For<ISerialPort>();
+            IFrameSerializer serializer = new FrameSerializer();
+            SerialProtocol protocol = new SerialProtocol(serialPortSub, serializer);
 
-        //    NSerialDataReceivedEventArgs args = new NSerialDataReceivedEventArgs(
-        //        System.IO.Ports.SerialData.Eof, data);
+            NSerialDataReceivedEventArgs args = new NSerialDataReceivedEventArgs(
+                System.IO.Ports.SerialData.Eof, data);
 
-        //    protocol.SetFlags("\n", "|");
+            protocol.SetFlags("\n", "|");
 
-        //    protocol.OnFrameReceived<DefaultSerialFrame>()
-        //        .Do((sf) =>
-        //            {
-        //                DefaultSerialFrame receivedFrame = sf as DefaultSerialFrame;
+            protocol.OnFrameReceived<DefaultSerialFrame>()
+                .Do((sf) =>
+                    {
+                        DefaultSerialFrame receivedFrame = sf as DefaultSerialFrame;
 
-        //                MessageBox.Show(receivedFrame.Payload);
-        //            }
-        //        )
-        //        .If
-        //        (
-        //            // If Predicate
-        //            (sf) =>
-        //            {
-        //                return (sf as DefaultSerialFrame).EndFlag == '\n';
-        //            },
-        //            // Then Do Action
-        //            (sf) =>
-        //            {
-        //                MessageBox.Show("If is working!");
-        //            }
-        //        );
+                        MessageBox.Show(receivedFrame.Payload);
+                    }
+                )
+                .If
+                (
+                    // If Predicate
+                    (sf) =>
+                    {
+                        return (sf as DefaultSerialFrame).EndFlag == '\n';
+                    },
+                    // Then Do Action
+                    (sf) =>
+                    {
+                        MessageBox.Show("If is working!");
+                    }
+                );
 
-        //    serialPortSub.DataReceived +=
-        //        Raise.Event<NSerialDataReceivedEventHandler>(args);
-        //}
+            serialPortSub.DataReceived +=
+                Raise.Event<NSerialDataReceivedEventHandler>(args);
+        }
 
         private class TestFrame : SerialFrame
         {
@@ -170,7 +170,8 @@ namespace NSerialProtocolUnitTests
         [Test]
         public void NSerialProtocol_ReadPacket_Test()
         {
-            string data = "data\n";
+            const char endFlag = '\n';
+            const string data = "data";
 
             List<string> framesReceived = new List<string>();
 
@@ -180,8 +181,8 @@ namespace NSerialProtocolUnitTests
 
             serializerSub.Deserialize(typeof(TestFrame), "").ReturnsForAnyArgs(new TestFrame
             {
-                Payload = "data",
-                EndFlag = '\n'
+                Payload = data,
+                EndFlag = endFlag
             });
 
             NSerialDataReceivedEventArgs args = new NSerialDataReceivedEventArgs(
@@ -194,9 +195,9 @@ namespace NSerialProtocolUnitTests
             serialPortSub.DataReceived +=
                 Raise.Event<NSerialDataReceivedEventHandler>(args);
 
-            object packet = readPacketTask.Result;
+            string actual = readPacketTask.Result as string;
 
-            // TODO: Finish this test, with an Assert!
+            Assert.That(actual, Is.EqualTo(data));
         }
 
         //[Test]
