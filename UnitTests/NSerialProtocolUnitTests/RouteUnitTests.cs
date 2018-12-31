@@ -14,7 +14,7 @@ namespace NSerialProtocolUnitTests
             ISerialProtocol protocolSub = Substitute.For<ISerialProtocol>();
             Type expected = typeof(ISerialFrame);
 
-            Route route = new Route(protocolSub, typeof(ISerialFrame));
+            IRoute route = new Route(protocolSub, typeof(ISerialFrame));
 
             Assert.That(route.FrameType, Is.EqualTo(expected));
         }
@@ -25,9 +25,10 @@ namespace NSerialProtocolUnitTests
             ISerialProtocol protocolSub = Substitute.For<ISerialProtocol>();
             Type expected = typeof(SerialFrame);
 
-            Route route = new Route(protocolSub, typeof(ISerialFrame));
-
-            route.FrameType = expected;
+            IRoute route = new Route(protocolSub, typeof(ISerialFrame))
+            {
+                FrameType = expected
+            };
 
             Assert.That(route.FrameType, Is.EqualTo(expected));
         }
@@ -38,7 +39,7 @@ namespace NSerialProtocolUnitTests
             ISerialProtocol protocolSub = Substitute.For<ISerialProtocol>();
             Action<ISerialFrame> expected = (sf) => { };
 
-            Route route = new Route(protocolSub, typeof(ISerialFrame), expected);
+            IRoute route = new Route(protocolSub, typeof(ISerialFrame), expected);
 
             Assert.That(route.Action, Is.EqualTo(expected));
         }
@@ -49,9 +50,10 @@ namespace NSerialProtocolUnitTests
             ISerialProtocol protocolSub = Substitute.For<ISerialProtocol>();
             Action<ISerialFrame> expected = (sf) => { };
 
-            Route route = new Route(protocolSub, typeof(ISerialFrame));
-
-            route.Action = expected;
+            IRoute route = new Route(protocolSub, typeof(ISerialFrame))
+            {
+                Action = expected
+            };
 
             Assert.That(route.Action, Is.EqualTo(expected));
         }

@@ -3,26 +3,35 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-
 namespace NSerialProtocol
 {
+    /// <summary>
+    /// Routes events to the appropriate handlers.
+    /// </summary>
     public interface IEventRouter
     {
-        IList<IRoute> Routes { get; set; }
-
-        IRoute AddRoute(ISerialProtocol serialProtocol, Type frameType, Predicate<ISerialFrame> canExecute);
+        IRoute AddRoute(ISerialProtocol serialProtocol, Type frameType,
+            Predicate<ISerialFrame> canExecute);
         IRoute AddRoute(ISerialProtocol serialProtocol, Type frameType);
 
-        IRoute AddRoute<TFrame>(ISerialProtocol serialProtocol, Predicate<ISerialFrame> canExecute);
+        IRoute AddRoute<TFrame>(ISerialProtocol serialProtocol,
+            Predicate<ISerialFrame> canExecute);
         IRoute AddRoute<TFrame>(ISerialProtocol serialProtocol);
     }
 
+    /// <summary>
+    /// Routes events to the appropriate handlers.
+    /// </summary>
     public abstract class EventRouter : IEventRouter
     {
-        public ISerialProtocol Protocol { get; set; }
+        protected ISerialProtocol Protocol { get; set; }
 
-        public IList<IRoute> Routes { get; set; } = new List<IRoute>();
+        protected IList<IRoute> Routes { get; set; } = new List<IRoute>();
 
+        /// <summary>
+        /// Initializes a new instance of an EventRouter
+        /// </summary>
+        /// <param name="protocol"></param>
         public EventRouter(ISerialProtocol protocol)
         {
             Protocol = protocol;
@@ -68,11 +77,18 @@ namespace NSerialProtocol
 
         private void Protocol_SerialFrameReceived(object sender, SerialFrameReceivedEventArgs e)
         {
+            ISerialFrame receivedFrame;
+
             foreach (IRoute route in Routes)
             {
                 if (e.SerialFrame.GetType() == route.FrameType)
                 {
-                    route.Action?.Invoke((ISerialFrame)e.SerialFrame);
+                    receivedFrame = e.SerialFrame as ISerialFrame;
+
+                    if (route.CanExecute(receivedFrame))
+                    {
+                        route.Action?.Invoke(receivedFrame);
+                    }
                 }
             }
         }

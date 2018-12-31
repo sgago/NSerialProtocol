@@ -59,6 +59,7 @@
     <Compile Include="EventArgs\SerialFrameErrorEventArgs.cs" />
     <Compile Include="EventRouter.cs" />
     <Compile Include="Extensions\ProtocolExtensions.cs" />
+    <Compile Include="Extensions\RouteExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="FrameParserChain.cs" />
     <Compile Include="FrameParsers\IFrameParser.cs" />

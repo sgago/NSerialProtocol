@@ -1,16 +1,30 @@
 ﻿using System;
-using System.Linq;
 
 namespace NSerialProtocol
 {
+    /// <summary>
+    /// Extends the SerialProtocol class with methods for routing packet events
+    /// to the appropriate handler.
+    /// </summary>
     public static class ProtocolExtensions
     {
-        // TODO: OnFrameReceived should probably return a route instead
-        // TODO: OnFrameReceived should probably accept a predicate - an easy check for the coder
+        /// <summary>
+        /// OnFrameReceived is called when a completed serial frame has been
+        /// received and parsed.
+        /// </summary>
+        /// <param name="protocol"></param>
+        /// <param name="frameType"></param>
+        /// <param name="canExecute"></param>
+        /// <returns></returns>
+        public static IRoute OnFrameReceived(this ISerialProtocol protocol, Type frameType,
+            Predicate<ISerialFrame> canExecute)
+        {
+            return protocol.FrameReceivedEventRouter.AddRoute(protocol, frameType);
+        }
 
         public static IRoute OnFrameReceived(this ISerialProtocol protocol, Type frameType)
         {
-            return protocol.FrameReceivedEventRouter.AddRoute(protocol, frameType);
+            return OnFrameReceived(protocol, frameType, canExecute => true);
         }
 
         public static IRoute OnFrameReceived<TFrame>(this ISerialProtocol protocol)
@@ -19,56 +33,11 @@ namespace NSerialProtocol
             return OnFrameReceived(protocol, typeof(TFrame));
         }
 
-        public static IRoute Do(this IRoute route, Action<ISerialFrame> action)
+        public static IRoute OnFrameReceived<TFrame>(this ISerialProtocol protocol,
+            Predicate<ISerialFrame> canExecute)
+            where TFrame : ISerialFrame
         {
-            route.Action += action;
-
-            return route;
-        }
-
-        public static IRoute If(this IRoute route,
-            Predicate<ISerialFrame> ifPredicate,
-            Action<ISerialFrame> doAction)
-        {
-            route.Action +=
-                new Action<ISerialFrame>((sf) =>
-                {
-                    if (ifPredicate(sf))
-                    {
-                        doAction(sf);
-                    }
-                });
-
-            return route;
-        }
-
-        public static IRoute IfElse(
-            this IRoute route,
-            Predicate<ISerialFrame> ifPredicate,
-            Action<ISerialFrame> doAction,
-            Action<ISerialFrame> elseAction)
-        {
-            route.Action +=
-                new Action<ISerialFrame>((sf) =>
-                {
-                    if (ifPredicate(sf))
-                    {
-                        doAction(sf);
-                    }
-                    else
-                    {
-                        elseAction(sf);
-                    }
-                });
-
-            return route;
-        }
-
-        public static IRoute WriteFrame(this IRoute route, ISerialFrame serialFrame)
-        {
-            route.SerialProtocol.WriteFrame(serialFrame);
-
-            return route;
+            return OnFrameReceived(protocol, typeof(TFrame), canExecute);
         }
     }
 }
