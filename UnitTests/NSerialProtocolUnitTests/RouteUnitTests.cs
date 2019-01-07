@@ -14,9 +14,9 @@ namespace NSerialProtocolUnitTests
             ISerialProtocol protocolSub = Substitute.For<ISerialProtocol>();
             Type expected = typeof(ISerialFrame);
 
-            IRoute route = new Route(protocolSub, typeof(ISerialFrame));
+            IRoute<ISerialFrame> route = new Route<ISerialFrame>(protocolSub, typeof(ISerialFrame));
 
-            Assert.That(route.FrameType, Is.EqualTo(expected));
+            Assert.That(route.Type, Is.EqualTo(expected));
         }
 
         [Test]
@@ -25,12 +25,12 @@ namespace NSerialProtocolUnitTests
             ISerialProtocol protocolSub = Substitute.For<ISerialProtocol>();
             Type expected = typeof(SerialFrame);
 
-            IRoute route = new Route(protocolSub, typeof(ISerialFrame))
+            IRoute<ISerialFrame> route = new Route<ISerialFrame>(protocolSub, typeof(ISerialFrame))
             {
-                FrameType = expected
+                Type = expected
             };
 
-            Assert.That(route.FrameType, Is.EqualTo(expected));
+            Assert.That(route.Type, Is.EqualTo(expected));
         }
 
         [Test]
@@ -39,7 +39,7 @@ namespace NSerialProtocolUnitTests
             ISerialProtocol protocolSub = Substitute.For<ISerialProtocol>();
             Action<ISerialFrame> expected = (sf) => { };
 
-            IRoute route = new Route(protocolSub, typeof(ISerialFrame), expected);
+            IRoute<ISerialFrame> route = new Route<ISerialFrame>(protocolSub, typeof(ISerialFrame), expected);
 
             Assert.That(route.Action, Is.EqualTo(expected));
         }
@@ -50,12 +50,14 @@ namespace NSerialProtocolUnitTests
             ISerialProtocol protocolSub = Substitute.For<ISerialProtocol>();
             Action<ISerialFrame> expected = (sf) => { };
 
-            IRoute route = new Route(protocolSub, typeof(ISerialFrame))
+            IRoute<ISerialFrame> route = new Route<ISerialFrame>(protocolSub, typeof(ISerialFrame))
             {
                 Action = expected
             };
 
             Assert.That(route.Action, Is.EqualTo(expected));
         }
+
+
     }
 }

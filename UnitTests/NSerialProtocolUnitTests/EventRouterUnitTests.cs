@@ -14,9 +14,9 @@ namespace NSerialProtocolUnitTests
             Type expected = typeof(ISerialFrame);
             ISerialProtocol protocolSub = Substitute.For<ISerialProtocol>();
 
-            Route route = new Route(protocolSub, typeof(ISerialFrame));
+            Route<ISerialFrame> route = new Route<ISerialFrame>(protocolSub, typeof(ISerialFrame));
 
-            Assert.That(route.FrameType, Is.EqualTo(expected));
+            Assert.That(route.Type, Is.EqualTo(expected));
         }
     }
 }

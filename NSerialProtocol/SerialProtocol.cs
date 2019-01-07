@@ -18,6 +18,7 @@ namespace NSerialProtocol
     using NByteStuff.Algorithms;
     using NFec.Algorithms;
     using NSerialPort;
+    using NSerialProtocol.EventRouters;
     using System.Linq.Expressions;
 
     [Fec()]
@@ -73,8 +74,10 @@ namespace NSerialProtocol
         private List<Tuple<int, IFrameParser>> Parsers { get; set; }
             = new List<Tuple<int, IFrameParser>>();
 
-        public EventRouter FrameReceivedEventRouter { get; set; }
-        
+        public IEventRouter<string> FrameParsedEventRouter { get; set; }
+        public IEventRouter<string> FrameErrorEventRouter { get; set; }
+        public IEventRouter<ISerialFrame> FrameReceivedEventRouter { get; set; }
+        public IEventRouter<ISerialPacket> PacketReceivedEventRouter { get; set; }
 
         private TypeAccessor PrototypeFrameTypeAccessor { get; set; }
         private ObjectAccessor PrototypeFrameObjectAccessor { get; set; }
@@ -86,8 +89,9 @@ namespace NSerialProtocol
         /// object.
         /// </summary>
         /// <param name="sender">The sender of the event, which is the NSerialPort object.</param>
-        /// <param name="e">A SerialMessageReceivedEventArgs object that contains the event
-        /// data.</param>
+        /// <param name="e">
+        /// A SerialMessageReceivedEventArgs object that contains the event data.
+        /// </param>
         public delegate void FrameParsedEventHandler(object sender, SerialFrameParsedEventArgs e);
         public delegate void FrameReceivedEventHandler(object sender, SerialFrameReceivedEventArgs e);
         public delegate void FrameErrorEventHandler(object sender, SerialFrameErrorEventArgs e);
@@ -99,7 +103,9 @@ namespace NSerialProtocol
         public event FrameErrorEventHandler OnFrameError;
         public event PacketReceivedEventHandler OnPacketReceived;
         
-        internal SerialProtocol(ISerialPort serialPort, IFrameSerializer serializer)
+
+        internal SerialProtocol(ISerialPort serialPort,
+            IFrameSerializer serializer)
         {
             SerialPort = serialPort;
             FrameSerializer = serializer;
@@ -108,7 +114,11 @@ namespace NSerialProtocol
             OnFrameParsed += SerialProtocol_SerialFrameParsed;
             OnFrameReceived += SerialProtocol_OnFrameReceived;
 
+            FrameParsedEventRouter = new FrameParsedEventRouter(this);
+            FrameErrorEventRouter = new FrameErrorEventRouter(this);
             FrameReceivedEventRouter = new FrameReceivedEventRouter(this);
+            PacketReceivedEventRouter = new PacketReceivedEventRouter(this);
+
 
             SetFramePrototype<DefaultSerialFrame>();
         }

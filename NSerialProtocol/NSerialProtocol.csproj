@@ -57,7 +57,9 @@
   <ItemGroup>
     <Compile Include="Attributes\SerialFrameAttributes.cs" />
     <Compile Include="EventArgs\SerialFrameErrorEventArgs.cs" />
-    <Compile Include="EventRouter.cs" />
+    <Compile Include="EventRouters\EventRouter.cs" />
+    <Compile Include="EventRouters\FrameReceivedEventRouter.cs" />
+    <Compile Include="EventRouters\PacketReceivedEventRouter.cs" />
     <Compile Include="Extensions\ProtocolExtensions.cs" />
     <Compile Include="Extensions\RouteExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
@@ -98,9 +100,7 @@
       <Name>SerialPortFix</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="EventHandlers\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

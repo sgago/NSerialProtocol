@@ -10,6 +10,7 @@ namespace NSerialProtocolUnitTests
     using NSerialPort.EventArgs;
     using NSerialProtocol;
     using NSerialProtocol.Attributes;
+    using NSerialProtocol.Extensions;
     using ProtoBuf;
     using System.Threading.Tasks;
     using System.Windows;

@@ -10,30 +10,52 @@ namespace NSerialProtocol
     {
         /// <summary>
         /// OnFrameReceived is called when a completed serial frame has been
-        /// received and parsed.
+        /// successfully received and parsed.
         /// </summary>
         /// <param name="protocol"></param>
         /// <param name="frameType"></param>
         /// <param name="canExecute"></param>
         /// <returns></returns>
-        public static IRoute OnFrameReceived(this ISerialProtocol protocol, Type frameType,
+        public static IRoute<ISerialFrame> OnFrameReceived(this ISerialProtocol protocol, Type frameType,
             Predicate<ISerialFrame> canExecute)
         {
             return protocol.FrameReceivedEventRouter.AddRoute(protocol, frameType);
         }
 
-        public static IRoute OnFrameReceived(this ISerialProtocol protocol, Type frameType)
+        /// <summary>
+        /// OnFrameReceived is called when a completed serial frame has been
+        /// successfully received and parsed.
+        /// </summary>
+        /// <param name="protocol"></param>
+        /// <param name="frameType"></param>
+        /// <returns></returns>
+        public static IRoute<ISerialFrame> OnFrameReceived(this ISerialProtocol protocol, Type frameType)
         {
             return OnFrameReceived(protocol, frameType, canExecute => true);
         }
 
-        public static IRoute OnFrameReceived<TFrame>(this ISerialProtocol protocol)
+        /// <summary>
+        /// OnFrameReceived is called when a completed serial frame has been
+        /// successfully received and parsed.
+        /// </summary>
+        /// <typeparam name="TFrame"></typeparam>
+        /// <param name="protocol"></param>
+        /// <returns></returns>
+        public static IRoute<ISerialFrame> OnFrameReceived<TFrame>(this ISerialProtocol protocol)
             where TFrame : ISerialFrame
         {
             return OnFrameReceived(protocol, typeof(TFrame));
         }
 
-        public static IRoute OnFrameReceived<TFrame>(this ISerialProtocol protocol,
+        /// <summary>
+        /// OnFrameReceived is called when a completed serial frame has been
+        /// successfully received and parsed.
+        /// </summary>
+        /// <typeparam name="TFrame"></typeparam>
+        /// <param name="protocol"></param>
+        /// <param name="canExecute"></param>
+        /// <returns></returns>
+        public static IRoute<ISerialFrame> OnFrameReceived<TFrame>(this ISerialProtocol protocol,
             Predicate<ISerialFrame> canExecute)
             where TFrame : ISerialFrame
         {

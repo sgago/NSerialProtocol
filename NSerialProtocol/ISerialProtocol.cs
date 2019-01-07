@@ -1,10 +1,12 @@
-﻿using System;
+﻿using NSerialProtocol.EventRouters;
+using System;
 
 namespace NSerialProtocol
 {
     public interface ISerialProtocol
     {
-        EventRouter FrameReceivedEventRouter { get; }
+        IEventRouter<ISerialFrame> FrameReceivedEventRouter { get; }
+        IEventRouter<ISerialPacket> PacketReceivedEventRouter { get; }
 
         event SerialProtocol.FrameErrorEventHandler OnFrameError;
         event SerialProtocol.FrameParsedEventHandler OnFrameParsed;
